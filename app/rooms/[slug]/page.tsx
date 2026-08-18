@@ -1,6 +1,16 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { PostComposer } from "@/app/components/PostComposer";
+
+function formatWhen(d: Date) {
+  return d.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 
 export default async function RoomPage({
   params,
@@ -11,6 +21,20 @@ export default async function RoomPage({
   const room = await prisma.room.findUnique({ where: { slug } });
 
   if (!room) notFound();
+
+  const posts = await prisma.post.findMany({
+    where: { roomId: room.id },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    select: {
+      id: true,
+      body: true,
+      createdAt: true,
+      identityUsed: true,
+      user: { select: { realName: true, anonHandle: true } },
+      _count: { select: { replies: true } },
+    },
+  });
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10">
@@ -28,8 +52,43 @@ export default async function RoomPage({
         <p className="mt-1 text-zinc-600 dark:text-zinc-400">{room.description}</p>
       )}
 
-      <div className="mt-8 rounded-lg border border-dashed border-zinc-300 p-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-500">
-        Posts land here in Sprint 2.
+      <div className="mt-6">
+        <PostComposer roomSlug={room.slug} />
+      </div>
+
+      <div className="mt-8 flex flex-col gap-3">
+        {posts.length === 0 && (
+          <div className="rounded-lg border border-dashed border-zinc-300 p-8 text-center text-zinc-500 dark:border-zinc-700">
+            No posts yet. Be first.
+          </div>
+        )}
+        {posts.map((post) => {
+          const author =
+            post.identityUsed === "REAL"
+              ? (post.user.realName ?? "Unknown")
+              : post.user.anonHandle;
+          return (
+            <Link
+              key={post.id}
+              href={`/rooms/${room.slug}/${post.id}`}
+              className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-600"
+            >
+              <div className="flex items-center justify-between text-xs text-zinc-500">
+                <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                  {author}
+                </span>
+                <span>{formatWhen(post.createdAt)}</span>
+              </div>
+              <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-950 dark:text-zinc-50">
+                {post.body}
+              </p>
+              <div className="mt-3 text-xs text-zinc-500">
+                {post._count.replies}{" "}
+                {post._count.replies === 1 ? "reply" : "replies"}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

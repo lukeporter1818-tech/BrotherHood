@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Header } from "@/app/components/Header";
 import { IdentityProvider } from "@/app/components/IdentityProvider";
 
-export default async function RoomsLayout({
+export default async function CheckInLayout({
   children,
 }: {
   children: React.ReactNode;

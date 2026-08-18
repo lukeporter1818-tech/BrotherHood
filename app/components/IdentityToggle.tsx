@@ -1,17 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useIdentity, type Identity } from "@/app/components/IdentityProvider";
 
-type Identity = "REAL" | "ANON";
-
-export function IdentityToggle({
-  realName,
-  anonHandle,
-}: {
-  realName: string | null;
-  anonHandle: string;
-}) {
-  const [identity, setIdentity] = useState<Identity>("ANON");
+export function IdentityToggle() {
+  const { identity, setIdentity, realName, anonHandle } = useIdentity();
 
   const options: { value: Identity; label: string; disabled?: boolean }[] = [
     { value: "REAL", label: realName ?? "Real name", disabled: !realName },

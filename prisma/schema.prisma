@@ -48,7 +48,7 @@ model DailyCheckIn {
   sleepHours Float
   mood       Int
   moved      Boolean
-  date       DateTime @default(now())
+  date       DateTime @default(now()) @db.Date
 
   @@unique([userId, date])
 }
