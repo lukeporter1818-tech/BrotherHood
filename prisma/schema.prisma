@@ -33,6 +33,7 @@ model User {
   phone      String?
   realName   String?
   anonHandle String   @unique
+  isAdmin    Boolean  @default(false)
   createdAt  DateTime @default(now())
 
   checkIns DailyCheckIn[]
@@ -63,14 +64,15 @@ model Room {
 }
 
 model Post {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   roomId       String
-  room         Room     @relation(fields: [roomId], references: [id])
+  room         Room      @relation(fields: [roomId], references: [id])
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   identityUsed Identity
   body         String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
 
   replies Reply[]
   reports Report[]
@@ -79,14 +81,15 @@ model Post {
 }
 
 model Reply {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   postId       String
-  post         Post     @relation(fields: [postId], references: [id])
+  post         Post      @relation(fields: [postId], references: [id])
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   identityUsed Identity
   body         String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
 
   reports Report[]
 

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ReplyComposer } from "@/app/components/ReplyComposer";
+import { ReportButton } from "@/app/components/ReportButton";
 
 function formatWhen(d: Date) {
   return d.toLocaleString(undefined, {
@@ -26,6 +27,7 @@ export default async function PostDetailPage({
       body: true,
       createdAt: true,
       identityUsed: true,
+      deletedAt: true,
       room: { select: { slug: true, displayName: true } },
       user: { select: { realName: true, anonHandle: true } },
       replies: {
@@ -35,6 +37,7 @@ export default async function PostDetailPage({
           body: true,
           createdAt: true,
           identityUsed: true,
+          deletedAt: true,
           user: { select: { realName: true, anonHandle: true } },
         },
       },
@@ -48,6 +51,8 @@ export default async function PostDetailPage({
       ? (post.user.realName ?? "Unknown")
       : post.user.anonHandle;
 
+  const postDeleted = post.deletedAt !== null;
+
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10">
       <Link
@@ -57,16 +62,29 @@ export default async function PostDetailPage({
         ← {post.room.displayName}
       </Link>
 
-      <article className="mt-4 rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="flex items-center justify-between text-xs text-zinc-500">
-          <span className="font-medium text-zinc-700 dark:text-zinc-300">
-            {postAuthor}
-          </span>
-          <span>{formatWhen(post.createdAt)}</span>
+      <article className="mt-4 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="p-5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">
+              {postDeleted ? "[removed]" : postAuthor}
+            </span>
+            <span>{formatWhen(post.createdAt)}</span>
+          </div>
+          <p
+            className={`mt-3 whitespace-pre-wrap ${
+              postDeleted
+                ? "italic text-zinc-400 dark:text-zinc-600"
+                : "text-zinc-950 dark:text-zinc-50"
+            }`}
+          >
+            {postDeleted ? "[This post was removed.]" : post.body}
+          </p>
         </div>
-        <p className="mt-3 whitespace-pre-wrap text-zinc-950 dark:text-zinc-50">
-          {post.body}
-        </p>
+        {!postDeleted && (
+          <div className="flex justify-end border-t border-zinc-100 px-5 py-2 dark:border-zinc-800">
+            <ReportButton targetType="POST" targetId={post.id} />
+          </div>
+        )}
       </article>
 
       <div className="mt-8">
@@ -77,6 +95,7 @@ export default async function PostDetailPage({
 
         <div className="flex flex-col gap-3">
           {post.replies.map((reply) => {
+            const replyDeleted = reply.deletedAt !== null;
             const author =
               reply.identityUsed === "REAL"
                 ? (reply.user.realName ?? "Unknown")
@@ -84,25 +103,40 @@ export default async function PostDetailPage({
             return (
               <div
                 key={reply.id}
-                className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+                className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950"
               >
-                <div className="flex items-center justify-between text-xs text-zinc-500">
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                    {author}
-                  </span>
-                  <span>{formatWhen(reply.createdAt)}</span>
+                <div className="p-4">
+                  <div className="flex items-center justify-between text-xs text-zinc-500">
+                    <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                      {replyDeleted ? "[removed]" : author}
+                    </span>
+                    <span>{formatWhen(reply.createdAt)}</span>
+                  </div>
+                  <p
+                    className={`mt-2 whitespace-pre-wrap text-sm ${
+                      replyDeleted
+                        ? "italic text-zinc-400 dark:text-zinc-600"
+                        : "text-zinc-950 dark:text-zinc-50"
+                    }`}
+                  >
+                    {replyDeleted ? "[This reply was removed.]" : reply.body}
+                  </p>
                 </div>
-                <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-950 dark:text-zinc-50">
-                  {reply.body}
-                </p>
+                {!replyDeleted && (
+                  <div className="flex justify-end border-t border-zinc-100 px-4 py-2 dark:border-zinc-800">
+                    <ReportButton targetType="REPLY" targetId={reply.id} />
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
 
-        <div className="mt-4">
-          <ReplyComposer postId={post.id} roomSlug={slug} />
-        </div>
+        {!postDeleted && (
+          <div className="mt-4">
+            <ReplyComposer postId={post.id} roomSlug={slug} />
+          </div>
+        )}
       </div>
     </div>
   );

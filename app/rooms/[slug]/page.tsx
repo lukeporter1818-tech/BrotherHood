@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PostComposer } from "@/app/components/PostComposer";
+import { ReportButton } from "@/app/components/ReportButton";
 
 function formatWhen(d: Date) {
   return d.toLocaleString(undefined, {
@@ -23,7 +24,7 @@ export default async function RoomPage({
   if (!room) notFound();
 
   const posts = await prisma.post.findMany({
-    where: { roomId: room.id },
+    where: { roomId: room.id, deletedAt: null },
     orderBy: { createdAt: "desc" },
     take: 50,
     select: {
@@ -32,7 +33,7 @@ export default async function RoomPage({
       createdAt: true,
       identityUsed: true,
       user: { select: { realName: true, anonHandle: true } },
-      _count: { select: { replies: true } },
+      _count: { select: { replies: { where: { deletedAt: null } } } },
     },
   });
 
@@ -68,25 +69,32 @@ export default async function RoomPage({
               ? (post.user.realName ?? "Unknown")
               : post.user.anonHandle;
           return (
-            <Link
+            <div
               key={post.id}
-              href={`/rooms/${room.slug}/${post.id}`}
-              className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-600"
+              className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950"
             >
-              <div className="flex items-center justify-between text-xs text-zinc-500">
-                <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                  {author}
+              <Link
+                href={`/rooms/${room.slug}/${post.id}`}
+                className="block p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
+              >
+                <div className="flex items-center justify-between text-xs text-zinc-500">
+                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                    {author}
+                  </span>
+                  <span>{formatWhen(post.createdAt)}</span>
+                </div>
+                <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-950 dark:text-zinc-50">
+                  {post.body}
+                </p>
+              </Link>
+              <div className="flex items-center justify-between border-t border-zinc-100 px-4 py-2 dark:border-zinc-800">
+                <span className="text-xs text-zinc-500">
+                  {post._count.replies}{" "}
+                  {post._count.replies === 1 ? "reply" : "replies"}
                 </span>
-                <span>{formatWhen(post.createdAt)}</span>
+                <ReportButton targetType="POST" targetId={post.id} />
               </div>
-              <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-950 dark:text-zinc-50">
-                {post.body}
-              </p>
-              <div className="mt-3 text-xs text-zinc-500">
-                {post._count.replies}{" "}
-                {post._count.replies === 1 ? "reply" : "replies"}
-              </div>
-            </Link>
+            </div>
           );
         })}
       </div>

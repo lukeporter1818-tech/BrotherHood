@@ -18,7 +18,7 @@ export default async function CheckInLayout({
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { realName: true, anonHandle: true },
+    select: { realName: true, anonHandle: true, isAdmin: true },
   });
 
   if (!dbUser) redirect("/login");
@@ -26,7 +26,7 @@ export default async function CheckInLayout({
   return (
     <IdentityProvider realName={dbUser.realName} anonHandle={dbUser.anonHandle}>
       <div className="flex min-h-full flex-1 flex-col">
-        <Header />
+        <Header isAdmin={dbUser.isAdmin} />
         <main className="flex flex-1 flex-col bg-zinc-50 dark:bg-black">
           {children}
         </main>

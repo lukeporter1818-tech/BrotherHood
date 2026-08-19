@@ -4,6 +4,7 @@ import "server-only";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { checkToxicity } from "@/lib/toxicity";
 
 export type PostActionState = { error: string | null };
 
@@ -57,6 +58,14 @@ export async function createPost(
   });
   if (!room) return { error: "Room not found." };
 
+  const tox = await checkToxicity(body);
+  if (tox.flagged) {
+    return {
+      error:
+        "Your message was flagged before posting. If this is wrong, try rewording or contact support.",
+    };
+  }
+
   await prisma.post.create({
     data: {
       roomId: room.id,
@@ -99,6 +108,14 @@ export async function createReply(
     select: { id: true },
   });
   if (!post) return { error: "Post not found." };
+
+  const tox = await checkToxicity(body);
+  if (tox.flagged) {
+    return {
+      error:
+        "Your message was flagged before posting. If this is wrong, try rewording or contact support.",
+    };
+  }
 
   await prisma.reply.create({
     data: {
