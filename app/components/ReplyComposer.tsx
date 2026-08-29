@@ -6,13 +6,7 @@ import { createReply, type PostActionState } from "@/app/rooms/actions";
 
 const initialState: PostActionState = { error: null };
 
-export function ReplyComposer({
-  postId,
-  roomSlug,
-}: {
-  postId: string;
-  roomSlug: string;
-}) {
+export function ReplyComposer({ postId }: { postId: string }) {
   const { identity } = useIdentity();
   const [state, formAction, pending] = useActionState(createReply, initialState);
   const formRef = useRef<HTMLFormElement>(null);
@@ -30,7 +24,6 @@ export function ReplyComposer({
       className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
     >
       <input type="hidden" name="postId" value={postId} />
-      <input type="hidden" name="roomSlug" value={roomSlug} />
       <input type="hidden" name="identity" value={identity} />
       <textarea
         name="body"

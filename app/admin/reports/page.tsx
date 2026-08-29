@@ -33,7 +33,9 @@ export default async function AdminReportsPage() {
           id: true,
           body: true,
           deletedAt: true,
+          squadId: true,
           room: { select: { slug: true, displayName: true } },
+          squad: { select: { id: true, name: true } },
         },
       },
       reply: {
@@ -42,7 +44,13 @@ export default async function AdminReportsPage() {
           body: true,
           deletedAt: true,
           postId: true,
-          post: { select: { room: { select: { slug: true } } } },
+          post: {
+            select: {
+              squadId: true,
+              room: { select: { slug: true, displayName: true } },
+              squad: { select: { id: true, name: true } },
+            },
+          },
         },
       },
     },
@@ -69,18 +77,26 @@ export default async function AdminReportsPage() {
             const content = isPost ? r.post : r.reply;
             const alreadyDeleted = content?.deletedAt !== null;
 
-            let roomSlug = "";
-            let roomName = "";
+            let contextLabel = "";
             let contentLink = "";
 
             if (isPost && r.post) {
-              roomSlug = r.post.room.slug;
-              roomName = r.post.room.displayName;
-              contentLink = `/rooms/${roomSlug}/${r.post.id}`;
+              if (r.post.squadId && r.post.squad) {
+                contextLabel = `Squad · ${r.post.squad.name}`;
+                contentLink = `/squads/${r.post.squad.id}/${r.post.id}`;
+              } else if (r.post.room) {
+                contextLabel = r.post.room.displayName;
+                contentLink = `/rooms/${r.post.room.slug}/${r.post.id}`;
+              }
             } else if (!isPost && r.reply) {
-              roomSlug = r.reply.post.room.slug;
-              roomName = roomSlug;
-              contentLink = `/rooms/${roomSlug}/${r.reply.postId}`;
+              const parent = r.reply.post;
+              if (parent.squadId && parent.squad) {
+                contextLabel = `Squad · ${parent.squad.name}`;
+                contentLink = `/squads/${parent.squad.id}/${r.reply.postId}`;
+              } else if (parent.room) {
+                contextLabel = parent.room.displayName;
+                contentLink = `/rooms/${parent.room.slug}/${r.reply.postId}`;
+              }
             }
 
             const bodyText = content?.body ?? "";
@@ -97,7 +113,7 @@ export default async function AdminReportsPage() {
                         {r.targetType}
                       </span>
                       <span>·</span>
-                      <span>{roomName}</span>
+                      <span>{contextLabel}</span>
                       <span>·</span>
                       <span>Reported by {r.reporter.anonHandle}</span>
                       <span>·</span>

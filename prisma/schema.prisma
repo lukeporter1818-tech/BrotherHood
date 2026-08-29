@@ -36,10 +36,11 @@ model User {
   isAdmin    Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  checkIns DailyCheckIn[]
-  posts    Post[]
-  replies  Reply[]
-  reports  Report[]       @relation("Reporter")
+  checkIns     DailyCheckIn[]
+  posts        Post[]
+  replies      Reply[]
+  reports      Report[]          @relation("Reporter")
+  memberships  SquadMembership[]
 }
 
 model DailyCheckIn {
@@ -65,8 +66,10 @@ model Room {
 
 model Post {
   id           String    @id @default(cuid())
-  roomId       String
-  room         Room      @relation(fields: [roomId], references: [id])
+  roomId       String?
+  room         Room?     @relation(fields: [roomId], references: [id])
+  squadId      String?
+  squad        Squad?    @relation(fields: [squadId], references: [id])
   userId       String
   user         User      @relation(fields: [userId], references: [id])
   identityUsed Identity
@@ -78,6 +81,29 @@ model Post {
   reports Report[]
 
   @@index([roomId, createdAt])
+  @@index([squadId, createdAt])
+}
+
+model Squad {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  posts       Post[]
+  memberships SquadMembership[]
+}
+
+model SquadMembership {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  squadId  String
+  squad    Squad    @relation(fields: [squadId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([userId, squadId])
+  @@index([squadId])
 }
 
 model Reply {

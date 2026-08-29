@@ -20,6 +20,12 @@ export function Header({ isAdmin = false }: { isAdmin?: boolean }) {
             Rooms
           </Link>
           <Link
+            href="/squads"
+            className="hover:text-zinc-950 dark:hover:text-zinc-50"
+          >
+            Squads
+          </Link>
+          <Link
             href="/checkin"
             className="hover:text-zinc-950 dark:hover:text-zinc-50"
           >

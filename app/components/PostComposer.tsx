@@ -6,7 +6,9 @@ import { createPost, type PostActionState } from "@/app/rooms/actions";
 
 const initialState: PostActionState = { error: null };
 
-export function PostComposer({ roomSlug }: { roomSlug: string }) {
+type Props = { roomSlug: string; squadId?: never } | { roomSlug?: never; squadId: string };
+
+export function PostComposer(props: Props) {
   const { identity } = useIdentity();
   const [state, formAction, pending] = useActionState(createPost, initialState);
   const formRef = useRef<HTMLFormElement>(null);
@@ -23,7 +25,11 @@ export function PostComposer({ roomSlug }: { roomSlug: string }) {
       action={formAction}
       className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
     >
-      <input type="hidden" name="roomSlug" value={roomSlug} />
+      {props.roomSlug ? (
+        <input type="hidden" name="roomSlug" value={props.roomSlug} />
+      ) : (
+        <input type="hidden" name="squadId" value={props.squadId} />
+      )}
       <input type="hidden" name="identity" value={identity} />
       <textarea
         name="body"

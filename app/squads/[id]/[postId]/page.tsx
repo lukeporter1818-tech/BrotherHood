@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ReplyComposer } from "@/app/components/ReplyComposer";
 import { ReportButton } from "@/app/components/ReportButton";
@@ -13,12 +14,24 @@ function formatWhen(d: Date) {
   });
 }
 
-export default async function PostDetailPage({
+export default async function SquadPostDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string; postId: string }>;
+  params: Promise<{ id: string; postId: string }>;
 }) {
-  const { slug, postId } = await params;
+  const { id, postId } = await params;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const membership = await prisma.squadMembership.findUnique({
+    where: { userId_squadId: { userId: user.id, squadId: id } },
+    select: { id: true },
+  });
+  if (!membership) notFound();
 
   const post = await prisma.post.findUnique({
     where: { id: postId },
@@ -28,7 +41,8 @@ export default async function PostDetailPage({
       createdAt: true,
       identityUsed: true,
       deletedAt: true,
-      room: { select: { slug: true, displayName: true } },
+      squadId: true,
+      squad: { select: { id: true, name: true } },
       user: { select: { realName: true, anonHandle: true } },
       replies: {
         orderBy: { createdAt: "asc" },
@@ -44,7 +58,7 @@ export default async function PostDetailPage({
     },
   });
 
-  if (!post || !post.room || post.room.slug !== slug) notFound();
+  if (!post || post.squadId !== id || !post.squad) notFound();
 
   const postAuthor =
     post.identityUsed === "REAL"
@@ -56,10 +70,10 @@ export default async function PostDetailPage({
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10">
       <Link
-        href={`/rooms/${slug}`}
+        href={`/squads/${id}`}
         className="text-sm text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
       >
-        ← {post.room.displayName}
+        ← {post.squad.name}
       </Link>
 
       <article className="mt-4 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
