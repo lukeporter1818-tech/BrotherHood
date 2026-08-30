@@ -1,6 +1,7 @@
 // Server-compatible component. No hooks, no "use client". Rendered in both
 // the CrisisButton modal and the /crisis fallback page so the copy can never
-// drift between them.
+// drift between them. The text version used by Goose AI responses lives in
+// lib/crisis-rail.ts — keep both in sync.
 
 export function CrisisResources() {
   return (

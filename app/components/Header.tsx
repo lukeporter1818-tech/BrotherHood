@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { logout } from "@/app/auth/actions";
+import { HeaderNav } from "@/app/components/HeaderNav";
 import { IdentityToggle } from "@/app/components/IdentityToggle";
 
 export function Header({ isAdmin = false }: { isAdmin?: boolean }) {
@@ -12,34 +13,7 @@ export function Header({ isAdmin = false }: { isAdmin?: boolean }) {
         >
           Brotherhood
         </Link>
-        <nav className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-          <Link
-            href="/rooms"
-            className="hover:text-zinc-950 dark:hover:text-zinc-50"
-          >
-            Rooms
-          </Link>
-          <Link
-            href="/squads"
-            className="hover:text-zinc-950 dark:hover:text-zinc-50"
-          >
-            Squads
-          </Link>
-          <Link
-            href="/checkin"
-            className="hover:text-zinc-950 dark:hover:text-zinc-50"
-          >
-            Daily 3
-          </Link>
-          {isAdmin && (
-            <Link
-              href="/admin/reports"
-              className="hover:text-zinc-950 dark:hover:text-zinc-50"
-            >
-              Admin
-            </Link>
-          )}
-        </nav>
+        <HeaderNav isAdmin={isAdmin} />
       </div>
 
       <div className="flex items-center gap-4">

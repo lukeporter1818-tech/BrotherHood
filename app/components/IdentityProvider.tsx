@@ -40,3 +40,7 @@ export function useIdentity() {
   if (!ctx) throw new Error("useIdentity must be used inside IdentityProvider");
   return ctx;
 }
+
+export function useOptionalIdentity() {
+  return useContext(IdentityContext);
+}

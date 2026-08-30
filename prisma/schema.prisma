@@ -26,6 +26,17 @@ enum ReportStatus {
   DISMISSED
 }
 
+enum WingmanRole {
+  USER
+  ASSISTANT
+}
+
+enum RiskLevel {
+  NONE
+  ELEVATED
+  CRISIS
+}
+
 model User {
   // id is the Supabase auth.users UUID — never generated app-side.
   id         String   @id
@@ -36,11 +47,12 @@ model User {
   isAdmin    Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  checkIns     DailyCheckIn[]
-  posts        Post[]
-  replies      Reply[]
-  reports      Report[]          @relation("Reporter")
-  memberships  SquadMembership[]
+  checkIns        DailyCheckIn[]
+  posts           Post[]
+  replies         Reply[]
+  reports         Report[]          @relation("Reporter")
+  memberships     SquadMembership[]
+  wingmanSessions WingmanSession[]
 }
 
 model DailyCheckIn {
@@ -134,4 +146,29 @@ model Report {
   reason     String
   status     ReportStatus     @default(PENDING)
   createdAt  DateTime         @default(now())
+}
+
+model WingmanSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages WingmanMessage[]
+
+  @@index([userId, updatedAt])
+}
+
+model WingmanMessage {
+  id        String         @id @default(cuid())
+  sessionId String
+  session   WingmanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      WingmanRole
+  content   String
+  riskLevel RiskLevel?
+  escalated Boolean        @default(false)
+  createdAt DateTime       @default(now())
+
+  @@index([sessionId, createdAt])
 }

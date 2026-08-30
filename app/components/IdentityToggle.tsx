@@ -1,9 +1,14 @@
 "use client";
 
-import { useIdentity, type Identity } from "@/app/components/IdentityProvider";
+import {
+  useOptionalIdentity,
+  type Identity,
+} from "@/app/components/IdentityProvider";
 
 export function IdentityToggle() {
-  const { identity, setIdentity, realName, anonHandle } = useIdentity();
+  const ctx = useOptionalIdentity();
+  if (!ctx) return null;
+  const { identity, setIdentity, realName, anonHandle } = ctx;
 
   const options: { value: Identity; label: string; disabled?: boolean }[] = [
     { value: "REAL", label: realName ?? "Real name", disabled: !realName },
