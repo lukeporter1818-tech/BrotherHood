@@ -14,6 +14,8 @@ function formatWhen(d: Date) {
   });
 }
 
+const EDITED_THRESHOLD_MS = 5_000;
+
 export default async function SquadDetailPage({
   params,
 }: {
@@ -69,6 +71,7 @@ export default async function SquadDetailPage({
       id: true,
       body: true,
       createdAt: true,
+      editedAt: true,
       identityUsed: true,
       user: { select: { realName: true, anonHandle: true } },
       _count: { select: { replies: { where: { deletedAt: null } } } },
@@ -125,7 +128,16 @@ export default async function SquadDetailPage({
                   <span className="font-medium text-zinc-700 dark:text-zinc-300">
                     {author}
                   </span>
-                  <span>{formatWhen(post.createdAt)}</span>
+                  <span className="flex items-center gap-1">
+                    {formatWhen(post.createdAt)}
+                    {post.editedAt !== null &&
+                      post.editedAt.getTime() - post.createdAt.getTime() >
+                        EDITED_THRESHOLD_MS && (
+                        <span className="text-zinc-400 dark:text-zinc-600">
+                          · edited
+                        </span>
+                      )}
+                  </span>
                 </div>
                 <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-950 dark:text-zinc-50">
                   {post.body}

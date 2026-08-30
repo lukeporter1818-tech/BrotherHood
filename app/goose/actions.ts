@@ -4,6 +4,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { runGooseTurn, type RiskLevel } from "@/lib/goose";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export type ClientMessage = {
   id: string;
@@ -39,33 +40,47 @@ export async function sendGooseMessage(userText: string): Promise<SendResult> {
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
 
-  let session = await prisma.wingmanSession.findFirst({
-    where: { userId: user.id },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true },
-  });
-  if (!session) {
-    session = await prisma.wingmanSession.create({
-      data: { userId: user.id },
+  const { allowed } = checkRateLimit(user.id, "goose");
+  if (!allowed) return { error: "You're sending too quickly. Wait a moment." };
+
+  let session;
+  try {
+    session = await prisma.wingmanSession.findFirst({
+      where: { userId: user.id },
+      orderBy: { updatedAt: "desc" },
       select: { id: true },
     });
+    if (!session) {
+      session = await prisma.wingmanSession.create({
+        data: { userId: user.id },
+        select: { id: true },
+      });
+    }
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
   }
 
-  const historyDesc = await prisma.wingmanMessage.findMany({
-    where: { sessionId: session.id },
-    orderBy: { createdAt: "desc" },
-    take: HISTORY_LIMIT,
-    select: { role: true, content: true },
-  });
-  const history = historyDesc.reverse();
+  let history;
+  let userMessage;
+  try {
+    const historyDesc = await prisma.wingmanMessage.findMany({
+      where: { sessionId: session.id },
+      orderBy: { createdAt: "desc" },
+      take: HISTORY_LIMIT,
+      select: { role: true, content: true },
+    });
+    history = historyDesc.reverse();
 
-  const userMessage = await prisma.wingmanMessage.create({
-    data: {
-      sessionId: session.id,
-      role: "USER",
-      content: body,
-    },
-  });
+    userMessage = await prisma.wingmanMessage.create({
+      data: {
+        sessionId: session.id,
+        role: "USER",
+        content: body,
+      },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
 
   let turnResult;
   try {
@@ -74,43 +89,47 @@ export async function sendGooseMessage(userText: string): Promise<SendResult> {
     console.error("[goose] runGooseTurn failed", err);
     // Roll back the orphan user message so the conversation history isn't
     // polluted with an unanswered turn.
-    await prisma.wingmanMessage.delete({ where: { id: userMessage.id } });
+    await prisma.wingmanMessage.delete({ where: { id: userMessage.id } }).catch(() => {});
     return {
       error: "Goose is having trouble responding. Try again in a moment.",
     };
   }
 
-  const updatedUserMessage = await prisma.wingmanMessage.update({
-    where: { id: userMessage.id },
-    data: { riskLevel: turnResult.riskLevel },
-  });
+  try {
+    const updatedUserMessage = await prisma.wingmanMessage.update({
+      where: { id: userMessage.id },
+      data: { riskLevel: turnResult.riskLevel },
+    });
 
-  const assistantMessage = await prisma.wingmanMessage.create({
-    data: {
-      sessionId: session.id,
-      role: "ASSISTANT",
-      content: turnResult.assistantContent,
-      escalated: turnResult.escalated,
-    },
-  });
+    const assistantMessage = await prisma.wingmanMessage.create({
+      data: {
+        sessionId: session.id,
+        role: "ASSISTANT",
+        content: turnResult.assistantContent,
+        escalated: turnResult.escalated,
+      },
+    });
 
-  return {
-    error: null,
-    userMessage: {
-      id: updatedUserMessage.id,
-      role: "USER",
-      content: updatedUserMessage.content,
-      escalated: false,
-      riskLevel: updatedUserMessage.riskLevel,
-      createdAt: updatedUserMessage.createdAt.toISOString(),
-    },
-    assistantMessage: {
-      id: assistantMessage.id,
-      role: "ASSISTANT",
-      content: assistantMessage.content,
-      escalated: assistantMessage.escalated,
-      riskLevel: null,
-      createdAt: assistantMessage.createdAt.toISOString(),
-    },
-  };
+    return {
+      error: null,
+      userMessage: {
+        id: updatedUserMessage.id,
+        role: "USER",
+        content: updatedUserMessage.content,
+        escalated: false,
+        riskLevel: updatedUserMessage.riskLevel,
+        createdAt: updatedUserMessage.createdAt.toISOString(),
+      },
+      assistantMessage: {
+        id: assistantMessage.id,
+        role: "ASSISTANT",
+        content: assistantMessage.content,
+        escalated: assistantMessage.escalated,
+        riskLevel: null,
+        createdAt: assistantMessage.createdAt.toISOString(),
+      },
+    };
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
 }

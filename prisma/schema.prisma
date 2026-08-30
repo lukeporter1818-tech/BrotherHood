@@ -117,6 +117,7 @@ model Post {
   body         String
   createdAt    DateTime  @default(now())
   deletedAt    DateTime?
+  editedAt     DateTime?
 
   replies Reply[]
   reports Report[]
@@ -157,6 +158,7 @@ model Reply {
   body         String
   createdAt    DateTime  @default(now())
   deletedAt    DateTime?
+  editedAt     DateTime?
 
   reports Report[]
 

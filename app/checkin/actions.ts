@@ -55,11 +55,15 @@ export async function submitCheckIn(
     };
   }
 
-  await prisma.dailyCheckIn.upsert({
-    where: { userId_date: { userId: user.id, date } },
-    update: { sleepHours, mood, moved },
-    create: { userId: user.id, sleepHours, mood, moved, date },
-  });
+  try {
+    await prisma.dailyCheckIn.upsert({
+      where: { userId_date: { userId: user.id, date } },
+      update: { sleepHours, mood, moved },
+      create: { userId: user.id, sleepHours, mood, moved, date },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment.", ok: false };
+  }
 
   revalidatePath("/checkin");
   return { error: null, ok: true };

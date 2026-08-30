@@ -10,6 +10,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { checkToxicity } from "@/lib/toxicity";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export type PostActionState = { error: string | null };
 
@@ -48,6 +49,9 @@ export async function createPost(
 ): Promise<PostActionState> {
   const dbUser = await requireAuthedUser();
   if (!dbUser) return { error: "You need to be signed in." };
+
+  const { allowed } = checkRateLimit(dbUser.id, "post");
+  if (!allowed) return { error: "You're posting too quickly. Wait a moment." };
 
   const roomSlug = String(formData.get("roomSlug") ?? "").trim();
   const squadId = String(formData.get("squadId") ?? "").trim();
@@ -102,15 +106,19 @@ export async function createPost(
     };
   }
 
-  await prisma.post.create({
-    data: {
-      roomId,
-      squadId: resolvedSquadId,
-      userId: dbUser.id,
-      identityUsed: identity,
-      body,
-    },
-  });
+  try {
+    await prisma.post.create({
+      data: {
+        roomId,
+        squadId: resolvedSquadId,
+        userId: dbUser.id,
+        identityUsed: identity,
+        body,
+      },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
 
   revalidatePath(revalidateTarget);
   return { error: null };
@@ -122,6 +130,9 @@ export async function createReply(
 ): Promise<PostActionState> {
   const dbUser = await requireAuthedUser();
   if (!dbUser) return { error: "You need to be signed in." };
+
+  const { allowed } = checkRateLimit(dbUser.id, "post");
+  if (!allowed) return { error: "You're replying too quickly. Wait a moment." };
 
   const postId = String(formData.get("postId") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
@@ -165,18 +176,182 @@ export async function createReply(
     };
   }
 
-  await prisma.reply.create({
-    data: {
-      postId: post.id,
-      userId: dbUser.id,
-      identityUsed: identity,
-      body,
-    },
-  });
+  try {
+    await prisma.reply.create({
+      data: {
+        postId: post.id,
+        userId: dbUser.id,
+        identityUsed: identity,
+        body,
+      },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
 
   const revalidateTarget = post.squadId
     ? `/squads/${post.squadId}/${post.id}`
     : `/rooms/${post.room?.slug ?? ""}/${post.id}`;
   revalidatePath(revalidateTarget);
+  return { error: null };
+}
+
+export async function editPost(
+  postId: string,
+  newBody: string,
+): Promise<PostActionState> {
+  const dbUser = await requireAuthedUser();
+  if (!dbUser) return { error: "You need to be signed in." };
+
+  const body = newBody.trim();
+  if (body.length < BODY_MIN) return { error: "Say something." };
+  if (body.length > BODY_MAX) return { error: `Keep it under ${BODY_MAX} characters.` };
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: {
+      userId: true,
+      deletedAt: true,
+      squadId: true,
+      room: { select: { slug: true } },
+    },
+  });
+  if (!post || post.deletedAt !== null) return { error: "Post not found." };
+  if (post.userId !== dbUser.id) return { error: "You can only edit your own posts." };
+
+  try {
+    await prisma.post.update({
+      where: { id: postId },
+      data: { body, editedAt: new Date() },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
+
+  if (post.squadId) {
+    revalidatePath(`/squads/${post.squadId}`);
+    revalidatePath(`/squads/${post.squadId}/${postId}`);
+  } else {
+    revalidatePath(`/rooms/${post.room?.slug ?? ""}`);
+    revalidatePath(`/rooms/${post.room?.slug ?? ""}/${postId}`);
+  }
+  return { error: null };
+}
+
+export async function deletePost(postId: string): Promise<PostActionState> {
+  const dbUser = await requireAuthedUser();
+  if (!dbUser) return { error: "You need to be signed in." };
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: {
+      userId: true,
+      deletedAt: true,
+      squadId: true,
+      room: { select: { slug: true } },
+    },
+  });
+  if (!post || post.deletedAt !== null) return { error: "Post not found." };
+  if (post.userId !== dbUser.id) return { error: "You can only delete your own posts." };
+
+  try {
+    await prisma.post.update({
+      where: { id: postId },
+      data: { deletedAt: new Date() },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
+
+  if (post.squadId) {
+    revalidatePath(`/squads/${post.squadId}`);
+    revalidatePath(`/squads/${post.squadId}/${postId}`);
+  } else {
+    revalidatePath(`/rooms/${post.room?.slug ?? ""}`);
+    revalidatePath(`/rooms/${post.room?.slug ?? ""}/${postId}`);
+  }
+  return { error: null };
+}
+
+export async function editReply(
+  replyId: string,
+  newBody: string,
+): Promise<PostActionState> {
+  const dbUser = await requireAuthedUser();
+  if (!dbUser) return { error: "You need to be signed in." };
+
+  const body = newBody.trim();
+  if (body.length < BODY_MIN) return { error: "Say something." };
+  if (body.length > BODY_MAX) return { error: `Keep it under ${BODY_MAX} characters.` };
+
+  const reply = await prisma.reply.findUnique({
+    where: { id: replyId },
+    select: {
+      userId: true,
+      deletedAt: true,
+      post: {
+        select: {
+          id: true,
+          squadId: true,
+          room: { select: { slug: true } },
+        },
+      },
+    },
+  });
+  if (!reply || reply.deletedAt !== null) return { error: "Reply not found." };
+  if (reply.userId !== dbUser.id) return { error: "You can only edit your own replies." };
+
+  try {
+    await prisma.reply.update({
+      where: { id: replyId },
+      data: { body, editedAt: new Date() },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
+
+  if (reply.post.squadId) {
+    revalidatePath(`/squads/${reply.post.squadId}/${reply.post.id}`);
+  } else {
+    revalidatePath(`/rooms/${reply.post.room?.slug ?? ""}/${reply.post.id}`);
+  }
+  return { error: null };
+}
+
+export async function deleteReply(replyId: string): Promise<PostActionState> {
+  const dbUser = await requireAuthedUser();
+  if (!dbUser) return { error: "You need to be signed in." };
+
+  const reply = await prisma.reply.findUnique({
+    where: { id: replyId },
+    select: {
+      userId: true,
+      deletedAt: true,
+      post: {
+        select: {
+          id: true,
+          squadId: true,
+          room: { select: { slug: true } },
+        },
+      },
+    },
+  });
+  if (!reply || reply.deletedAt !== null) return { error: "Reply not found." };
+  if (reply.userId !== dbUser.id) return { error: "You can only delete your own replies." };
+
+  try {
+    await prisma.reply.update({
+      where: { id: replyId },
+      data: { deletedAt: new Date() },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
+
+  if (reply.post.squadId) {
+    revalidatePath(`/squads/${reply.post.squadId}/${reply.post.id}`);
+  } else {
+    revalidatePath(`/rooms/${reply.post.room?.slug ?? ""}/${reply.post.id}`);
+  }
   return { error: null };
 }

@@ -45,19 +45,23 @@ export async function requestMatch(mentorProfileId: string): Promise<ActionResul
     return { error: "Journey mismatch." };
   }
 
-  await prisma.benchMatch.upsert({
-    where: {
-      mentorProfileId_seekerProfileId: {
+  try {
+    await prisma.benchMatch.upsert({
+      where: {
+        mentorProfileId_seekerProfileId: {
+          mentorProfileId: mentorProfile.id,
+          seekerProfileId: seekerProfile.id,
+        },
+      },
+      update: {},
+      create: {
         mentorProfileId: mentorProfile.id,
         seekerProfileId: seekerProfile.id,
       },
-    },
-    update: {},
-    create: {
-      mentorProfileId: mentorProfile.id,
-      seekerProfileId: seekerProfile.id,
-    },
-  });
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
 
   revalidatePath("/bench");
   revalidatePath("/bench/browse");
@@ -78,10 +82,15 @@ export async function acceptMatch(matchId: string): Promise<ActionResult> {
   }
   if (match.status !== "PENDING") return { error: "Match is not pending." };
 
-  await prisma.benchMatch.update({
-    where: { id: matchId },
-    data: { status: "ACTIVE", acceptedAt: new Date() },
-  });
+  try {
+    await prisma.benchMatch.update({
+      where: { id: matchId },
+      data: { status: "ACTIVE", acceptedAt: new Date() },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
+
   revalidatePath("/bench");
   revalidatePath(`/bench/match/${matchId}`);
   return { error: null };
@@ -101,10 +110,15 @@ export async function declineMatch(matchId: string): Promise<ActionResult> {
   }
   if (match.status !== "PENDING") return { error: "Match is not pending." };
 
-  await prisma.benchMatch.update({
-    where: { id: matchId },
-    data: { status: "DECLINED", endedAt: new Date() },
-  });
+  try {
+    await prisma.benchMatch.update({
+      where: { id: matchId },
+      data: { status: "DECLINED", endedAt: new Date() },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
+
   revalidatePath("/bench");
   return { error: null };
 }
@@ -162,35 +176,44 @@ export async function sendBenchMessage({
     return { error: "Add a real name to use this identity." };
   }
 
-  const message = await prisma.benchMessage.create({
-    data: {
-      matchId,
-      senderId: user.id,
-      content: body,
-      identityUsed,
-    },
-  });
+  let message;
+  try {
+    message = await prisma.benchMessage.create({
+      data: {
+        matchId,
+        senderId: user.id,
+        content: body,
+        identityUsed,
+      },
+    });
+  } catch {
+    return { error: "Something went wrong. Try again in a moment." };
+  }
 
   // Hours Listened heuristic: only mentor replies count, capped per match
   // per day.
   const isMentor = match.mentorProfile.userId === user.id;
   if (isMentor) {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const mentorMessagesToday = await prisma.benchMessage.count({
-      where: {
-        matchId,
-        senderId: user.id,
-        createdAt: { gte: startOfDay },
-      },
-    });
-    const wouldAdd = HOURS_PER_MENTOR_MESSAGE;
-    const alreadyToday = (mentorMessagesToday - 1) * HOURS_PER_MENTOR_MESSAGE;
-    if (alreadyToday + wouldAdd <= DAILY_HOURS_CAP_PER_MATCH) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { hoursListened: { increment: wouldAdd } },
+    try {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const mentorMessagesToday = await prisma.benchMessage.count({
+        where: {
+          matchId,
+          senderId: user.id,
+          createdAt: { gte: startOfDay },
+        },
       });
+      const wouldAdd = HOURS_PER_MENTOR_MESSAGE;
+      const alreadyToday = (mentorMessagesToday - 1) * HOURS_PER_MENTOR_MESSAGE;
+      if (alreadyToday + wouldAdd <= DAILY_HOURS_CAP_PER_MATCH) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { hoursListened: { increment: wouldAdd } },
+        });
+      }
+    } catch {
+      // Hours Listened update is non-critical — don't fail the message send.
     }
   }
 
