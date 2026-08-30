@@ -37,6 +37,28 @@ enum RiskLevel {
   CRISIS
 }
 
+enum BenchJourney {
+  SOBRIETY
+  DIVORCE
+  GRIEF
+  FATHERHOOD
+  MENTAL_HEALTH
+  CAREER_CHANGE
+  OTHER
+}
+
+enum BenchRole {
+  MENTOR
+  SEEKER
+}
+
+enum BenchMatchStatus {
+  PENDING
+  ACTIVE
+  DECLINED
+  ENDED
+}
+
 model User {
   // id is the Supabase auth.users UUID — never generated app-side.
   id         String   @id
@@ -47,12 +69,19 @@ model User {
   isAdmin    Boolean  @default(false)
   createdAt  DateTime @default(now())
 
+  // Heuristic tally for The Bench mentor badge. Increments per mentor reply
+  // via a capped-per-day rule in bench server actions — not real session
+  // timing (deferred to a real-product follow-up).
+  hoursListened Float @default(0)
+
   checkIns        DailyCheckIn[]
   posts           Post[]
   replies         Reply[]
   reports         Report[]          @relation("Reporter")
   memberships     SquadMembership[]
   wingmanSessions WingmanSession[]
+  benchProfile    BenchProfile?
+  benchMessages   BenchMessage[]
 }
 
 model DailyCheckIn {
@@ -171,4 +200,53 @@ model WingmanMessage {
   createdAt DateTime       @default(now())
 
   @@index([sessionId, createdAt])
+}
+
+model BenchProfile {
+  id        String       @id @default(cuid())
+  userId    String       @unique
+  user      User         @relation(fields: [userId], references: [id])
+  journey   BenchJourney
+  stageText String
+  role      BenchRole
+  bio       String?
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  matchesAsMentor BenchMatch[] @relation("MentorMatches")
+  matchesAsSeeker BenchMatch[] @relation("SeekerMatches")
+
+  @@index([journey, role, active])
+}
+
+model BenchMatch {
+  id              String           @id @default(cuid())
+  mentorProfileId String
+  mentorProfile   BenchProfile     @relation("MentorMatches", fields: [mentorProfileId], references: [id])
+  seekerProfileId String
+  seekerProfile   BenchProfile     @relation("SeekerMatches", fields: [seekerProfileId], references: [id])
+  status          BenchMatchStatus @default(PENDING)
+  createdAt       DateTime         @default(now())
+  acceptedAt      DateTime?
+  endedAt         DateTime?
+
+  messages BenchMessage[]
+
+  @@unique([mentorProfileId, seekerProfileId])
+  @@index([mentorProfileId, status])
+  @@index([seekerProfileId, status])
+}
+
+model BenchMessage {
+  id           String     @id @default(cuid())
+  matchId      String
+  match        BenchMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  senderId     String
+  sender       User       @relation(fields: [senderId], references: [id])
+  content      String
+  identityUsed Identity
+  createdAt    DateTime   @default(now())
+
+  @@index([matchId, createdAt])
 }
