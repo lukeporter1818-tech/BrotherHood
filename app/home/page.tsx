@@ -2,6 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { DigestPanel } from "@/app/home/DigestPanel";
+import { InterestsForm } from "@/app/home/InterestsForm";
+import { DigestPayloadSchema } from "@/lib/digest";
 
 export const metadata = { title: "Home — Brotherhood" };
 
@@ -49,7 +52,7 @@ export default async function HomePage() {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { realName: true, anonHandle: true },
+    select: { realName: true, anonHandle: true, interestTopics: true },
   });
   if (!dbUser) redirect("/login");
 
@@ -59,7 +62,7 @@ export default async function HomePage() {
   );
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const [checkIn, benchProfile, activeBenchCount, recentPostCount] =
+  const [checkIn, benchProfile, activeBenchCount, recentPostCount, latestDigest] =
     await Promise.all([
       prisma.dailyCheckIn.findFirst({
         where: { userId: user.id, date: { gte: utcToday } },
@@ -85,7 +88,23 @@ export default async function HomePage() {
           createdAt: { gte: twentyFourHoursAgo },
         },
       }),
+      prisma.digest.findFirst({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        select: { createdAt: true, content: true },
+      }),
     ]);
+
+  // Digest.content is Prisma.Json — validate at the read boundary so the
+  // client never sees a shape the panel isn't built to render.
+  const parsedLatestDigest = latestDigest
+    ? (() => {
+        const parsed = DigestPayloadSchema.safeParse(latestDigest.content);
+        return parsed.success
+          ? { createdAt: latestDigest.createdAt, content: parsed.data }
+          : null;
+      })()
+    : null;
 
   const displayName = dbUser.realName ?? dbUser.anonHandle;
 
@@ -99,6 +118,14 @@ export default async function HomePage() {
         <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
           Here&apos;s where things stand.
         </p>
+      </div>
+
+      {/* Digest */}
+      <div className="mb-10">
+        <DigestPanel
+          latest={parsedLatestDigest}
+          hasTopics={dbUser.interestTopics.length > 0}
+        />
       </div>
 
       {/* Personal snapshot */}
@@ -216,6 +243,16 @@ export default async function HomePage() {
               </p>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Interest topics (settings for the digest) */}
+      <section className="mt-10">
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
+          Digest topics
+        </h2>
+        <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
+          <InterestsForm initialTopics={dbUser.interestTopics} />
         </div>
       </section>
     </div>

@@ -2,11 +2,12 @@ type Entry = { count: number; resetAt: number };
 
 const store = new Map<string, Entry>();
 
-export type RateLimitBucket = "post" | "goose";
+export type RateLimitBucket = "post" | "goose" | "digest";
 
 const LIMITS: Record<RateLimitBucket, { max: number; windowMs: number }> = {
   post: { max: 10, windowMs: 60_000 },
   goose: { max: 20, windowMs: 60_000 },
+  digest: { max: 1, windowMs: 15 * 60_000 },
 };
 
 export function checkRateLimit(
