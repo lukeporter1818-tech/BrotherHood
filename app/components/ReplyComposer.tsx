@@ -21,7 +21,7 @@ export function ReplyComposer({ postId }: { postId: string }) {
     <form
       ref={formRef}
       action={formAction}
-      className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+      className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900"
     >
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="identity" value={identity} />
@@ -30,20 +30,20 @@ export function ReplyComposer({ postId }: { postId: string }) {
         rows={2}
         maxLength={2000}
         placeholder="Reply…"
-        className="w-full resize-none bg-transparent text-sm text-zinc-950 placeholder:text-zinc-500 focus:outline-none dark:text-zinc-50"
+        className="w-full resize-none bg-transparent text-sm text-navy-950 placeholder:text-slate-400 focus:outline-none dark:text-parchment-50"
         required
       />
       <div className="mt-2 flex items-center justify-between">
-        <span className="text-xs text-zinc-500">
+        <span className="text-xs text-slate-500">
           Replying as{" "}
-          <span className="font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="font-medium text-navy-800 dark:text-parchment-200">
             {identity === "REAL" ? "real name" : "anon"}
           </span>
         </span>
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-zinc-950 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+          className="rounded-full bg-crimson-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
         >
           {pending ? "Sending…" : "Reply"}
         </button>

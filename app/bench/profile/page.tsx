@@ -19,10 +19,10 @@ export default async function BenchProfilePage() {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-6 py-8">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
           {existing ? "Edit your Bench profile" : "Create your Bench profile"}
         </h1>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
           Pick the journey you&apos;re on and where you are with it. Pick whether
           you&apos;re here to listen or to talk.
         </p>

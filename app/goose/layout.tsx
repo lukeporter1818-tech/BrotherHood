@@ -23,7 +23,7 @@ export default async function GooseLayout({
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <Header isAdmin={dbUser.isAdmin} />
-      <main className="flex flex-1 flex-col bg-zinc-50 dark:bg-black">
+      <main className="flex flex-1 flex-col bg-parchment-50 dark:bg-navy-950">
         {children}
       </main>
     </div>

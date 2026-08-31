@@ -55,16 +55,16 @@ function Sparkline({
   hint: string;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900">
       <div className="mb-2 flex items-baseline justify-between">
-        <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <h3 className="text-sm font-medium text-navy-800 dark:text-parchment-200">
           {label}
         </h3>
-        <span className="text-xs text-zinc-500">{hint}</span>
+        <span className="text-xs text-slate-500">{hint}</span>
       </div>
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="h-20 w-full text-zinc-950 dark:text-zinc-50"
+        className="h-20 w-full text-crimson-600 dark:text-crimson-500"
         preserveAspectRatio="none"
       >
         <path
@@ -90,7 +90,7 @@ export function WellnessGraph({ points }: { points: Point[] }) {
 
   if (!hasData) {
     return (
-      <div className="rounded-lg border border-dashed border-zinc-300 p-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
+      <div className="rounded border border-dashed border-parchment-200 p-8 text-center text-sm text-slate-500 dark:border-navy-700">
         Your last 30 days will show up here once you start checking in.
       </div>
     );
@@ -114,12 +114,12 @@ export function WellnessGraph({ points }: { points: Point[] }) {
     <div className="grid gap-3">
       <Sparkline label="Sleep" geom={sleepGeom} hint="hours, 0–12" />
       <Sparkline label="Mood" geom={moodGeom} hint="1 rough → 5 solid" />
-      <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900">
         <div className="mb-2 flex items-baseline justify-between">
-          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <h3 className="text-sm font-medium text-navy-800 dark:text-parchment-200">
             Moved
           </h3>
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-slate-500">
             {movedCount} / {points.length} days
           </span>
         </div>
@@ -136,8 +136,8 @@ export function WellnessGraph({ points }: { points: Point[] }) {
               r={d.on ? 4 : 2}
               className={
                 d.on
-                  ? "fill-zinc-950 dark:fill-zinc-50"
-                  : "fill-zinc-300 dark:fill-zinc-700"
+                  ? "fill-crimson-600 dark:fill-crimson-500"
+                  : "fill-parchment-200 dark:fill-navy-700"
               }
             />
           ))}

@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED_PREFIXES = ["/rooms", "/checkin", "/admin", "/squads", "/goose", "/bench"];
+const PROTECTED_PREFIXES = ["/home", "/rooms", "/checkin", "/admin", "/squads", "/goose", "/bench"];
 const AUTH_ROUTES = ["/login", "/signup"];
 
 export async function updateSession(request: NextRequest) {
@@ -46,7 +46,7 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/rooms";
+    url.pathname = "/home";
     url.search = "";
     return NextResponse.redirect(url);
   }

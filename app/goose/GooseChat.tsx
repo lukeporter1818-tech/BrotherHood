@@ -79,7 +79,7 @@ export function GooseChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[70vh] flex-1 flex-col rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="flex min-h-[70vh] flex-1 flex-col rounded border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900">
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-6"
@@ -99,7 +99,7 @@ export function GooseChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="border-t border-zinc-200 p-4 dark:border-zinc-800"
+        className="border-t border-parchment-200 p-4 dark:border-navy-800"
       >
         {error && (
           <p className="mb-2 text-xs text-red-600 dark:text-red-400">{error}</p>
@@ -111,13 +111,13 @@ export function GooseChat({
             maxLength={BODY_MAX}
             placeholder="Say what's on your mind. Enter to send, Shift+Enter for a new line."
             onKeyDown={handleKeyDown}
-            className="flex-1 resize-none rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+            className="flex-1 resize-none rounded border border-parchment-200 bg-parchment-50 px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
             required
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            className="rounded-full bg-crimson-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
           >
             {pending ? "…" : "Send"}
           </button>
@@ -150,7 +150,7 @@ function MessageBubble({ message }: { message: ClientMessage }) {
         </div>
         {prose && (
           <div className="flex justify-start">
-            <div className="max-w-[85%] rounded-2xl bg-zinc-100 px-4 py-2 text-sm text-zinc-950 dark:bg-zinc-900 dark:text-zinc-50">
+            <div className="max-w-[85%] rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50">
               <p className="whitespace-pre-wrap">{prose}</p>
             </div>
           </div>
@@ -164,8 +164,8 @@ function MessageBubble({ message }: { message: ClientMessage }) {
       <div
         className={
           isUser
-            ? "max-w-[85%] rounded-2xl bg-zinc-950 px-4 py-2 text-sm text-white dark:bg-zinc-50 dark:text-zinc-950"
-            : "max-w-[85%] rounded-2xl bg-zinc-100 px-4 py-2 text-sm text-zinc-950 dark:bg-zinc-900 dark:text-zinc-50"
+            ? "max-w-[85%] rounded-2xl bg-crimson-700 px-4 py-2 text-sm text-white"
+            : "max-w-[85%] rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50"
         }
       >
         <p className="whitespace-pre-wrap">{message.content}</p>
@@ -177,7 +177,7 @@ function MessageBubble({ message }: { message: ClientMessage }) {
 function ThinkingIndicator() {
   return (
     <div className="flex justify-start">
-      <div className="rounded-2xl bg-zinc-100 px-4 py-2 text-sm italic text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+      <div className="rounded-2xl bg-parchment-100 px-4 py-2 text-sm italic text-slate-500 dark:bg-navy-800 dark:text-parchment-200">
         Goose is thinking…
       </div>
     </div>
@@ -187,10 +187,10 @@ function ThinkingIndicator() {
 function EmptyState() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
+      <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
         Goose
       </h2>
-      <p className="max-w-md text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="max-w-md text-sm text-navy-700 dark:text-parchment-200">
         Private 1-on-1 chat. Not a therapist — a first-responder who can help
         you name what you're feeling and know where to turn. Say what's on your
         mind.

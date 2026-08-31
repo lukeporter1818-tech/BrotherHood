@@ -58,16 +58,16 @@ export default async function AdminReportsPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-10">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
         Moderation queue
       </h1>
-      <p className="mt-1 text-sm text-zinc-500">
+      <p className="mt-1 text-sm text-slate-500">
         {reports.length} pending{" "}
         {reports.length === 1 ? "report" : "reports"}
       </p>
 
       {reports.length === 0 ? (
-        <div className="mt-8 rounded-lg border border-dashed border-zinc-300 p-10 text-center text-zinc-500 dark:border-zinc-700">
+        <div className="mt-8 rounded border border-dashed border-parchment-200 p-10 text-center text-slate-500 dark:border-navy-700">
           All clear.
         </div>
       ) : (
@@ -104,12 +104,12 @@ export default async function AdminReportsPage() {
             return (
               <div
                 key={r.id}
-                className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950"
+                className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
-                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                      <span className="rounded bg-parchment-100 px-1.5 py-0.5 font-mono text-navy-700 dark:bg-navy-800 dark:text-parchment-200">
                         {r.targetType}
                       </span>
                       <span>·</span>
@@ -120,16 +120,16 @@ export default async function AdminReportsPage() {
                       <span>{formatWhen(r.createdAt)}</span>
                     </div>
 
-                    <p className="mt-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <p className="mt-2 text-sm font-medium text-navy-800 dark:text-parchment-200">
                       Reason: {r.reason}
                     </p>
 
                     {alreadyDeleted ? (
-                      <p className="mt-1 text-sm italic text-zinc-400 dark:text-zinc-600">
+                      <p className="mt-1 text-sm italic text-slate-400 dark:text-slate-500">
                         [Content already removed]
                       </p>
                     ) : (
-                      <p className="mt-1 text-sm text-zinc-950 dark:text-zinc-50">
+                      <p className="mt-1 text-sm text-navy-950 dark:text-parchment-50">
                         &ldquo;{excerpt(bodyText)}&rdquo;
                       </p>
                     )}
@@ -139,7 +139,7 @@ export default async function AdminReportsPage() {
                         href={contentLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-1 inline-block text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-400"
+                        className="mt-1 inline-block text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-400"
                       >
                         View in context ↗
                       </a>

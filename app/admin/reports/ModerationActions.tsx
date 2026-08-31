@@ -20,7 +20,7 @@ export function ModerationActions({ reportId }: { reportId: string }) {
       <button
         onClick={handleDismiss}
         disabled={pending}
-        className="text-sm text-zinc-500 hover:text-zinc-950 disabled:opacity-50 dark:hover:text-zinc-50"
+        className="text-sm text-slate-500 hover:text-navy-950 disabled:opacity-50 dark:hover:text-parchment-50"
       >
         Dismiss
       </button>

@@ -21,9 +21,6 @@ export default async function CheckInPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // Query a wider window than the graph shows: +1 day forward to catch users
-  // whose local day is ahead of UTC, and -1 day back for the mirror case.
-  // The client uses its own local day to pick "today" out of this map.
   const utcToday = utcMidnight();
   const queryEnd = new Date(utcToday);
   queryEnd.setUTCDate(queryEnd.getUTCDate() + 1);
@@ -39,9 +36,6 @@ export default async function CheckInPage() {
     orderBy: { date: "asc" },
   });
 
-  // Map keyed by the stored date's YYYY-MM-DD (UTC representation, which is
-  // exactly what @db.Date stores). The client compares against its local day
-  // string — same format, no Date conversion on the client.
   const recentByDay: Record<
     string,
     { sleepHours: number; mood: number; moved: boolean }
@@ -54,9 +48,6 @@ export default async function CheckInPage() {
     };
   }
 
-  // Graph shows last 30 days ending at server UTC today. Boundary drift of a
-  // few hours between server UTC and user local is imperceptible on a 30-point
-  // sparkline; the correctness that matters is on the write path.
   const graphStart = new Date(utcToday);
   graphStart.setUTCDate(graphStart.getUTCDate() - 29);
   const points = Array.from({ length: 30 }, (_, i) => {
@@ -74,10 +65,10 @@ export default async function CheckInPage() {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
         Daily 3
       </h1>
-      <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+      <p className="mt-1 text-navy-700 dark:text-parchment-200">
         Sleep, mood, movement. Three seconds, once a day.
       </p>
 
@@ -86,7 +77,7 @@ export default async function CheckInPage() {
       </div>
 
       <div className="mt-10">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-500">
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
           Last 30 days
         </h2>
         <WellnessGraph points={points} />

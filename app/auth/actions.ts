@@ -19,7 +19,7 @@ export async function login(
 
   if (error) return { error: error.message };
 
-  redirect("/rooms");
+  redirect("/home");
 }
 
 export async function signup(
@@ -50,7 +50,7 @@ export async function signup(
     redirect("/login?confirm=1");
   }
 
-  redirect("/rooms");
+  redirect("/home");
 }
 
 export async function logout() {

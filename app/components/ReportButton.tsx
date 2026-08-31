@@ -19,7 +19,7 @@ export function ReportButton({ targetType, targetId }: Props) {
 
   if (state.ok) {
     return (
-      <span className="text-xs text-zinc-400 dark:text-zinc-600">Reported.</span>
+      <span className="text-xs text-slate-400 dark:text-slate-500">Reported.</span>
     );
   }
 
@@ -28,7 +28,7 @@ export function ReportButton({ targetType, targetId }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-600 dark:hover:text-zinc-400"
+        className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
         aria-label="Report this content"
       >
         Report
@@ -44,7 +44,7 @@ export function ReportButton({ targetType, targetId }: Props) {
         name="reason"
         required
         defaultValue=""
-        className="rounded border border-zinc-300 bg-white px-2 py-0.5 text-xs text-zinc-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+        className="rounded border border-parchment-200 bg-parchment-50 px-2 py-0.5 text-xs text-navy-800 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-parchment-200"
       >
         <option value="" disabled>
           Reason…
@@ -65,7 +65,7 @@ export function ReportButton({ targetType, targetId }: Props) {
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-600 dark:hover:text-zinc-400"
+        className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
       >
         Cancel
       </button>

@@ -40,20 +40,20 @@ export default async function BenchBrowsePage() {
       <div>
         <Link
           href="/bench"
-          className="text-xs text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+          className="text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
         >
           ← Back to Bench
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-navy-950 dark:text-parchment-50">
           Mentors · {JOURNEY_LABELS[profile.journey]}
         </h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
           Guys who&apos;ve been through this and volunteered to listen. Pick one to ask for a listen — they can accept or decline.
         </p>
       </div>
 
       {mentors.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-6 text-center text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-400">
+        <div className="rounded border border-dashed border-parchment-200 bg-parchment-50 p-6 text-center text-sm text-navy-700 dark:border-navy-700 dark:bg-navy-900 dark:text-parchment-200">
           No mentors available in this journey yet. Check back soon.
         </div>
       ) : (
@@ -61,16 +61,16 @@ export default async function BenchBrowsePage() {
           {mentors.map((m) => (
             <li
               key={m.id}
-              className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+              className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+                  <p className="text-sm font-medium text-navy-950 dark:text-parchment-50">
                     {m.user.anonHandle}
                   </p>
-                  <p className="text-xs text-zinc-500">{m.stageText}</p>
+                  <p className="text-xs text-slate-500">{m.stageText}</p>
                   {m.bio && (
-                    <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+                    <p className="mt-2 text-sm text-navy-800 dark:text-parchment-200">
                       {m.bio}
                     </p>
                   )}

@@ -22,7 +22,7 @@ export default async function AdminLayout({
   if (!dbUser?.isAdmin) {
     return (
       <div className="flex min-h-full flex-1 items-center justify-center">
-        <p className="text-zinc-500">403 — Not authorized.</p>
+        <p className="text-slate-500">403 — Not authorized.</p>
       </div>
     );
   }

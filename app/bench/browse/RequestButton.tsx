@@ -12,7 +12,7 @@ export function RequestButton({ mentorProfileId }: { mentorProfileId: string }) 
 
   if (done) {
     return (
-      <span className="text-xs text-zinc-500">
+      <span className="text-xs text-slate-500">
         Request sent — waiting on them
       </span>
     );
@@ -35,7 +35,7 @@ export function RequestButton({ mentorProfileId }: { mentorProfileId: string }) 
             router.refresh();
           })
         }
-        className="rounded-full bg-zinc-950 px-4 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+        className="rounded-full bg-crimson-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-crimson-700 disabled:opacity-50"
       >
         {pending ? "…" : "Ask for a listen"}
       </button>

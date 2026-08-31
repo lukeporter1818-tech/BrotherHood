@@ -19,7 +19,7 @@ export function HeaderNav({ isAdmin }: { isAdmin: boolean }) {
     : LINKS;
 
   return (
-    <nav className="flex items-center gap-4 text-sm">
+    <nav className="flex items-center gap-4">
       {items.map((link) => {
         const active =
           link.href === "/admin/reports"
@@ -30,11 +30,11 @@ export function HeaderNav({ isAdmin }: { isAdmin: boolean }) {
             key={link.href}
             href={link.href}
             aria-current={active ? "page" : undefined}
-            className={
+            className={`text-xs font-semibold uppercase tracking-wide ${
               active
-                ? "font-medium text-zinc-950 dark:text-zinc-50"
-                : "text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
-            }
+                ? "text-crimson-600 dark:text-crimson-500"
+                : "text-navy-700 hover:text-crimson-600 dark:text-parchment-200 dark:hover:text-crimson-500"
+            }`}
           >
             {link.label}
           </Link>

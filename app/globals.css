@@ -1,10 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Brotherhood custom color scales ────────────────────────────────────────
+   Defined in @theme (static values) so Tailwind generates all utility
+   classes: bg-navy-*, text-crimson-*, border-parchment-*, etc.
+   ──────────────────────────────────────────────────────────────────────── */
+/* ─── Rope-ladder dropdown animation ─────────────────────────────────────────
+   rope-drop: falls from above, overshoots at 55%, settles at 78%, rests.
+   rope-retract: tiny dip at 30% (slack going taut), then whisked back up.
+   ──────────────────────────────────────────────────────────────────────── */
+@keyframes rope-drop {
+  0%   { transform: translateY(-8px);   opacity: 0; }
+  55%  { transform: translateY(4px);    opacity: 1; }
+  78%  { transform: translateY(-1.5px);             }
+  100% { transform: translateY(0);                  }
 }
 
+@keyframes rope-retract {
+  0%   { transform: translateY(0);     opacity: 1; }
+  30%  { transform: translateY(2px);               }
+  100% { transform: translateY(-8px);  opacity: 0; }
+}
+
+@theme {
+  --animate-rope-drop:    rope-drop    320ms ease-out forwards;
+  --animate-rope-retract: rope-retract 160ms ease-in  forwards;
+}
+
+@theme {
+  /* Deep colonial navy — dark mode page/surface/border */
+  --color-navy-950: #0D1B2A;
+  --color-navy-900: #152338;
+  --color-navy-800: #1E3550;
+  --color-navy-700: #2A4A6E;
+
+  /* Aged parchment — light mode page/surface/border */
+  --color-parchment-50:  #F5F0E6;
+  --color-parchment-100: #EDE6D6;
+  --color-parchment-200: #D8CDB8;
+
+  /* Old Glory crimson — interactive accent (buttons, active nav, links) */
+  --color-crimson-700: #8B1A1A;
+  --color-crimson-600: #A82020;
+  --color-crimson-500: #C42828;
+}
+
+/* ─── Semantic bg/fg vars — light mode default ───────────────────────────── */
+:root {
+  --background: #F5F0E6;
+  --foreground: #0D1B2A;
+}
+
+/* ─── Dynamic aliases — bg-background / text-foreground track the vars ────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,10 +58,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ─── Dark mode overrides ──────────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0D1B2A;
+    --foreground: #F0EAD6;
   }
 }
 
@@ -23,4 +70,25 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ─── iOS Safari auto-zoom fix ────────────────────────────────────────────────
+   Safari zooms on focus if font-size < 16px. !important is required to
+   override Tailwind utility classes (text-sm etc.) in the mobile viewport.
+   Scoped to max-width: 767px — desktop sizing is unaffected.
+   ──────────────────────────────────────────────────────────────────────── */
+@layer base {
+  @media screen and (max-width: 767px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    select {
+      font-size: 1rem !important;
+    }
+  }
 }
