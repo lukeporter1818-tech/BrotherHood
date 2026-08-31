@@ -41,14 +41,18 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", pathname);
-    return NextResponse.redirect(url);
+    const redirectRes = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((cookie) => redirectRes.cookies.set(cookie));
+    return redirectRes;
   }
 
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/home";
     url.search = "";
-    return NextResponse.redirect(url);
+    const redirectRes = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((cookie) => redirectRes.cookies.set(cookie));
+    return redirectRes;
   }
 
   return response;
