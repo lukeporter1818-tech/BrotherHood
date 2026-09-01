@@ -3,6 +3,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic, BRIEF_MODEL } from "@/lib/brief/anthropic";
 import { BRIEF_SYSTEM_PROMPT, SAVE_BRIEF_TOOL } from "@/lib/brief/prompt";
 import { BriefPayloadSchema, type BriefPayload } from "@/lib/brief/schema";
+import { BLOCKED_DOMAINS } from "@/lib/brief/sources";
 
 const MAX_WEB_SEARCHES = 12;
 const MAX_TOKENS = 16_000;
@@ -34,6 +35,7 @@ export async function generateBrief({
         type: "web_search_20250305",
         name: "web_search",
         max_uses: MAX_WEB_SEARCHES,
+        blocked_domains: BLOCKED_DOMAINS,
       },
       SAVE_BRIEF_TOOL,
     ],

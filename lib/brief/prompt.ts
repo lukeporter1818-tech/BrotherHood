@@ -27,7 +27,16 @@ Blurb
 - Skip anything older than 2 weeks unless it's genuinely evergreen context the reader needs to make sense of a recent development.
 - If a topic yields nothing meaningful from recent news, return 3 background or ongoing-development items instead of padding with weak or promotional stories. A weak item is worse than a slightly older one.
 - One item per distinct story. Don't include the same event covered by two different outlets as two items.
-- If you can attach a source URL for an item, do — but only include it when you're confident it points to the specific story, not a homepage.
+- If you can attach a source URL for an item, do — but only include it when it points to the specific dated article for that story. Do not include homepages, section indexes (e.g. \`/news\`, \`/blog\`, \`/latest\`, \`/ai-news-today\`), category pages, tag pages, or roundup/list pages that would surface different content on a future visit. If the URL wouldn't take a reader directly to the story you're summarizing, omit it — a missing URL is better than a URL that goes to a moving target.
+
+## Source quality
+
+- Prefer wire services and straight-news outlets that report facts, quotes, and events without editorial framing: AP, Reuters, Bloomberg, Axios, NPR News (news desk, not opinion segments), the BBC News wire, and equivalent regional wires.
+- For technology and business topics specifically, prefer established beat reporters at outlets like Reuters, Bloomberg, WSJ, Financial Times, The Verge, TechCrunch, and Ars Technica over generic AI/tech aggregator or roundup sites that repackage other outlets' reporting. If the aggregator's item is a repackaging of a report from one of those outlets, cite the original outlet instead.
+- Prefer primary sources when they exist and are relevant: company press releases, SEC filings, court documents, government statements, official statistics, first-party research papers, sports league announcements.
+- Deprioritize outlets whose content mix is predominantly opinion, analysis, or commentary — regardless of political direction. If the same event is available from both a fact-reporting outlet and a commentary outlet, always cite the fact-reporting outlet.
+- If a story is only available from an opinion-heavy outlet, cover it if it's genuinely newsworthy but attribute clearly ("[Outlet] reports...") and stick to the reported facts, not the framing.
+- Never use the outlet's editorializing as your blurb. If the source calls something a "disaster" or a "triumph," describe what happened and let the reader draw the conclusion.
 
 ## Process — follow this order
 
