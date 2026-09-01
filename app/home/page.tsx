@@ -2,9 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { DigestPanel } from "@/app/home/DigestPanel";
+import { BriefPanel } from "@/app/home/BriefPanel";
 import { InterestsForm } from "@/app/home/InterestsForm";
-import { DigestPayloadSchema } from "@/lib/digest";
+import { BriefPayloadSchema } from "@/lib/brief";
 
 export const metadata = { title: "Home — Brotherhood" };
 
@@ -62,7 +62,7 @@ export default async function HomePage() {
   );
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const [checkIn, benchProfile, activeBenchCount, recentPostCount, latestDigest] =
+  const [checkIn, benchProfile, activeBenchCount, recentPostCount, latestBrief] =
     await Promise.all([
       prisma.dailyCheckIn.findFirst({
         where: { userId: user.id, date: { gte: utcToday } },
@@ -88,20 +88,20 @@ export default async function HomePage() {
           createdAt: { gte: twentyFourHoursAgo },
         },
       }),
-      prisma.digest.findFirst({
+      prisma.brief.findFirst({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
         select: { createdAt: true, content: true },
       }),
     ]);
 
-  // Digest.content is Prisma.Json — validate at the read boundary so the
+  // Brief.content is Prisma.Json — validate at the read boundary so the
   // client never sees a shape the panel isn't built to render.
-  const parsedLatestDigest = latestDigest
+  const parsedLatestBrief = latestBrief
     ? (() => {
-        const parsed = DigestPayloadSchema.safeParse(latestDigest.content);
+        const parsed = BriefPayloadSchema.safeParse(latestBrief.content);
         return parsed.success
-          ? { createdAt: latestDigest.createdAt, content: parsed.data }
+          ? { createdAt: latestBrief.createdAt, content: parsed.data }
           : null;
       })()
     : null;
@@ -109,8 +109,8 @@ export default async function HomePage() {
   const displayName = dbUser.realName ?? dbUser.anonHandle;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-10">
-      {/* Greeting */}
+    <div className="mx-auto w-full max-w-5xl px-6 py-10">
+      {/* Greeting — full width above both columns */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
           {greeting()}, {displayName}.
@@ -120,141 +120,150 @@ export default async function HomePage() {
         </p>
       </div>
 
-      {/* Digest */}
-      <div className="mb-10">
-        <DigestPanel
-          latest={parsedLatestDigest}
-          hasTopics={dbUser.interestTopics.length > 0}
-        />
-      </div>
+      {/* Two-column layout: Brief left, everything else right */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[3fr_2fr]">
 
-      {/* Personal snapshot */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Your snapshot
-        </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {/* Daily 3 */}
-          <div className="rounded border border-parchment-200 bg-parchment-100 p-4 dark:border-navy-800 dark:bg-navy-900">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Daily 3
-            </p>
-            {checkIn ? (
-              <div className="mt-2 flex items-baseline gap-2">
-                <span className="text-sm font-medium text-crimson-600">✓</span>
-                <span className="text-sm font-medium text-navy-950 dark:text-parchment-50">
-                  Checked in today
-                </span>
+        {/* Left column: Brief panel */}
+        <div>
+          <BriefPanel
+            latest={parsedLatestBrief}
+            hasTopics={dbUser.interestTopics.length > 0}
+          />
+        </div>
+
+        {/* Right column: Snapshot + Quick-access + Brief topics */}
+        <div className="flex flex-col gap-8">
+
+          {/* Personal snapshot */}
+          <section>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
+              Your snapshot
+            </h2>
+            <div className="grid grid-cols-1 gap-3">
+              {/* Daily 3 */}
+              <div className="rounded border border-parchment-200 bg-parchment-100 p-4 dark:border-navy-800 dark:bg-navy-900">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Daily 3
+                </p>
+                {checkIn ? (
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-sm font-medium text-crimson-600">✓</span>
+                    <span className="text-sm font-medium text-navy-950 dark:text-parchment-50">
+                      Checked in today
+                    </span>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+                    Not yet.{" "}
+                    <Link
+                      href="/checkin"
+                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                    >
+                      Take a minute →
+                    </Link>
+                  </p>
+                )}
               </div>
-            ) : (
-              <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
-                Not yet.{" "}
-                <Link
-                  href="/checkin"
-                  className="font-medium text-crimson-600 hover:text-crimson-700"
-                >
-                  Take a minute →
-                </Link>
-              </p>
-            )}
-          </div>
 
-          {/* Bench */}
-          <div className="rounded border border-parchment-200 bg-parchment-100 p-4 dark:border-navy-800 dark:bg-navy-900">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              The Bench
-            </p>
-            {!benchProfile ? (
-              <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
-                <Link
-                  href="/bench/profile"
-                  className="font-medium text-crimson-600 hover:text-crimson-700"
-                >
-                  Set up your profile →
-                </Link>
-              </p>
-            ) : activeBenchCount > 0 ? (
-              <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
-                <Link
-                  href="/bench"
-                  className="font-medium text-crimson-600 hover:text-crimson-700"
-                >
-                  {activeBenchCount} active{" "}
-                  {activeBenchCount === 1 ? "conversation" : "conversations"} →
-                </Link>
-              </p>
-            ) : benchProfile.role === "SEEKER" ? (
-              <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
-                <Link
-                  href="/bench/browse"
-                  className="font-medium text-crimson-600 hover:text-crimson-700"
-                >
-                  Browse mentors →
-                </Link>
-              </p>
-            ) : (
-              <p className="mt-2 text-sm font-medium text-navy-950 dark:text-parchment-50">
-                No active conversations yet
-              </p>
-            )}
-          </div>
+              {/* Bench */}
+              <div className="rounded border border-parchment-200 bg-parchment-100 p-4 dark:border-navy-800 dark:bg-navy-900">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  The Bench
+                </p>
+                {!benchProfile ? (
+                  <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+                    <Link
+                      href="/bench/profile"
+                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                    >
+                      Set up your profile →
+                    </Link>
+                  </p>
+                ) : activeBenchCount > 0 ? (
+                  <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+                    <Link
+                      href="/bench"
+                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                    >
+                      {activeBenchCount} active{" "}
+                      {activeBenchCount === 1 ? "conversation" : "conversations"} →
+                    </Link>
+                  </p>
+                ) : benchProfile.role === "SEEKER" ? (
+                  <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+                    <Link
+                      href="/bench/browse"
+                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                    >
+                      Browse mentors →
+                    </Link>
+                  </p>
+                ) : (
+                  <p className="mt-2 text-sm font-medium text-navy-950 dark:text-parchment-50">
+                    No active conversations yet
+                  </p>
+                )}
+              </div>
 
-          {/* Rooms pulse */}
-          <div className="rounded border border-parchment-200 bg-parchment-100 p-4 dark:border-navy-800 dark:bg-navy-900">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Locker Room
-            </p>
-            {recentPostCount === 0 ? (
-              <p className="mt-2 text-sm font-medium text-navy-950 dark:text-parchment-50">
-                Quiet in the last 24h
-              </p>
-            ) : (
-              <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+              {/* Rooms pulse */}
+              <div className="rounded border border-parchment-200 bg-parchment-100 p-4 dark:border-navy-800 dark:bg-navy-900">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Locker Room
+                </p>
+                {recentPostCount === 0 ? (
+                  <p className="mt-2 text-sm font-medium text-navy-950 dark:text-parchment-50">
+                    Quiet in the last 24h
+                  </p>
+                ) : (
+                  <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+                    <Link
+                      href="/rooms"
+                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                    >
+                      {recentPostCount}{" "}
+                      {recentPostCount === 1 ? "post" : "posts"} in the last 24h →
+                    </Link>
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Quick-access cards */}
+          <section>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
+              Where to
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {QUICK_ACCESS.map((item) => (
                 <Link
-                  href="/rooms"
-                  className="font-medium text-crimson-600 hover:text-crimson-700"
+                  key={item.href}
+                  href={item.href}
+                  className="rounded border border-parchment-200 bg-parchment-50 p-4 transition-colors hover:border-navy-700 dark:border-navy-800 dark:bg-navy-900 dark:hover:border-navy-600"
                 >
-                  {recentPostCount}{" "}
-                  {recentPostCount === 1 ? "post" : "posts"} in the last 24h →
+                  <p className="font-semibold text-navy-950 dark:text-parchment-50">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-xs text-navy-700 dark:text-parchment-200">
+                    {item.desc}
+                  </p>
                 </Link>
-              </p>
-            )}
-          </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Brief topics */}
+          <section>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
+              Brief topics
+            </h2>
+            <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
+              <InterestsForm initialTopics={dbUser.interestTopics} />
+            </div>
+          </section>
+
         </div>
-      </section>
-
-      {/* Quick-access cards */}
-      <section>
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Where to
-        </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {QUICK_ACCESS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded border border-parchment-200 bg-parchment-50 p-5 transition-colors hover:border-navy-700 dark:border-navy-800 dark:bg-navy-900 dark:hover:border-navy-600"
-            >
-              <p className="font-semibold text-navy-950 dark:text-parchment-50">
-                {item.label}
-              </p>
-              <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
-                {item.desc}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Interest topics (settings for the digest) */}
-      <section className="mt-10">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Digest topics
-        </h2>
-        <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
-          <InterestsForm initialTopics={dbUser.interestTopics} />
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

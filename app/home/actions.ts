@@ -5,12 +5,13 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { generateDigest as runDigest } from "@/lib/digest";
+import { generateBrief as runBrief } from "@/lib/brief";
+import { checkTopics } from "@/lib/brief/guard";
 
 const MAX_TOPICS = 6;
 const MAX_TOPIC_LEN = 40;
 
-export type DigestActionState = { error: string | null };
+export type BriefActionState = { error: string | null };
 export type InterestsActionState = { error: string | null };
 
 // Preset topics — parallels Bench's journey enum: a curated primary list plus
@@ -80,42 +81,59 @@ export async function saveInterests(
   return { error: null };
 }
 
-export async function generateDigest(): Promise<DigestActionState> {
+export async function generateBrief(customTopic?: string): Promise<BriefActionState> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
 
-  const { allowed } = checkRateLimit(user.id, "digest");
+  const { allowed } = checkRateLimit(user.id, "brief");
   if (!allowed) {
-    return { error: "You've generated a digest recently. Try again in a few minutes." };
+    return { error: "You've generated a brief recently. Try again in a few minutes." };
   }
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { interestTopics: true },
-  });
-  if (!dbUser) return { error: "Account not found." };
-  if (dbUser.interestTopics.length === 0) {
-    return { error: "Add at least one interest topic first." };
+  // Resolve topics: one-off custom topic, or fall back to saved interests.
+  let topics: string[];
+  if (customTopic?.trim()) {
+    const normalized = normalizeTopic(customTopic);
+    if (normalized.length > MAX_TOPIC_LEN) {
+      return { error: `Keep the topic under ${MAX_TOPIC_LEN} characters.` };
+    }
+    topics = [normalized];
+  } else {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { interestTopics: true },
+    });
+    if (!dbUser) return { error: "Account not found." };
+    if (dbUser.interestTopics.length === 0) {
+      return { error: "Add at least one interest topic first." };
+    }
+    topics = dbUser.interestTopics;
+  }
+
+  // Content guard — runs before any API call so bad topics fail fast.
+  const guard = checkTopics(topics);
+  if (guard.blocked) {
+    return { error: guard.reason };
   }
 
   let result;
   try {
-    result = await runDigest({ topics: dbUser.interestTopics });
+    result = await runBrief({ topics });
   } catch (err) {
-    console.error("[digest] generation failed", err);
+    console.error("[brief] generation failed", err);
     return {
       error:
-        "Digest generation failed. This can happen if the search comes up empty — try again in a minute.",
+        "Brief generation failed. This can happen if the search comes up empty — try again in a minute.",
     };
   }
 
-  await prisma.digest.create({
+  await prisma.brief.create({
     data: {
       userId: user.id,
-      topics: dbUser.interestTopics,
+      topics,
       content: result.payload,
       model: result.model,
     },

@@ -74,8 +74,8 @@ model User {
   // timing (deferred to a real-product follow-up).
   hoursListened Float @default(0)
 
-  // Personal-digest interest topics. Postgres text[]. Read on demand when the
-  // user hits "Generate my digest" on /home. Bounded to 6 topics in the server
+  // Personal-brief interest topics. Postgres text[]. Read on demand when the
+  // user hits "Generate my brief" on /home. Bounded to 6 topics in the server
   // action; each ≤ 40 chars.
   interestTopics String[] @default([])
 
@@ -87,7 +87,7 @@ model User {
   wingmanSessions WingmanSession[]
   benchProfile    BenchProfile?
   benchMessages   BenchMessage[]
-  digests         Digest[]
+  briefs          Brief[]
 }
 
 model DailyCheckIn {
@@ -259,12 +259,12 @@ model BenchMessage {
   @@index([matchId, createdAt])
 }
 
-model Digest {
+model Brief {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
-  // Snapshot of topics used for THIS digest — user can edit interestTopics
+  // Snapshot of topics used for THIS brief — user can edit interestTopics
   // afterward without rewriting history.
   topics    String[]
   // Full structured payload: { sections: [{ topic, items: [{ headline, blurb, url? }] }] }
