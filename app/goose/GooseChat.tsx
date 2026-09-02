@@ -117,7 +117,7 @@ export function GooseChat({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-crimson-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
+            className="rounded-full bg-crimson-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
           >
             {pending ? "…" : "Send"}
           </button>
