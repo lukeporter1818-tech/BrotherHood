@@ -109,7 +109,7 @@ export default async function HomePage() {
   const displayName = dbUser.realName ?? dbUser.anonHandle;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-10">
+    <div className="mx-auto w-full max-w-5xl px-6 py-6 sm:py-10">
       {/* Greeting — full width above both columns */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
@@ -157,7 +157,7 @@ export default async function HomePage() {
                     Not yet.{" "}
                     <Link
                       href="/checkin"
-                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                      className="inline-block py-1 font-medium text-crimson-600 hover:text-crimson-700"
                     >
                       Take a minute →
                     </Link>
@@ -174,7 +174,7 @@ export default async function HomePage() {
                   <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
                     <Link
                       href="/bench/profile"
-                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                      className="inline-block py-1 font-medium text-crimson-600 hover:text-crimson-700"
                     >
                       Set up your profile →
                     </Link>
@@ -183,7 +183,7 @@ export default async function HomePage() {
                   <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
                     <Link
                       href="/bench"
-                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                      className="inline-block py-1 font-medium text-crimson-600 hover:text-crimson-700"
                     >
                       {activeBenchCount} active{" "}
                       {activeBenchCount === 1 ? "conversation" : "conversations"} →
@@ -193,7 +193,7 @@ export default async function HomePage() {
                   <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
                     <Link
                       href="/bench/browse"
-                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                      className="inline-block py-1 font-medium text-crimson-600 hover:text-crimson-700"
                     >
                       Browse mentors →
                     </Link>
@@ -218,7 +218,7 @@ export default async function HomePage() {
                   <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
                     <Link
                       href="/rooms"
-                      className="font-medium text-crimson-600 hover:text-crimson-700"
+                      className="inline-block py-1 font-medium text-crimson-600 hover:text-crimson-700"
                     >
                       {recentPostCount}{" "}
                       {recentPostCount === 1 ? "post" : "posts"} in the last 24h →
@@ -234,7 +234,7 @@ export default async function HomePage() {
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
               Where to
             </h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {QUICK_ACCESS.map((item) => (
                 <Link
                   key={item.href}
@@ -244,7 +244,7 @@ export default async function HomePage() {
                   <p className="font-semibold text-navy-950 dark:text-parchment-50">
                     {item.label}
                   </p>
-                  <p className="mt-1 text-xs text-navy-700 dark:text-parchment-200">
+                  <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
                     {item.desc}
                   </p>
                 </Link>
