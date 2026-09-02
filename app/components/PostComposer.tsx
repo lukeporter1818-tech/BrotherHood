@@ -41,7 +41,7 @@ export function PostComposer(props: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-crimson-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
+          className="rounded-full bg-crimson-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
         >
           {pending ? "Posting…" : "Post"}
         </button>
