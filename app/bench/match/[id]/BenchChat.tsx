@@ -25,7 +25,7 @@ export function BenchChat({
   currentUserId: string;
   initialMessages: ClientBenchMessage[];
 }) {
-  const { identity, realName, anonHandle } = useIdentity();
+  const { anonHandle } = useIdentity();
   const [messages, setMessages] =
     useState<ClientBenchMessage[]>(initialMessages);
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
@@ -59,8 +59,8 @@ export function BenchChat({
         id: `optimistic-${Date.now()}`,
         senderId: currentUserId,
         content: text,
-        identityUsed: identity,
-        senderRealName: realName,
+        identityUsed: "ANON",
+        senderRealName: null,
         senderAnonHandle: anonHandle,
         createdAt: new Date().toISOString(),
       });
@@ -68,7 +68,7 @@ export function BenchChat({
       const result = await sendBenchMessage({
         matchId,
         content: text,
-        identityUsed: identity,
+        identityUsed: "ANON",
       });
       if (result.error !== null) {
         setError(result.error);

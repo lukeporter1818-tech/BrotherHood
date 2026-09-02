@@ -1,13 +1,11 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { useIdentity } from "@/app/components/IdentityProvider";
 import { createReply, type PostActionState } from "@/app/rooms/actions";
 
 const initialState: PostActionState = { error: null };
 
 export function ReplyComposer({ postId }: { postId: string }) {
-  const { identity } = useIdentity();
   const [state, formAction, pending] = useActionState(createReply, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -24,7 +22,7 @@ export function ReplyComposer({ postId }: { postId: string }) {
       className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900"
     >
       <input type="hidden" name="postId" value={postId} />
-      <input type="hidden" name="identity" value={identity} />
+      <input type="hidden" name="identity" value="ANON" />
       <textarea
         name="body"
         rows={2}
@@ -33,13 +31,7 @@ export function ReplyComposer({ postId }: { postId: string }) {
         className="w-full resize-none bg-transparent text-sm text-navy-950 placeholder:text-slate-400 focus:outline-none dark:text-parchment-50"
         required
       />
-      <div className="mt-2 flex items-center justify-between">
-        <span className="text-xs text-slate-500">
-          Replying as{" "}
-          <span className="font-medium text-navy-800 dark:text-parchment-200">
-            {identity === "REAL" ? "real name" : "anon"}
-          </span>
-        </span>
+      <div className="mt-2 flex justify-end">
         <button
           type="submit"
           disabled={pending}

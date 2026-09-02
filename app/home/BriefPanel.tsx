@@ -61,7 +61,7 @@ export function BriefPanel({ latest, hasTopics }: Props) {
           </p>
         ) : (
           <>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="text"
                 value={customTopic}
@@ -78,7 +78,7 @@ export function BriefPanel({ latest, hasTopics }: Props) {
                 type="button"
                 onClick={onGenerate}
                 disabled={pending || (!hasTopics && !customTopic.trim())}
-                className="shrink-0 rounded-full bg-crimson-600 px-4 py-2 text-sm font-medium text-white hover:bg-crimson-700 disabled:opacity-50"
+                className="w-full shrink-0 rounded-full bg-crimson-600 px-4 py-2 text-sm font-medium text-white hover:bg-crimson-700 disabled:opacity-50 sm:w-auto"
               >
                 {pending
                   ? "Generating… (15–40s)"

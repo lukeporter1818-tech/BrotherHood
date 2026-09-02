@@ -1,5 +1,4 @@
 import { logout } from "@/app/auth/actions";
-import { IdentityToggle } from "@/app/components/IdentityToggle";
 import { WordmarkDropdown } from "@/app/components/WordmarkDropdown";
 
 export function Header({ isAdmin = false }: { isAdmin?: boolean }) {
@@ -8,7 +7,6 @@ export function Header({ isAdmin = false }: { isAdmin?: boolean }) {
       <WordmarkDropdown isAdmin={isAdmin} />
 
       <div className="flex items-center gap-4">
-        <IdentityToggle />
         <form action={logout}>
           <button
             type="submit"
