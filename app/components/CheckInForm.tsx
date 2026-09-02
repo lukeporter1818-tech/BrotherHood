@@ -59,11 +59,11 @@ export function CheckInForm({
       >
         <div className="animate-pulse space-y-5">
           <div className="h-5 w-40 rounded bg-parchment-200 dark:bg-navy-800" />
-          <div className="h-9 w-32 rounded bg-parchment-200 dark:bg-navy-800" />
-          <div className="h-9 w-72 rounded bg-parchment-200 dark:bg-navy-800" />
+          <div className="h-11 w-32 rounded bg-parchment-200 dark:bg-navy-800" />
+          <div className="h-11 w-72 rounded bg-parchment-200 dark:bg-navy-800" />
           <div className="h-5 w-48 rounded bg-parchment-200 dark:bg-navy-800" />
           <div className="flex justify-end">
-            <div className="h-9 w-24 rounded-full bg-parchment-200 dark:bg-navy-800" />
+            <div className="h-11 w-24 rounded-full bg-parchment-200 dark:bg-navy-800" />
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@ export function CheckInForm({
             value={sleepHours}
             onChange={(e) => setSleepHours(Number(e.target.value))}
             required
-            className="w-32 rounded border border-parchment-200 bg-parchment-50 px-3 py-1.5 text-sm text-navy-950 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
+            className="w-32 rounded border border-parchment-200 bg-parchment-50 px-3 py-3 text-sm text-navy-950 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
           />
         </label>
 
@@ -108,7 +108,7 @@ export function CheckInForm({
             {[1, 2, 3, 4, 5].map((n) => (
               <label
                 key={n}
-                className="flex cursor-pointer items-center justify-center rounded-full border border-parchment-200 px-4 py-1.5 text-sm text-navy-800 has-checked:border-crimson-600 has-checked:bg-crimson-600 has-checked:text-white dark:border-navy-700 dark:text-parchment-200 dark:has-checked:border-crimson-600 dark:has-checked:bg-crimson-600 dark:has-checked:text-white"
+                className="flex cursor-pointer items-center justify-center rounded-full border border-parchment-200 px-4 py-3 text-sm text-navy-800 has-checked:border-crimson-600 has-checked:bg-crimson-600 has-checked:text-white dark:border-navy-700 dark:text-parchment-200 dark:has-checked:border-crimson-600 dark:has-checked:bg-crimson-600 dark:has-checked:text-white"
               >
                 <input
                   type="radio"
@@ -125,7 +125,7 @@ export function CheckInForm({
           </div>
         </fieldset>
 
-        <label className="flex items-center gap-3">
+        <label className="flex min-h-[44px] items-center gap-3">
           <input
             type="checkbox"
             name="moved"
@@ -146,7 +146,7 @@ export function CheckInForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-crimson-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
+          className="rounded-full bg-crimson-600 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
         >
           {pending ? "Saving…" : today ? "Update" : "Check in"}
         </button>
