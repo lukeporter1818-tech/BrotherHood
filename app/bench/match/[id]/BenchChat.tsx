@@ -165,7 +165,7 @@ function MessageBubble({
           className={
             isSelf
               ? "rounded-2xl bg-navy-900 px-4 py-2 text-sm text-parchment-50 dark:bg-navy-800"
-              : "rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-700 dark:text-parchment-50"
+              : "rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50"
           }
         >
           <p className="whitespace-pre-wrap">{message.content}</p>
