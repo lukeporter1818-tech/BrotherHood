@@ -28,7 +28,7 @@ export function ReportButton({ targetType, targetId }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
+        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
         aria-label="Report this content"
       >
         Report
@@ -58,14 +58,14 @@ export function ReportButton({ targetType, targetId }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="text-xs text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
       >
         {pending ? "Sending…" : "Submit"}
       </button>
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
+        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
       >
         Cancel
       </button>

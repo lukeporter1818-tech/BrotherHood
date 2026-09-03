@@ -20,14 +20,14 @@ export function ModerationActions({ reportId }: { reportId: string }) {
       <button
         onClick={handleDismiss}
         disabled={pending}
-        className="text-sm text-slate-500 hover:text-navy-950 disabled:opacity-50 dark:hover:text-parchment-50"
+        className="inline-flex items-center min-h-[44px] px-2 text-sm text-slate-500 hover:text-navy-950 disabled:opacity-50 dark:hover:text-parchment-50"
       >
         Dismiss
       </button>
       <button
         onClick={handleRemove}
         disabled={pending}
-        className="text-sm font-medium text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+        className="inline-flex items-center min-h-[44px] px-2 text-sm font-medium text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
       >
         Remove
       </button>

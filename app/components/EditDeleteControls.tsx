@@ -82,14 +82,14 @@ export function EditDeleteControls({ type, id, body }: Props) {
           <button
             onClick={handleSave}
             disabled={pending}
-            className="rounded px-3 py-1 text-xs font-medium bg-crimson-600 text-white hover:bg-crimson-700 disabled:opacity-50"
+            className="rounded px-3 py-3 text-xs font-medium bg-crimson-600 text-white hover:bg-crimson-700 disabled:opacity-50"
           >
             {pending ? "Saving…" : "Save"}
           </button>
           <button
             onClick={handleCancelEdit}
             disabled={pending}
-            className="rounded px-3 py-1 text-xs text-navy-700 hover:text-navy-950 dark:text-parchment-200 dark:hover:text-parchment-50"
+            className="rounded px-3 py-3 text-xs text-navy-700 hover:text-navy-950 dark:text-parchment-200 dark:hover:text-parchment-50"
           >
             Cancel
           </button>
@@ -107,14 +107,14 @@ export function EditDeleteControls({ type, id, body }: Props) {
         <button
           onClick={handleConfirmDelete}
           disabled={pending}
-          className="text-xs text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+          className="inline-flex items-center min-h-[44px] px-2 text-xs text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
         >
           {pending ? "Deleting…" : "Yes, delete"}
         </button>
         <button
           onClick={handleCancelDelete}
           disabled={pending}
-          className="text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
+          className="inline-flex items-center min-h-[44px] px-2 text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
         >
           Cancel
         </button>
@@ -129,13 +129,13 @@ export function EditDeleteControls({ type, id, body }: Props) {
     <div className="flex gap-3">
       <button
         onClick={handleEdit}
-        className="text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
+        className="inline-flex items-center min-h-[44px] px-2 text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
       >
         Edit
       </button>
       <button
         onClick={handleDelete}
-        className="text-xs text-slate-500 hover:text-red-600 dark:hover:text-red-400"
+        className="inline-flex items-center min-h-[44px] px-2 text-xs text-slate-500 hover:text-red-600 dark:hover:text-red-400"
       >
         Delete
       </button>
