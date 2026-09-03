@@ -49,14 +49,14 @@ export default async function SquadDetailPage({
       <div className="mx-auto w-full max-w-3xl px-6 py-10">
         <Link
           href="/squads"
-          className="text-sm text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+          className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
         >
           ← All squads
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold text-navy-950 dark:text-parchment-50">
           {squad.name}
         </h1>
-        <p className="mt-4 text-zinc-600 dark:text-zinc-400">
+        <p className="mt-4 text-navy-700 dark:text-parchment-200">
           You need to join this squad to see its posts.
         </p>
       </div>
@@ -82,20 +82,20 @@ export default async function SquadDetailPage({
     <div className="mx-auto w-full max-w-3xl px-6 py-10">
       <Link
         href="/squads"
-        className="text-sm text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+        className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
       >
         ← All squads
       </Link>
 
-      <h1 className="mt-2 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="mt-2 text-2xl font-semibold text-navy-950 dark:text-parchment-50">
         {squad.name}
       </h1>
       {squad.description && (
-        <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+        <p className="mt-1 text-navy-700 dark:text-parchment-200">
           {squad.description}
         </p>
       )}
-      <p className="mt-1 text-xs text-zinc-500">
+      <p className="mt-1 text-xs text-slate-500">
         {squad._count.memberships}{" "}
         {squad._count.memberships === 1 ? "member" : "members"} · private
       </p>
@@ -106,7 +106,7 @@ export default async function SquadDetailPage({
 
       <div className="mt-8 flex flex-col gap-3">
         {posts.length === 0 && (
-          <div className="rounded-lg border border-dashed border-zinc-300 p-8 text-center text-zinc-500 dark:border-zinc-700">
+          <div className="rounded-lg border border-dashed border-parchment-200 p-8 text-center text-slate-500 dark:border-navy-700">
             No posts yet. Be first.
           </div>
         )}
@@ -118,14 +118,14 @@ export default async function SquadDetailPage({
           return (
             <div
               key={post.id}
-              className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950"
+              className="rounded-lg border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900"
             >
               <Link
                 href={`/squads/${squad.id}/${post.id}`}
-                className="block p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                className="block p-4 transition-colors hover:bg-parchment-100 dark:hover:bg-navy-800"
               >
-                <div className="flex items-center justify-between text-xs text-zinc-500">
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-medium text-navy-800 dark:text-parchment-200">
                     {author}
                   </span>
                   <span className="flex items-center gap-1">
@@ -133,18 +133,18 @@ export default async function SquadDetailPage({
                     {post.editedAt !== null &&
                       post.editedAt.getTime() - post.createdAt.getTime() >
                         EDITED_THRESHOLD_MS && (
-                        <span className="text-zinc-400 dark:text-zinc-600">
+                        <span className="text-slate-400 dark:text-slate-600">
                           · edited
                         </span>
                       )}
                   </span>
                 </div>
-                <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-950 dark:text-zinc-50">
+                <p className="mt-2 whitespace-pre-wrap text-sm text-navy-950 dark:text-parchment-50">
                   {post.body}
                 </p>
               </Link>
-              <div className="flex items-center justify-between border-t border-zinc-100 px-4 py-2 dark:border-zinc-800">
-                <span className="text-xs text-zinc-500">
+              <div className="flex items-center justify-between border-t border-parchment-100 px-4 py-2 dark:border-navy-800">
+                <span className="text-xs text-slate-500">
                   {post._count.replies}{" "}
                   {post._count.replies === 1 ? "reply" : "replies"}
                 </span>

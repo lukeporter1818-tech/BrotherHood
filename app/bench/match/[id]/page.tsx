@@ -29,11 +29,11 @@ export default async function BenchMatchPage({
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-6 py-8">
         <Link
           href="/bench"
-          className="text-xs text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+          className="text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
         >
           ← Back to Bench
         </Link>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-navy-700 dark:text-parchment-200">
           This conversation is closed.
         </p>
       </div>
@@ -45,11 +45,11 @@ export default async function BenchMatchPage({
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-6 py-8">
         <Link
           href="/bench"
-          className="text-xs text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+          className="text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
         >
           ← Back to Bench
         </Link>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-navy-700 dark:text-parchment-200">
           Waiting on the mentor to accept. Once accepted, you can message here.
         </p>
       </div>
@@ -79,14 +79,14 @@ export default async function BenchMatchPage({
       <div>
         <Link
           href="/bench"
-          className="text-xs text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+          className="text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
         >
           ← Back to Bench
         </Link>
-        <h1 className="mt-2 text-lg font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="mt-2 text-lg font-semibold text-navy-950 dark:text-parchment-50">
           {otherProfile.user.anonHandle}
         </h1>
-        <p className="text-xs text-zinc-500">{otherProfile.stageText}</p>
+        <p className="text-xs text-slate-500">{otherProfile.stageText}</p>
       </div>
       <BenchChat
         matchId={id}
