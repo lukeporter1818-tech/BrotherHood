@@ -95,7 +95,7 @@ export default async function RoomPage({
                       )}
                   </span>
                 </div>
-                <p className="mt-2 whitespace-pre-wrap text-sm text-navy-950 dark:text-parchment-50">
+                <p className="mt-2 whitespace-pre-wrap break-words text-sm text-navy-950 dark:text-parchment-50">
                   {post.body}
                 </p>
               </Link>

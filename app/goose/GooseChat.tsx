@@ -109,7 +109,7 @@ export function GooseChat({
             name="body"
             rows={2}
             maxLength={BODY_MAX}
-            placeholder="Say what's on your mind. Enter to send, Shift+Enter for a new line."
+            placeholder="Say what's on your mind."
             onKeyDown={handleKeyDown}
             className="flex-1 resize-none rounded border border-parchment-200 bg-parchment-50 px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
             required
@@ -151,7 +151,7 @@ function MessageBubble({ message }: { message: ClientMessage }) {
         {prose && (
           <div className="flex justify-start">
             <div className="max-w-[85%] rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50">
-              <p className="whitespace-pre-wrap">{prose}</p>
+              <p className="whitespace-pre-wrap break-words">{prose}</p>
             </div>
           </div>
         )}
@@ -168,7 +168,7 @@ function MessageBubble({ message }: { message: ClientMessage }) {
             : "max-w-[85%] rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50"
         }
       >
-        <p className="whitespace-pre-wrap">{message.content}</p>
+        <p className="whitespace-pre-wrap break-words">{message.content}</p>
       </div>
     </div>
   );

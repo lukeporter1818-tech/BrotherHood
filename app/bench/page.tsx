@@ -87,7 +87,7 @@ export default async function BenchPage() {
                 {JOURNEY_LABELS[profile.journey]} · {profile.stageText}
               </p>
               {profile.bio && (
-                <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+                <p className="mt-2 whitespace-pre-wrap break-words text-sm text-navy-700 dark:text-parchment-200">
                   {profile.bio}
                 </p>
               )}
@@ -99,7 +99,7 @@ export default async function BenchPage() {
             </div>
             <Link
               href="/bench/profile"
-              className="text-xs text-navy-700 hover:text-navy-950 dark:text-parchment-200 dark:hover:text-parchment-50"
+              className="inline-flex items-center min-h-[44px] px-2 text-xs text-navy-700 hover:text-navy-950 dark:text-parchment-200 dark:hover:text-parchment-50"
             >
               Edit
             </Link>

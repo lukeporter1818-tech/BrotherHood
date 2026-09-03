@@ -46,7 +46,7 @@ export default async function GoosePage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 py-6">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 pt-6 pb-24 sm:pb-6">
       <GooseChat initialMessages={initialMessages} />
     </div>
   );

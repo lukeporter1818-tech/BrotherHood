@@ -56,7 +56,7 @@ export function InterestsForm({ initialTopics }: { initialTopics: string[] }) {
             return (
               <label
                 key={topic}
-                className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                className={`cursor-pointer rounded-full border px-3 py-3 text-xs transition-colors ${
                   active
                     ? "border-crimson-600 bg-crimson-600 text-white"
                     : "border-parchment-200 bg-parchment-50 text-navy-800 hover:border-navy-700 dark:border-navy-700 dark:bg-navy-900 dark:text-parchment-200"

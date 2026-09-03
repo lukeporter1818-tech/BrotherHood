@@ -168,7 +168,7 @@ function MessageBubble({
               : "rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50"
           }
         >
-          <p className="whitespace-pre-wrap">{message.content}</p>
+          <p className="whitespace-pre-wrap break-words">{message.content}</p>
         </div>
       </div>
     </div>

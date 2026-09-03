@@ -105,7 +105,7 @@ export default async function SquadPostDetailPage({
             </span>
           </div>
           <p
-            className={`mt-3 whitespace-pre-wrap ${
+            className={`mt-3 whitespace-pre-wrap break-words ${
               postDeleted
                 ? "italic text-slate-400 dark:text-slate-600"
                 : "text-navy-950 dark:text-parchment-50"
@@ -158,7 +158,7 @@ export default async function SquadPostDetailPage({
                     </span>
                   </div>
                   <p
-                    className={`mt-2 whitespace-pre-wrap text-sm ${
+                    className={`mt-2 whitespace-pre-wrap break-words text-sm ${
                       replyDeleted
                         ? "italic text-slate-400 dark:text-slate-600"
                         : "text-navy-950 dark:text-parchment-50"
