@@ -119,6 +119,14 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
               </Link>
             );
           })}
+
+          <Link
+            href="/crisis"
+            onClick={() => close()}
+            className="block border-t border-parchment-200 bg-amber-50/50 px-4 py-2 text-sm font-medium text-amber-800 hover:bg-amber-50 dark:border-navy-700 dark:bg-amber-950/20 dark:text-amber-400 dark:hover:bg-amber-950/40"
+          >
+            Get help
+          </Link>
         </div>
       )}
     </div>
