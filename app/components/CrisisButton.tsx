@@ -1,10 +1,24 @@
 "use client";
 
 import { useRef } from "react";
+import { usePathname } from "next/navigation";
 import { CrisisResources } from "@/app/components/CrisisResources";
 
+// PRODUCT DECISION (2026-09-03): The Crisis Rail FAB is deliberately
+// scoped to Rooms and Bench only, NOT app-wide. Rationale — Luke made
+// this call after an explicit safety-tradeoff discussion. Do NOT expand
+// this to other routes without a fresh safety review. The Goose in-chat
+// escalation card (GooseChat.tsx amber "Get help now" branch) is a
+// SEPARATE crisis surface driven by the tripwire classifier and is
+// unaffected by this FAB scoping.
+const ALLOWED_ROUTES = new Set(["rooms", "bench"]);
+
 export function CrisisButton() {
+  const pathname = usePathname();
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const firstSegment = pathname.split("/")[1] ?? "";
+  if (!ALLOWED_ROUTES.has(firstSegment)) return null;
 
   function openDialog(e: React.MouseEvent<HTMLAnchorElement>) {
     // Progressive enhancement: without JS, the anchor navigates to /crisis

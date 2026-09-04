@@ -83,7 +83,7 @@ export default async function SquadPostDetailPage({
   const postEdited = wasEdited(post.createdAt, post.editedAt);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
+    <div className="mx-auto w-full max-w-3xl px-6 py-10">
       <Link
         href={`/squads/${id}`}
         className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"

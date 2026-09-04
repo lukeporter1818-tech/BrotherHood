@@ -64,7 +64,7 @@ export default async function CheckInPage() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
+    <div className="mx-auto w-full max-w-3xl px-6 py-10">
       <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
         Daily 3
       </h1>

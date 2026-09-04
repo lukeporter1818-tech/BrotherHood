@@ -88,7 +88,7 @@ export default async function HomePage() {
   const displayName = dbUser.realName ?? dbUser.anonHandle;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 pt-6 pb-24 sm:py-10">
+    <div className="mx-auto w-full max-w-3xl px-6 py-6 sm:py-10">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
           {greeting()}, {displayName}.
