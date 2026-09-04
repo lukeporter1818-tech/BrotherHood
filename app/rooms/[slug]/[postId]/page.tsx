@@ -44,10 +44,9 @@ export default async function PostDetailPage({
       userId: true,
       createdAt: true,
       editedAt: true,
-      identityUsed: true,
       deletedAt: true,
       room: { select: { slug: true, displayName: true } },
-      user: { select: { realName: true, anonHandle: true } },
+      user: { select: { anonHandle: true } },
       replies: {
         orderBy: { createdAt: "asc" },
         select: {
@@ -56,9 +55,8 @@ export default async function PostDetailPage({
           userId: true,
           createdAt: true,
           editedAt: true,
-          identityUsed: true,
           deletedAt: true,
-          user: { select: { realName: true, anonHandle: true } },
+          user: { select: { anonHandle: true } },
         },
       },
     },
@@ -66,10 +64,7 @@ export default async function PostDetailPage({
 
   if (!post || !post.room || post.room.slug !== slug) notFound();
 
-  const postAuthor =
-    post.identityUsed === "REAL"
-      ? (post.user.realName ?? "Unknown")
-      : post.user.anonHandle;
+  const postAuthor = post.user.anonHandle;
 
   const postDeleted = post.deletedAt !== null;
   const postEdited = wasEdited(post.createdAt, post.editedAt);
@@ -128,10 +123,7 @@ export default async function PostDetailPage({
           {post.replies.map((reply) => {
             const replyDeleted = reply.deletedAt !== null;
             const replyEdited = wasEdited(reply.createdAt, reply.editedAt);
-            const author =
-              reply.identityUsed === "REAL"
-                ? (reply.user.realName ?? "Unknown")
-                : reply.user.anonHandle;
+            const author = reply.user.anonHandle;
             return (
               <div
                 key={reply.id}

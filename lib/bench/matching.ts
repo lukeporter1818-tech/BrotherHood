@@ -59,7 +59,7 @@ export async function browsableMentorsForSeeker({
       active: true,
       id: { notIn: excludedMentorIds },
     },
-    include: { user: { select: { realName: true, anonHandle: true, hoursListened: true } } },
+    include: { user: { select: { anonHandle: true, hoursListened: true } } },
     orderBy: { createdAt: "desc" },
   });
 }

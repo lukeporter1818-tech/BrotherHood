@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { Header } from "@/app/components/Header";
-import { IdentityProvider } from "@/app/components/IdentityProvider";
 
 export default async function SquadsLayout({
   children,
@@ -18,19 +17,17 @@ export default async function SquadsLayout({
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { realName: true, anonHandle: true, isAdmin: true },
+    select: { isAdmin: true },
   });
 
   if (!dbUser) redirect("/login");
 
   return (
-    <IdentityProvider realName={dbUser.realName} anonHandle={dbUser.anonHandle}>
-      <div className="flex min-h-full flex-1 flex-col">
-        <Header isAdmin={dbUser.isAdmin} />
-        <main className="flex flex-1 flex-col bg-parchment-50 dark:bg-navy-950">
-          {children}
-        </main>
-      </div>
-    </IdentityProvider>
+    <div className="flex min-h-full flex-1 flex-col">
+      <Header isAdmin={dbUser.isAdmin} />
+      <main className="flex flex-1 flex-col bg-parchment-50 dark:bg-navy-950">
+        {children}
+      </main>
+    </div>
   );
 }

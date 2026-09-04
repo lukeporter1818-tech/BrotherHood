@@ -22,7 +22,6 @@ export function ReplyComposer({ postId }: { postId: string }) {
       className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900"
     >
       <input type="hidden" name="postId" value={postId} />
-      <input type="hidden" name="identity" value="ANON" />
       <textarea
         name="body"
         rows={2}

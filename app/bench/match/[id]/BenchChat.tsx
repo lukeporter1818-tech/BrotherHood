@@ -8,7 +8,6 @@ import {
   useTransition,
   type KeyboardEvent,
 } from "react";
-import { useIdentity } from "@/app/components/IdentityProvider";
 import {
   sendBenchMessage,
   type ClientBenchMessage,
@@ -19,13 +18,14 @@ const BODY_MAX = 4096;
 export function BenchChat({
   matchId,
   currentUserId,
+  currentUserAnonHandle,
   initialMessages,
 }: {
   matchId: string;
   currentUserId: string;
+  currentUserAnonHandle: string;
   initialMessages: ClientBenchMessage[];
 }) {
-  const { anonHandle } = useIdentity();
   const [messages, setMessages] =
     useState<ClientBenchMessage[]>(initialMessages);
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
@@ -59,16 +59,13 @@ export function BenchChat({
         id: `optimistic-${Date.now()}`,
         senderId: currentUserId,
         content: text,
-        identityUsed: "ANON",
-        senderRealName: null,
-        senderAnonHandle: anonHandle,
+        senderAnonHandle: currentUserAnonHandle,
         createdAt: new Date().toISOString(),
       });
 
       const result = await sendBenchMessage({
         matchId,
         content: text,
-        identityUsed: "ANON",
       });
       if (result.error !== null) {
         setError(result.error);
@@ -148,10 +145,7 @@ function MessageBubble({
   message: ClientBenchMessage;
   isSelf: boolean;
 }) {
-  const displayName =
-    message.identityUsed === "REAL" && message.senderRealName
-      ? message.senderRealName
-      : message.senderAnonHandle;
+  const displayName = message.senderAnonHandle;
 
   return (
     <div className={isSelf ? "flex justify-end" : "flex justify-start"}>

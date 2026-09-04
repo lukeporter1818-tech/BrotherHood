@@ -53,14 +53,14 @@ export default async function BenchPage() {
     prisma.benchMatch.findMany({
       where: { mentorProfileId: profile.id },
       include: {
-        seekerProfile: { include: { user: { select: { realName: true, anonHandle: true } } } },
+        seekerProfile: { include: { user: { select: { anonHandle: true } } } },
       },
       orderBy: { createdAt: "desc" },
     }),
     prisma.benchMatch.findMany({
       where: { seekerProfileId: profile.id },
       include: {
-        mentorProfile: { include: { user: { select: { realName: true, anonHandle: true, hoursListened: true } } } },
+        mentorProfile: { include: { user: { select: { anonHandle: true, hoursListened: true } } } },
       },
       orderBy: { createdAt: "desc" },
     }),

@@ -59,13 +59,13 @@ const DEMO_AUTO_JOIN_SQUAD_INDEXES = [0, 1];
 // never sign in — they exist purely to populate the mentor/seeker browse
 // experience so Luke's demo user has real profiles to interact with.
 const benchDemoUsers = [
-  { id: "1b000000-0000-0000-0000-000000000001", realName: "Marcus", anonHandle: "mentor_marcus", hoursListened: 12.5 },
-  { id: "1b000000-0000-0000-0000-000000000002", realName: "James", anonHandle: "mentor_james", hoursListened: 4.2 },
-  { id: "1b000000-0000-0000-0000-000000000003", realName: "David", anonHandle: "mentor_david", hoursListened: 22.1 },
-  { id: "1b000000-0000-0000-0000-000000000004", realName: "Ray", anonHandle: "mentor_ray", hoursListened: 8.7 },
-  { id: "1b000000-0000-0000-0000-000000000005", realName: "Ben", anonHandle: "mentor_ben", hoursListened: 3.4 },
-  { id: "1b000000-0000-0000-0000-000000000006", realName: "Alex", anonHandle: "seeker_alex", hoursListened: 0 },
-  { id: "1b000000-0000-0000-0000-000000000007", realName: "Chris", anonHandle: "seeker_chris", hoursListened: 0 },
+  { id: "1b000000-0000-0000-0000-000000000001", anonHandle: "mentor_marcus", hoursListened: 12.5 },
+  { id: "1b000000-0000-0000-0000-000000000002", anonHandle: "mentor_james", hoursListened: 4.2 },
+  { id: "1b000000-0000-0000-0000-000000000003", anonHandle: "mentor_david", hoursListened: 22.1 },
+  { id: "1b000000-0000-0000-0000-000000000004", anonHandle: "mentor_ray", hoursListened: 8.7 },
+  { id: "1b000000-0000-0000-0000-000000000005", anonHandle: "mentor_ben", hoursListened: 3.4 },
+  { id: "1b000000-0000-0000-0000-000000000006", anonHandle: "seeker_alex", hoursListened: 0 },
+  { id: "1b000000-0000-0000-0000-000000000007", anonHandle: "seeker_chris", hoursListened: 0 },
 ];
 
 const benchProfiles: Array<{
@@ -196,10 +196,9 @@ async function main() {
   for (const bu of benchDemoUsers) {
     await prisma.user.upsert({
       where: { id: bu.id },
-      update: { realName: bu.realName, hoursListened: bu.hoursListened },
+      update: { hoursListened: bu.hoursListened },
       create: {
         id: bu.id,
-        realName: bu.realName,
         anonHandle: bu.anonHandle,
         hoursListened: bu.hoursListened,
       },

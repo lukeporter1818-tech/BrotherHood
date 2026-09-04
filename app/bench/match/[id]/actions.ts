@@ -127,8 +127,6 @@ export type ClientBenchMessage = {
   id: string;
   senderId: string;
   content: string;
-  identityUsed: "REAL" | "ANON";
-  senderRealName: string | null;
   senderAnonHandle: string;
   createdAt: string;
 };
@@ -140,11 +138,9 @@ export type SendBenchResult =
 export async function sendBenchMessage({
   matchId,
   content,
-  identityUsed,
 }: {
   matchId: string;
   content: string;
-  identityUsed: "REAL" | "ANON";
 }): Promise<SendBenchResult> {
   const supabase = await createClient();
   const {
@@ -157,24 +153,16 @@ export async function sendBenchMessage({
   if (body.length > BODY_MAX) {
     return { error: `Keep it under ${BODY_MAX} characters.` };
   }
-  if (identityUsed !== "REAL" && identityUsed !== "ANON") {
-    return { error: "Invalid identity." };
-  }
 
   const match = await getAuthorizedMatch({ matchId, userId: user.id });
   if (!match) return { error: "Match not found." };
   if (match.status !== "ACTIVE") return { error: "Match is not active." };
 
-  // Identity-lock guarantee: REAL requires realName present (never silently
-  // downgrade to ANON — CLAUDE.md privacy invariant).
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { realName: true, anonHandle: true },
+    select: { anonHandle: true },
   });
   if (!dbUser) return { error: "Account not found." };
-  if (identityUsed === "REAL" && !dbUser.realName) {
-    return { error: "Add a real name to use this identity." };
-  }
 
   let message;
   try {
@@ -183,7 +171,6 @@ export async function sendBenchMessage({
         matchId,
         senderId: user.id,
         content: body,
-        identityUsed,
       },
     });
   } catch {
@@ -225,8 +212,6 @@ export async function sendBenchMessage({
       id: message.id,
       senderId: message.senderId,
       content: message.content,
-      identityUsed: message.identityUsed,
-      senderRealName: dbUser.realName,
       senderAnonHandle: dbUser.anonHandle,
       createdAt: message.createdAt.toISOString(),
     },

@@ -59,17 +59,21 @@ export default async function BenchMatchPage({
   const messagesRaw = await prisma.benchMessage.findMany({
     where: { matchId: id },
     orderBy: { createdAt: "asc" },
-    include: { sender: { select: { realName: true, anonHandle: true } } },
+    include: { sender: { select: { anonHandle: true } } },
   });
   const initialMessages: ClientBenchMessage[] = messagesRaw.map((m) => ({
     id: m.id,
     senderId: m.senderId,
     content: m.content,
-    identityUsed: m.identityUsed,
-    senderRealName: m.sender.realName,
     senderAnonHandle: m.sender.anonHandle,
     createdAt: m.createdAt.toISOString(),
   }));
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { anonHandle: true },
+  });
+  if (!currentUser) redirect("/login");
 
   const isMentor = match.mentorProfile.userId === user.id;
   const otherProfile = isMentor ? match.seekerProfile : match.mentorProfile;
@@ -91,6 +95,7 @@ export default async function BenchMatchPage({
       <BenchChat
         matchId={id}
         currentUserId={user.id}
+        currentUserAnonHandle={currentUser.anonHandle}
         initialMessages={initialMessages}
       />
     </div>

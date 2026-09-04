@@ -23,7 +23,7 @@ export default async function HomePage() {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { realName: true, anonHandle: true, interestTopics: true },
+    select: { anonHandle: true, interestTopics: true },
   });
   if (!dbUser) redirect("/login");
 
@@ -85,7 +85,7 @@ export default async function HomePage() {
         ? ({ kind: "browse" } as const)
         : ({ kind: "idle" } as const);
 
-  const displayName = dbUser.realName ?? dbUser.anonHandle;
+  const displayName = dbUser.anonHandle;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-6 sm:py-10">

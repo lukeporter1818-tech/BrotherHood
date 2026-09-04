@@ -51,11 +51,10 @@ export default async function SquadPostDetailPage({
       userId: true,
       createdAt: true,
       editedAt: true,
-      identityUsed: true,
       deletedAt: true,
       squadId: true,
       squad: { select: { id: true, name: true } },
-      user: { select: { realName: true, anonHandle: true } },
+      user: { select: { anonHandle: true } },
       replies: {
         orderBy: { createdAt: "asc" },
         select: {
@@ -64,9 +63,8 @@ export default async function SquadPostDetailPage({
           userId: true,
           createdAt: true,
           editedAt: true,
-          identityUsed: true,
           deletedAt: true,
-          user: { select: { realName: true, anonHandle: true } },
+          user: { select: { anonHandle: true } },
         },
       },
     },
@@ -74,10 +72,7 @@ export default async function SquadPostDetailPage({
 
   if (!post || post.squadId !== id || !post.squad) notFound();
 
-  const postAuthor =
-    post.identityUsed === "REAL"
-      ? (post.user.realName ?? "Unknown")
-      : post.user.anonHandle;
+  const postAuthor = post.user.anonHandle;
 
   const postDeleted = post.deletedAt !== null;
   const postEdited = wasEdited(post.createdAt, post.editedAt);
@@ -136,10 +131,7 @@ export default async function SquadPostDetailPage({
           {post.replies.map((reply) => {
             const replyDeleted = reply.deletedAt !== null;
             const replyEdited = wasEdited(reply.createdAt, reply.editedAt);
-            const author =
-              reply.identityUsed === "REAL"
-                ? (reply.user.realName ?? "Unknown")
-                : reply.user.anonHandle;
+            const author = reply.user.anonHandle;
             return (
               <div
                 key={reply.id}

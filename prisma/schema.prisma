@@ -10,11 +10,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Identity {
-  REAL
-  ANON
-}
-
 enum ReportTargetType {
   POST
   REPLY
@@ -64,7 +59,6 @@ model User {
   id         String   @id
   email      String?  @unique
   phone      String?
-  realName   String?
   anonHandle String   @unique
   isAdmin    Boolean  @default(false)
   createdAt  DateTime @default(now())
@@ -119,7 +113,6 @@ model Post {
   squad        Squad?    @relation(fields: [squadId], references: [id])
   userId       String
   user         User      @relation(fields: [userId], references: [id])
-  identityUsed Identity
   body         String
   createdAt    DateTime  @default(now())
   deletedAt    DateTime?
@@ -160,7 +153,6 @@ model Reply {
   post         Post      @relation(fields: [postId], references: [id])
   userId       String
   user         User      @relation(fields: [userId], references: [id])
-  identityUsed Identity
   body         String
   createdAt    DateTime  @default(now())
   deletedAt    DateTime?
@@ -253,7 +245,6 @@ model BenchMessage {
   senderId     String
   sender       User       @relation(fields: [senderId], references: [id])
   content      String
-  identityUsed Identity
   createdAt    DateTime   @default(now())
 
   @@index([matchId, createdAt])

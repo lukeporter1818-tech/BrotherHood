@@ -28,7 +28,6 @@ export function PostComposer(props: Props) {
       ) : (
         <input type="hidden" name="squadId" value={props.squadId} />
       )}
-      <input type="hidden" name="identity" value="ANON" />
       <textarea
         name="body"
         rows={3}

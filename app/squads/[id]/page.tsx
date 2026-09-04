@@ -72,8 +72,7 @@ export default async function SquadDetailPage({
       body: true,
       createdAt: true,
       editedAt: true,
-      identityUsed: true,
-      user: { select: { realName: true, anonHandle: true } },
+      user: { select: { anonHandle: true } },
       _count: { select: { replies: { where: { deletedAt: null } } } },
     },
   });
@@ -111,10 +110,7 @@ export default async function SquadDetailPage({
           </div>
         )}
         {posts.map((post) => {
-          const author =
-            post.identityUsed === "REAL"
-              ? (post.user.realName ?? "Unknown")
-              : post.user.anonHandle;
+          const author = post.user.anonHandle;
           return (
             <div
               key={post.id}

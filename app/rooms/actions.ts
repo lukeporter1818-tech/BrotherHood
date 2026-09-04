@@ -17,11 +17,6 @@ export type PostActionState = { error: string | null };
 const BODY_MIN = 1;
 const BODY_MAX = 2000;
 
-function parseIdentity(raw: FormDataEntryValue | null): "REAL" | "ANON" | null {
-  if (raw === "REAL" || raw === "ANON") return raw;
-  return null;
-}
-
 async function requireAuthedUser() {
   const supabase = await createClient();
   const {
@@ -30,7 +25,7 @@ async function requireAuthedUser() {
   if (!user) return null;
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { id: true, realName: true },
+    select: { id: true },
   });
   return dbUser;
 }
@@ -56,18 +51,10 @@ export async function createPost(
   const roomSlug = String(formData.get("roomSlug") ?? "").trim();
   const squadId = String(formData.get("squadId") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  const identity = parseIdentity(formData.get("identity"));
 
   if (!roomSlug && !squadId) return { error: "Missing target." };
   if (roomSlug && squadId) return { error: "Invalid target." };
 
-  if (!identity) return { error: "Pick an identity before posting." };
-  if (identity === "REAL" && !dbUser.realName) {
-    return {
-      error:
-        "You haven't set a real name yet — switch to your anon handle or add a real name in your profile.",
-    };
-  }
   if (body.length < BODY_MIN) return { error: "Say something." };
   if (body.length > BODY_MAX) {
     return { error: `Keep it under ${BODY_MAX} characters.` };
@@ -112,7 +99,6 @@ export async function createPost(
         roomId,
         squadId: resolvedSquadId,
         userId: dbUser.id,
-        identityUsed: identity,
         body,
       },
     });
@@ -136,16 +122,8 @@ export async function createReply(
 
   const postId = String(formData.get("postId") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  const identity = parseIdentity(formData.get("identity"));
 
   if (!postId) return { error: "Missing post." };
-  if (!identity) return { error: "Pick an identity before replying." };
-  if (identity === "REAL" && !dbUser.realName) {
-    return {
-      error:
-        "You haven't set a real name yet — switch to your anon handle or add a real name in your profile.",
-    };
-  }
   if (body.length < BODY_MIN) return { error: "Say something." };
   if (body.length > BODY_MAX) {
     return { error: `Keep it under ${BODY_MAX} characters.` };
@@ -181,7 +159,6 @@ export async function createReply(
       data: {
         postId: post.id,
         userId: dbUser.id,
-        identityUsed: identity,
         body,
       },
     });
