@@ -30,7 +30,7 @@ export default async function BenchPage() {
 
   if (!profile) {
     return (
-      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-8">
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 pt-8 pb-24 sm:pb-8">
         <div>
           <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
             The Bench
@@ -72,7 +72,7 @@ export default async function BenchPage() {
   const pendingAsSeeker = asSeeker.filter((m) => m.status === "PENDING");
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 pt-8 pb-24 sm:pb-8">
       <section>
         <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
           The Bench

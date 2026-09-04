@@ -46,7 +46,7 @@ export default async function SquadDetailPage({
   });
   if (!membership) {
     return (
-      <div className="mx-auto w-full max-w-3xl px-6 py-10">
+      <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
         <Link
           href="/squads"
           className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
@@ -79,7 +79,7 @@ export default async function SquadDetailPage({
   });
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-10">
+    <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
       <Link
         href="/squads"
         className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
