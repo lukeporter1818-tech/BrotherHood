@@ -25,30 +25,10 @@ function formatTimestamp(d: Date): string {
   return `${diffDay}d ago`;
 }
 
-function GearIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  );
-}
-
 export function BriefPanel({ latest, hasTopics, interestTopics }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [customTopic, setCustomTopic] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
 
   function onGenerate() {
     setError(null);
@@ -69,37 +49,17 @@ export function BriefPanel({ latest, hasTopics, interestTopics }: Props) {
         <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">
           Your brief
         </h2>
-        <div className="flex items-center gap-3">
-          {latest && (
-            <span className="text-xs text-slate-500">
-              {formatTimestamp(latest.createdAt)}
-            </span>
-          )}
-          <button
-            type="button"
-            onClick={() => setShowSettings((v) => !v)}
-            aria-label="Manage brief topics"
-            aria-expanded={showSettings}
-            className="text-slate-500 transition-colors hover:text-navy-800 dark:hover:text-parchment-100"
-          >
-            <GearIcon />
-          </button>
-        </div>
+        {latest && (
+          <span className="text-xs text-slate-500">
+            {formatTimestamp(latest.createdAt)}
+          </span>
+        )}
       </div>
 
       <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
-        {showSettings && (
-          <div className="mb-5 border-b border-parchment-200 pb-5 dark:border-navy-800">
-            <InterestsForm initialTopics={interestTopics} />
-          </div>
-        )}
-
-        {!hasTopics && !showSettings && (
-          <p className="mb-3 text-xs text-slate-500">
-            Tap the gear above to add saved topics, or search a one-off topic
-            below.
-          </p>
-        )}
+        <div className="mb-5 border-b border-parchment-200 pb-5 dark:border-navy-800">
+          <InterestsForm initialTopics={interestTopics} />
+        </div>
 
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
