@@ -23,7 +23,7 @@ export default async function HomePage() {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { anonHandle: true, interestTopics: true },
+    select: { anonHandle: true },
   });
   if (!dbUser) redirect("/login");
 
@@ -106,11 +106,7 @@ export default async function HomePage() {
         />
       </div>
 
-      <BriefPanel
-        latest={parsedLatestBrief}
-        hasTopics={dbUser.interestTopics.length > 0}
-        interestTopics={dbUser.interestTopics}
-      />
+      <BriefPanel latest={parsedLatestBrief} />
     </div>
   );
 }

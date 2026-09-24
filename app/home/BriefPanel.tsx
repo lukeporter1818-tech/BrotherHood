@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { generateBrief } from "@/app/home/actions";
-import { InterestsForm } from "@/app/home/InterestsForm";
 import type { BriefPayload } from "@/lib/brief";
 
 type Props = {
@@ -10,9 +9,18 @@ type Props = {
     createdAt: Date;
     content: BriefPayload;
   } | null;
-  hasTopics: boolean;
-  interestTopics: string[];
 };
+
+const PRESETS = [
+  "AI",
+  "Sports",
+  "Movies",
+  "Video Games",
+  "Business",
+  "Technology",
+  "Politics",
+  "Science",
+] as const;
 
 function formatTimestamp(d: Date): string {
   const diffMs = Date.now() - d.getTime();
@@ -25,20 +33,21 @@ function formatTimestamp(d: Date): string {
   return `${diffDay}d ago`;
 }
 
-export function BriefPanel({ latest, hasTopics, interestTopics }: Props) {
+export function BriefPanel({ latest }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [customTopic, setCustomTopic] = useState("");
+  const [topic, setTopic] = useState("");
 
-  function onGenerate() {
+  function runSearch(query: string) {
+    const trimmed = query.trim();
+    if (!trimmed) return;
     setError(null);
-    const topic = customTopic.trim();
     startTransition(async () => {
-      const res = await generateBrief(topic || undefined);
+      const res = await generateBrief(trimmed);
       if (res.error) {
         setError(res.error);
       } else {
-        setCustomTopic("");
+        setTopic("");
       }
     });
   }
@@ -57,44 +66,42 @@ export function BriefPanel({ latest, hasTopics, interestTopics }: Props) {
       </div>
 
       <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
-        <div className="mb-5 border-b border-parchment-200 pb-5 dark:border-navy-800">
-          <InterestsForm initialTopics={interestTopics} />
-        </div>
-
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
-            value={customTopic}
-            onChange={(e) => setCustomTopic(e.target.value)}
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !pending) onGenerate();
+              if (e.key === "Enter" && !pending) runSearch(topic);
             }}
-            placeholder="Or search a specific topic…"
+            placeholder="Search a topic…"
             maxLength={40}
             disabled={pending}
             className="min-w-0 flex-1 rounded border border-parchment-200 bg-white px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-crimson-600 focus:outline-none disabled:opacity-50 dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50 dark:placeholder:text-slate-500"
           />
           <button
             type="button"
-            onClick={onGenerate}
-            disabled={pending || (!hasTopics && !customTopic.trim())}
+            onClick={() => runSearch(topic)}
+            disabled={pending || !topic.trim()}
             className="w-full shrink-0 rounded-full bg-crimson-600 px-4 py-2 text-sm font-medium text-white hover:bg-crimson-700 disabled:opacity-50 sm:w-auto"
           >
-            {pending
-              ? "Generating… (15–40s)"
-              : customTopic.trim()
-                ? "Search"
-                : latest
-                  ? "Generate a new brief"
-                  : "Generate my brief"}
+            {pending ? "Generating… (15–40s)" : "Search"}
           </button>
         </div>
 
-        {customTopic.trim() && (
-          <p className="mt-1.5 text-xs text-slate-500">
-            One-off — won&apos;t affect your saved topics.
-          </p>
-        )}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {PRESETS.map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => runSearch(preset)}
+              disabled={pending}
+              className="rounded-full border border-parchment-200 bg-parchment-50 px-3 py-1.5 text-xs text-navy-800 transition-colors hover:border-navy-700 disabled:opacity-50 dark:border-navy-700 dark:bg-navy-900 dark:text-parchment-200"
+            >
+              {preset}
+            </button>
+          ))}
+        </div>
 
         {error && (
           <p className="mt-3 text-sm text-red-600 dark:text-red-400">
