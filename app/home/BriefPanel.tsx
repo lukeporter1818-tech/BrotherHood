@@ -22,17 +22,6 @@ const PRESETS = [
   "Science",
 ] as const;
 
-function formatTimestamp(d: Date): string {
-  const diffMs = Date.now() - d.getTime();
-  const diffMin = Math.floor(diffMs / 60_000);
-  if (diffMin < 1) return "just now";
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
-  const diffDay = Math.floor(diffHr / 24);
-  return `${diffDay}d ago`;
-}
-
 export function BriefPanel({ latest }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -54,15 +43,10 @@ export function BriefPanel({ latest }: Props) {
 
   return (
     <section>
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">
           Your brief
         </h2>
-        {latest && (
-          <span className="text-xs text-slate-500">
-            {formatTimestamp(latest.createdAt)}
-          </span>
-        )}
       </div>
 
       <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
