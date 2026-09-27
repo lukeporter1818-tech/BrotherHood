@@ -9,64 +9,7 @@ import { getAuthorizedMatch } from "@/lib/bench/matching";
 const BODY_MIN = 1;
 const BODY_MAX = 4096;
 
-// Cap the Hours Listened heuristic at +1h per mentor per match per day so a
-// single active thread can't inflate the badge past what a reasonable
-// listening cadence looks like.
-const HOURS_PER_MENTOR_MESSAGE = 0.1;
-const DAILY_HOURS_CAP_PER_MATCH = 1.0;
-
 type ActionResult = { error: string | null };
-
-export async function requestMatch(mentorProfileId: string): Promise<ActionResult> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { error: "You need to be signed in." };
-
-  const seekerProfile = await prisma.benchProfile.findUnique({
-    where: { userId: user.id },
-    select: { id: true, role: true, journey: true, active: true },
-  });
-  if (!seekerProfile) return { error: "Create your Bench profile first." };
-  if (seekerProfile.role !== "SEEKER") {
-    return { error: "Only seekers can request a mentor." };
-  }
-  if (!seekerProfile.active) return { error: "Your profile is inactive." };
-
-  const mentorProfile = await prisma.benchProfile.findUnique({
-    where: { id: mentorProfileId },
-    select: { id: true, role: true, journey: true, active: true },
-  });
-  if (!mentorProfile || mentorProfile.role !== "MENTOR" || !mentorProfile.active) {
-    return { error: "Mentor is unavailable." };
-  }
-  if (mentorProfile.journey !== seekerProfile.journey) {
-    return { error: "Journey mismatch." };
-  }
-
-  try {
-    await prisma.benchMatch.upsert({
-      where: {
-        mentorProfileId_seekerProfileId: {
-          mentorProfileId: mentorProfile.id,
-          seekerProfileId: seekerProfile.id,
-        },
-      },
-      update: {},
-      create: {
-        mentorProfileId: mentorProfile.id,
-        seekerProfileId: seekerProfile.id,
-      },
-    });
-  } catch {
-    return { error: "Something went wrong. Try again in a moment." };
-  }
-
-  revalidatePath("/bench");
-  revalidatePath("/bench/browse");
-  return { error: null };
-}
 
 export async function acceptMatch(matchId: string): Promise<ActionResult> {
   const supabase = await createClient();
@@ -77,8 +20,8 @@ export async function acceptMatch(matchId: string): Promise<ActionResult> {
 
   const match = await getAuthorizedMatch({ matchId, userId: user.id });
   if (!match) return { error: "Match not found." };
-  if (match.mentorProfile.userId !== user.id) {
-    return { error: "Only the mentor can accept." };
+  if (match.recipientId !== user.id) {
+    return { error: "Only the recipient can accept." };
   }
   if (match.status !== "PENDING") return { error: "Match is not pending." };
 
@@ -105,8 +48,8 @@ export async function declineMatch(matchId: string): Promise<ActionResult> {
 
   const match = await getAuthorizedMatch({ matchId, userId: user.id });
   if (!match) return { error: "Match not found." };
-  if (match.mentorProfile.userId !== user.id) {
-    return { error: "Only the mentor can decline." };
+  if (match.recipientId !== user.id) {
+    return { error: "Only the recipient can decline." };
   }
   if (match.status !== "PENDING") return { error: "Match is not pending." };
 
@@ -175,33 +118,6 @@ export async function sendBenchMessage({
     });
   } catch {
     return { error: "Something went wrong. Try again in a moment." };
-  }
-
-  // Hours Listened heuristic: only mentor replies count, capped per match
-  // per day.
-  const isMentor = match.mentorProfile.userId === user.id;
-  if (isMentor) {
-    try {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-      const mentorMessagesToday = await prisma.benchMessage.count({
-        where: {
-          matchId,
-          senderId: user.id,
-          createdAt: { gte: startOfDay },
-        },
-      });
-      const wouldAdd = HOURS_PER_MENTOR_MESSAGE;
-      const alreadyToday = (mentorMessagesToday - 1) * HOURS_PER_MENTOR_MESSAGE;
-      if (alreadyToday + wouldAdd <= DAILY_HOURS_CAP_PER_MATCH) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { hoursListened: { increment: wouldAdd } },
-        });
-      }
-    } catch {
-      // Hours Listened update is non-critical — don't fail the message send.
-    }
   }
 
   revalidatePath(`/bench/match/${matchId}`);

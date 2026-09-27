@@ -44,8 +44,8 @@ export function StatusStrip({
   recentPostCount: number;
 }) {
   const daily = dailyDone
-    ? { label: "Daily 3 ✓", tone: "positive" as const }
-    : { label: "Daily 3", tone: "action" as const };
+    ? { label: "Check-in ✓", tone: "positive" as const }
+    : { label: "Check-in", tone: "action" as const };
 
   const benchPill = (() => {
     switch (bench.kind) {
@@ -79,7 +79,7 @@ export function StatusStrip({
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Pill href="/checkin" label={daily.label} tone={daily.tone} />
+      <Pill href="/goose" label={daily.label} tone={daily.tone} />
       <Pill
         href={benchPill.href}
         label={benchPill.label}

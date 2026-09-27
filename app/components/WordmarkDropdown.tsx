@@ -9,9 +9,7 @@ const RETRACT_MS = 160;
 const NAV_LINKS = [
   { href: "/home", label: "Home" },
   { href: "/rooms", label: "Rooms" },
-  { href: "/squads", label: "Squads" },
   { href: "/bench", label: "Bench" },
-  { href: "/checkin", label: "Daily 3" },
   { href: "/goose", label: "Goose" },
 ] as const;
 

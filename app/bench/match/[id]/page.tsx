@@ -50,7 +50,7 @@ export default async function BenchMatchPage({
           ← Back to Bench
         </Link>
         <p className="text-sm text-navy-700 dark:text-parchment-200">
-          Waiting on the mentor to accept. Once accepted, you can message here.
+          Waiting for the other person to accept. Once accepted, you can message here.
         </p>
       </div>
     );
@@ -75,8 +75,8 @@ export default async function BenchMatchPage({
   });
   if (!currentUser) redirect("/login");
 
-  const isMentor = match.mentorProfile.userId === user.id;
-  const otherProfile = isMentor ? match.seekerProfile : match.mentorProfile;
+  const isInitiator = match.initiatorId === user.id;
+  const otherUser = isInitiator ? match.recipient : match.initiator;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-6 pt-6 pb-24 sm:pb-6">
@@ -88,9 +88,8 @@ export default async function BenchMatchPage({
           ← Back to Bench
         </Link>
         <h1 className="mt-2 text-lg font-semibold text-navy-950 dark:text-parchment-50">
-          {otherProfile.user.anonHandle}
+          {otherUser.anonHandle}
         </h1>
-        <p className="text-xs text-slate-500">{otherProfile.stageText}</p>
       </div>
       <BenchChat
         matchId={id}

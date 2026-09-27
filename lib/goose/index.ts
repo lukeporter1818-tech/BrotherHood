@@ -5,6 +5,7 @@ import {
   generateResponse,
   type GooseTurn,
 } from "@/lib/goose/responder";
+import { prisma } from "@/lib/prisma";
 
 export type { RiskLevel, GooseTurn };
 
@@ -34,9 +35,11 @@ export type GooseTurnResult = {
 export async function runGooseTurn({
   history,
   userMessage,
+  userId,
 }: {
   history: GooseTurn[];
   userMessage: string;
+  userId: string;
 }): Promise<GooseTurnResult> {
   let riskLevel: RiskLevel;
   let classifierReason: string;
@@ -50,10 +53,25 @@ export async function runGooseTurn({
     classifierReason = classification.reason;
   }
 
+  // Per-turn signal for Goose: has this user already completed today's
+  // check-in? Injected as [checkin: X] on the current user message
+  // alongside [risk: X], NOT into the system prompt (which is cached).
+  const now = new Date();
+  const utcToday = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+  const existingCheckin = await prisma.dailyCheckIn.findUnique({
+    where: { userId_date: { userId, date: utcToday } },
+    select: { id: true },
+  });
+  const checkinPending = !existingCheckin;
+
   const assistantContent = await generateResponse({
     history,
     userMessage,
     riskLevel,
+    userId,
+    checkinPending,
   });
 
   return {

@@ -32,21 +32,6 @@ enum RiskLevel {
   CRISIS
 }
 
-enum BenchJourney {
-  SOBRIETY
-  DIVORCE
-  GRIEF
-  FATHERHOOD
-  MENTAL_HEALTH
-  CAREER_CHANGE
-  OTHER
-}
-
-enum BenchRole {
-  MENTOR
-  SEEKER
-}
-
 enum BenchMatchStatus {
   PENDING
   ACTIVE
@@ -63,25 +48,20 @@ model User {
   isAdmin    Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  // Heuristic tally for The Bench mentor badge. Increments per mentor reply
-  // via a capped-per-day rule in bench server actions — not real session
-  // timing (deferred to a real-product follow-up).
-  hoursListened Float @default(0)
-
   // Personal-brief interest topics. Postgres text[]. Read on demand when the
   // user hits "Generate my brief" on /home. Bounded to 6 topics in the server
   // action; each ≤ 40 chars.
   interestTopics String[] @default([])
 
-  checkIns        DailyCheckIn[]
-  posts           Post[]
-  replies         Reply[]
-  reports         Report[]          @relation("Reporter")
-  memberships     SquadMembership[]
-  wingmanSessions WingmanSession[]
-  benchProfile    BenchProfile?
-  benchMessages   BenchMessage[]
-  briefs          Brief[]
+  checkIns         DailyCheckIn[]
+  posts            Post[]
+  replies          Reply[]
+  reports          Report[]       @relation("Reporter")
+  wingmanSessions  WingmanSession[]
+  matchesInitiated BenchMatch[]   @relation("MatchesInitiated")
+  matchesReceived  BenchMatch[]   @relation("MatchesReceived")
+  benchMessages    BenchMessage[]
+  briefs           Brief[]
 }
 
 model DailyCheckIn {
@@ -90,7 +70,7 @@ model DailyCheckIn {
   user       User     @relation(fields: [userId], references: [id])
   sleepHours Float
   mood       Int
-  moved      Boolean
+  moved      Boolean?
   date       DateTime @default(now()) @db.Date
 
   @@unique([userId, date])
@@ -101,62 +81,38 @@ model Room {
   slug        String  @unique
   displayName String
   description String?
+  sortOrder   Int     @default(0)
 
   posts Post[]
 }
 
 model Post {
-  id           String    @id @default(cuid())
-  roomId       String?
-  room         Room?     @relation(fields: [roomId], references: [id])
-  squadId      String?
-  squad        Squad?    @relation(fields: [squadId], references: [id])
-  userId       String
-  user         User      @relation(fields: [userId], references: [id])
-  body         String
-  createdAt    DateTime  @default(now())
-  deletedAt    DateTime?
-  editedAt     DateTime?
+  id        String    @id @default(cuid())
+  roomId    String
+  room      Room      @relation(fields: [roomId], references: [id])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  body      String
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  editedAt  DateTime?
 
   replies Reply[]
   reports Report[]
 
   @@index([roomId, createdAt])
-  @@index([squadId, createdAt])
-}
-
-model Squad {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-
-  posts       Post[]
-  memberships SquadMembership[]
-}
-
-model SquadMembership {
-  id       String   @id @default(cuid())
-  userId   String
-  user     User     @relation(fields: [userId], references: [id])
-  squadId  String
-  squad    Squad    @relation(fields: [squadId], references: [id])
-  joinedAt DateTime @default(now())
-
-  @@unique([userId, squadId])
-  @@index([squadId])
 }
 
 model Reply {
-  id           String    @id @default(cuid())
-  postId       String
-  post         Post      @relation(fields: [postId], references: [id])
-  userId       String
-  user         User      @relation(fields: [userId], references: [id])
-  body         String
-  createdAt    DateTime  @default(now())
-  deletedAt    DateTime?
-  editedAt     DateTime?
+  id        String    @id @default(cuid())
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  body      String
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  editedAt  DateTime?
 
   reports Report[]
 
@@ -202,50 +158,33 @@ model WingmanMessage {
   @@index([sessionId, createdAt])
 }
 
-model BenchProfile {
-  id        String       @id @default(cuid())
-  userId    String       @unique
-  user      User         @relation(fields: [userId], references: [id])
-  journey   BenchJourney
-  stageText String
-  role      BenchRole
-  bio       String?
-  active    Boolean      @default(true)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-
-  matchesAsMentor BenchMatch[] @relation("MentorMatches")
-  matchesAsSeeker BenchMatch[] @relation("SeekerMatches")
-
-  @@index([journey, role, active])
-}
-
 model BenchMatch {
-  id              String           @id @default(cuid())
-  mentorProfileId String
-  mentorProfile   BenchProfile     @relation("MentorMatches", fields: [mentorProfileId], references: [id])
-  seekerProfileId String
-  seekerProfile   BenchProfile     @relation("SeekerMatches", fields: [seekerProfileId], references: [id])
-  status          BenchMatchStatus @default(PENDING)
-  createdAt       DateTime         @default(now())
-  acceptedAt      DateTime?
-  endedAt         DateTime?
+  id          String           @id @default(cuid())
+  initiatorId String
+  initiator   User             @relation("MatchesInitiated", fields: [initiatorId], references: [id])
+  recipientId String
+  recipient   User             @relation("MatchesReceived", fields: [recipientId], references: [id])
+  context     String?
+  status      BenchMatchStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  acceptedAt  DateTime?
+  endedAt     DateTime?
 
   messages BenchMessage[]
 
-  @@unique([mentorProfileId, seekerProfileId])
-  @@index([mentorProfileId, status])
-  @@index([seekerProfileId, status])
+  @@unique([initiatorId, recipientId])
+  @@index([initiatorId, status])
+  @@index([recipientId, status])
 }
 
 model BenchMessage {
-  id           String     @id @default(cuid())
-  matchId      String
-  match        BenchMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  senderId     String
-  sender       User       @relation(fields: [senderId], references: [id])
-  content      String
-  createdAt    DateTime   @default(now())
+  id        String     @id @default(cuid())
+  matchId   String
+  match     BenchMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User       @relation(fields: [senderId], references: [id])
+  content   String
+  createdAt DateTime   @default(now())
 
   @@index([matchId, createdAt])
 }

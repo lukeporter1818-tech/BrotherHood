@@ -44,3 +44,6 @@ next-env.d.ts
 
 # one-off admin scripts (never commit — may reference service keys)
 /scripts
+
+# Claude Code local memory and settings
+.claude/

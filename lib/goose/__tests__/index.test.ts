@@ -9,20 +9,31 @@ vi.mock("@/lib/goose/classifier", () => ({
 vi.mock("@/lib/goose/responder", () => ({
   generateResponse: vi.fn(),
 }));
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    dailyCheckIn: {
+      findUnique: vi.fn(),
+    },
+  },
+}));
 
 import { runGooseTurn } from "@/lib/goose";
 import { isCrisisTripwire } from "@/lib/goose/tripwire";
 import { classifyRisk } from "@/lib/goose/classifier";
 import { generateResponse } from "@/lib/goose/responder";
+import { prisma } from "@/lib/prisma";
 
 const tripwireMock = vi.mocked(isCrisisTripwire);
 const classifyMock = vi.mocked(classifyRisk);
 const responderMock = vi.mocked(generateResponse);
+const findCheckinMock = vi.mocked(prisma.dailyCheckIn.findUnique);
 
 beforeEach(() => {
   tripwireMock.mockReset();
   classifyMock.mockReset();
   responderMock.mockReset();
+  findCheckinMock.mockReset();
+  findCheckinMock.mockResolvedValue(null);
   responderMock.mockResolvedValue("assistant response text");
 });
 
@@ -33,6 +44,7 @@ describe("runGooseTurn — core safety guarantee", () => {
     const result = await runGooseTurn({
       history: [],
       userMessage: "kill myself",
+      userId: "test-user-id",
     });
 
     expect(classifyMock).not.toHaveBeenCalled();
@@ -48,7 +60,11 @@ describe("runGooseTurn — core safety guarantee", () => {
       reason: "normal conversation",
     });
 
-    await runGooseTurn({ history: [], userMessage: "I had a normal day" });
+    await runGooseTurn({
+      history: [],
+      userMessage: "I had a normal day",
+      userId: "test-user-id",
+    });
 
     expect(classifyMock).toHaveBeenCalledOnce();
     expect(classifyMock).toHaveBeenCalledWith("I had a normal day");
@@ -60,7 +76,11 @@ describe("runGooseTurn — escalated flag is true iff CRISIS", () => {
     tripwireMock.mockReturnValue(false);
     classifyMock.mockResolvedValue({ level: "CRISIS", reason: "test" });
 
-    const result = await runGooseTurn({ history: [], userMessage: "x" });
+    const result = await runGooseTurn({
+      history: [],
+      userMessage: "x",
+      userId: "test-user-id",
+    });
     expect(result.escalated).toBe(true);
   });
 
@@ -68,7 +88,11 @@ describe("runGooseTurn — escalated flag is true iff CRISIS", () => {
     tripwireMock.mockReturnValue(false);
     classifyMock.mockResolvedValue({ level: "ELEVATED", reason: "test" });
 
-    const result = await runGooseTurn({ history: [], userMessage: "x" });
+    const result = await runGooseTurn({
+      history: [],
+      userMessage: "x",
+      userId: "test-user-id",
+    });
     expect(result.escalated).toBe(false);
   });
 
@@ -76,7 +100,11 @@ describe("runGooseTurn — escalated flag is true iff CRISIS", () => {
     tripwireMock.mockReturnValue(false);
     classifyMock.mockResolvedValue({ level: "NONE", reason: "test" });
 
-    const result = await runGooseTurn({ history: [], userMessage: "x" });
+    const result = await runGooseTurn({
+      history: [],
+      userMessage: "x",
+      userId: "test-user-id",
+    });
     expect(result.escalated).toBe(false);
   });
 });
@@ -87,20 +115,30 @@ describe("runGooseTurn — responder wiring", () => {
     classifyMock.mockResolvedValue({ level: "ELEVATED", reason: "test" });
 
     const history = [{ role: "USER" as const, content: "prior message" }];
-    await runGooseTurn({ history, userMessage: "current message" });
+    await runGooseTurn({
+      history,
+      userMessage: "current message",
+      userId: "test-user-id",
+    });
 
     expect(responderMock).toHaveBeenCalledOnce();
     expect(responderMock).toHaveBeenCalledWith({
       history,
       userMessage: "current message",
       riskLevel: "ELEVATED",
+      userId: "test-user-id",
+      checkinPending: true,
     });
   });
 
   it("passes CRISIS to the responder when the tripwire fires", async () => {
     tripwireMock.mockReturnValue(true);
 
-    await runGooseTurn({ history: [], userMessage: "kill myself" });
+    await runGooseTurn({
+      history: [],
+      userMessage: "kill myself",
+      userId: "test-user-id",
+    });
 
     expect(responderMock).toHaveBeenCalledWith(
       expect.objectContaining({ riskLevel: "CRISIS" }),

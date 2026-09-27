@@ -1,10 +1,5 @@
 "use server";
 
-// NOTE: file location is misleading — these actions handle BOTH room posts
-// and squad posts (Post is polymorphic via nullable roomId/squadId).
-// Future refactor: move to app/actions/posts.ts. Out of scope for the Squads
-// demo build.
-
 import "server-only";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
@@ -30,14 +25,6 @@ async function requireAuthedUser() {
   return dbUser;
 }
 
-async function isMember(userId: string, squadId: string) {
-  const m = await prisma.squadMembership.findUnique({
-    where: { userId_squadId: { userId, squadId } },
-    select: { id: true },
-  });
-  return m !== null;
-}
-
 export async function createPost(
   _prev: PostActionState,
   formData: FormData,
@@ -49,41 +36,19 @@ export async function createPost(
   if (!allowed) return { error: "You're posting too quickly. Wait a moment." };
 
   const roomSlug = String(formData.get("roomSlug") ?? "").trim();
-  const squadId = String(formData.get("squadId") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
 
-  if (!roomSlug && !squadId) return { error: "Missing target." };
-  if (roomSlug && squadId) return { error: "Invalid target." };
-
+  if (!roomSlug) return { error: "Missing room." };
   if (body.length < BODY_MIN) return { error: "Say something." };
   if (body.length > BODY_MAX) {
     return { error: `Keep it under ${BODY_MAX} characters.` };
   }
 
-  let roomId: string | null = null;
-  let resolvedSquadId: string | null = null;
-  let revalidateTarget: string;
-
-  if (squadId) {
-    const squad = await prisma.squad.findUnique({
-      where: { id: squadId },
-      select: { id: true },
-    });
-    if (!squad) return { error: "Squad not found." };
-    if (!(await isMember(dbUser.id, squad.id))) {
-      return { error: "You're not a member of this squad." };
-    }
-    resolvedSquadId = squad.id;
-    revalidateTarget = `/squads/${squad.id}`;
-  } else {
-    const room = await prisma.room.findUnique({
-      where: { slug: roomSlug },
-      select: { id: true, slug: true },
-    });
-    if (!room) return { error: "Room not found." };
-    roomId = room.id;
-    revalidateTarget = `/rooms/${room.slug}`;
-  }
+  const room = await prisma.room.findUnique({
+    where: { slug: roomSlug },
+    select: { id: true, slug: true },
+  });
+  if (!room) return { error: "Room not found." };
 
   const tox = await checkToxicity(body);
   if (tox.flagged) {
@@ -96,8 +61,7 @@ export async function createPost(
   try {
     await prisma.post.create({
       data: {
-        roomId,
-        squadId: resolvedSquadId,
+        roomId: room.id,
         userId: dbUser.id,
         body,
       },
@@ -106,7 +70,7 @@ export async function createPost(
     return { error: "Something went wrong. Try again in a moment." };
   }
 
-  revalidatePath(revalidateTarget);
+  revalidatePath(`/rooms/${room.slug}`);
   return { error: null };
 }
 
@@ -133,18 +97,10 @@ export async function createReply(
     where: { id: postId },
     select: {
       id: true,
-      roomId: true,
-      squadId: true,
       room: { select: { slug: true } },
     },
   });
   if (!post) return { error: "Post not found." };
-
-  if (post.squadId) {
-    if (!(await isMember(dbUser.id, post.squadId))) {
-      return { error: "You're not a member of this squad." };
-    }
-  }
 
   const tox = await checkToxicity(body);
   if (tox.flagged) {
@@ -166,10 +122,7 @@ export async function createReply(
     return { error: "Something went wrong. Try again in a moment." };
   }
 
-  const revalidateTarget = post.squadId
-    ? `/squads/${post.squadId}/${post.id}`
-    : `/rooms/${post.room?.slug ?? ""}/${post.id}`;
-  revalidatePath(revalidateTarget);
+  revalidatePath(`/rooms/${post.room.slug}/${post.id}`);
   return { error: null };
 }
 
@@ -189,7 +142,6 @@ export async function editPost(
     select: {
       userId: true,
       deletedAt: true,
-      squadId: true,
       room: { select: { slug: true } },
     },
   });
@@ -205,13 +157,8 @@ export async function editPost(
     return { error: "Something went wrong. Try again in a moment." };
   }
 
-  if (post.squadId) {
-    revalidatePath(`/squads/${post.squadId}`);
-    revalidatePath(`/squads/${post.squadId}/${postId}`);
-  } else {
-    revalidatePath(`/rooms/${post.room?.slug ?? ""}`);
-    revalidatePath(`/rooms/${post.room?.slug ?? ""}/${postId}`);
-  }
+  revalidatePath(`/rooms/${post.room.slug}`);
+  revalidatePath(`/rooms/${post.room.slug}/${postId}`);
   return { error: null };
 }
 
@@ -224,7 +171,6 @@ export async function deletePost(postId: string): Promise<PostActionState> {
     select: {
       userId: true,
       deletedAt: true,
-      squadId: true,
       room: { select: { slug: true } },
     },
   });
@@ -240,13 +186,8 @@ export async function deletePost(postId: string): Promise<PostActionState> {
     return { error: "Something went wrong. Try again in a moment." };
   }
 
-  if (post.squadId) {
-    revalidatePath(`/squads/${post.squadId}`);
-    revalidatePath(`/squads/${post.squadId}/${postId}`);
-  } else {
-    revalidatePath(`/rooms/${post.room?.slug ?? ""}`);
-    revalidatePath(`/rooms/${post.room?.slug ?? ""}/${postId}`);
-  }
+  revalidatePath(`/rooms/${post.room.slug}`);
+  revalidatePath(`/rooms/${post.room.slug}/${postId}`);
   return { error: null };
 }
 
@@ -269,7 +210,6 @@ export async function editReply(
       post: {
         select: {
           id: true,
-          squadId: true,
           room: { select: { slug: true } },
         },
       },
@@ -287,11 +227,7 @@ export async function editReply(
     return { error: "Something went wrong. Try again in a moment." };
   }
 
-  if (reply.post.squadId) {
-    revalidatePath(`/squads/${reply.post.squadId}/${reply.post.id}`);
-  } else {
-    revalidatePath(`/rooms/${reply.post.room?.slug ?? ""}/${reply.post.id}`);
-  }
+  revalidatePath(`/rooms/${reply.post.room.slug}/${reply.post.id}`);
   return { error: null };
 }
 
@@ -307,7 +243,6 @@ export async function deleteReply(replyId: string): Promise<PostActionState> {
       post: {
         select: {
           id: true,
-          squadId: true,
           room: { select: { slug: true } },
         },
       },
@@ -325,10 +260,6 @@ export async function deleteReply(replyId: string): Promise<PostActionState> {
     return { error: "Something went wrong. Try again in a moment." };
   }
 
-  if (reply.post.squadId) {
-    revalidatePath(`/squads/${reply.post.squadId}/${reply.post.id}`);
-  } else {
-    revalidatePath(`/rooms/${reply.post.room?.slug ?? ""}/${reply.post.id}`);
-  }
+  revalidatePath(`/rooms/${reply.post.room.slug}/${reply.post.id}`);
   return { error: null };
 }

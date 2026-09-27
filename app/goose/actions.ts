@@ -84,7 +84,7 @@ export async function sendGooseMessage(userText: string): Promise<SendResult> {
 
   let turnResult;
   try {
-    turnResult = await runGooseTurn({ history, userMessage: body });
+    turnResult = await runGooseTurn({ history, userMessage: body, userId: user.id });
   } catch (err) {
     console.error("[goose] runGooseTurn failed", err);
     // Roll back the orphan user message so the conversation history isn't

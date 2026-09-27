@@ -63,6 +63,8 @@ describe("responder — no text blocks throws (folded in per plan)", () => {
         history: [],
         userMessage: "hi",
         riskLevel: "NONE",
+        userId: "test-user-id",
+        checkinPending: false,
       }),
     ).rejects.toThrow(/no text content/);
   });

@@ -33,9 +33,7 @@ export default async function AdminReportsPage() {
           id: true,
           body: true,
           deletedAt: true,
-          squadId: true,
           room: { select: { slug: true, displayName: true } },
-          squad: { select: { id: true, name: true } },
         },
       },
       reply: {
@@ -46,9 +44,7 @@ export default async function AdminReportsPage() {
           postId: true,
           post: {
             select: {
-              squadId: true,
               room: { select: { slug: true, displayName: true } },
-              squad: { select: { id: true, name: true } },
             },
           },
         },
@@ -81,19 +77,13 @@ export default async function AdminReportsPage() {
             let contentLink = "";
 
             if (isPost && r.post) {
-              if (r.post.squadId && r.post.squad) {
-                contextLabel = `Squad · ${r.post.squad.name}`;
-                contentLink = `/squads/${r.post.squad.id}/${r.post.id}`;
-              } else if (r.post.room) {
+              if (r.post.room) {
                 contextLabel = r.post.room.displayName;
                 contentLink = `/rooms/${r.post.room.slug}/${r.post.id}`;
               }
             } else if (!isPost && r.reply) {
               const parent = r.reply.post;
-              if (parent.squadId && parent.squad) {
-                contextLabel = `Squad · ${parent.squad.name}`;
-                contentLink = `/squads/${parent.squad.id}/${r.reply.postId}`;
-              } else if (parent.room) {
+              if (parent.room) {
                 contextLabel = parent.room.displayName;
                 contentLink = `/rooms/${parent.room.slug}/${r.reply.postId}`;
               }

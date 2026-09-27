@@ -33,29 +33,21 @@ export default async function HomePage() {
   );
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const [checkIn, benchProfile, activeBenchCount, recentPostCount, latestBrief] =
+  const [checkIn, activeBenchCount, recentPostCount, latestBrief] =
     await Promise.all([
       prisma.dailyCheckIn.findFirst({
         where: { userId: user.id, date: { gte: utcToday } },
         select: { id: true },
       }),
-      prisma.benchProfile.findUnique({
-        where: { userId: user.id },
-        select: { id: true, role: true },
-      }),
       prisma.benchMatch.count({
         where: {
-          OR: [
-            { mentorProfile: { userId: user.id } },
-            { seekerProfile: { userId: user.id } },
-          ],
+          OR: [{ initiatorId: user.id }, { recipientId: user.id }],
           status: "ACTIVE",
         },
       }),
       prisma.post.count({
         where: {
           deletedAt: null,
-          roomId: { not: null },
           createdAt: { gte: twentyFourHoursAgo },
         },
       }),
@@ -66,8 +58,6 @@ export default async function HomePage() {
       }),
     ]);
 
-  // Brief.content is Prisma.Json — validate at the read boundary so the
-  // client never sees a shape the panel isn't built to render.
   const parsedLatestBrief = latestBrief
     ? (() => {
         const parsed = BriefPayloadSchema.safeParse(latestBrief.content);
@@ -77,13 +67,10 @@ export default async function HomePage() {
       })()
     : null;
 
-  const benchState = !benchProfile
-    ? ({ kind: "no-profile" } as const)
-    : activeBenchCount > 0
+  const benchState =
+    activeBenchCount > 0
       ? ({ kind: "active", count: activeBenchCount } as const)
-      : benchProfile.role === "SEEKER"
-        ? ({ kind: "browse" } as const)
-        : ({ kind: "idle" } as const);
+      : ({ kind: "idle" } as const);
 
   const displayName = dbUser.anonHandle;
 
