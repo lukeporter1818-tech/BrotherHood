@@ -39,6 +39,36 @@ const LOG_CHECKIN_TOOL: Anthropic.Tool = {
   },
 };
 
+// Tool: propose_connection — invoked by Goose ONLY after the user has
+// explicitly confirmed in conversation they want to be connected with
+// someone. Looks up a candidate who has opted in to help in the given
+// room (ranked by fewest active matches to spread load), guards against
+// creating a duplicate PENDING/ACTIVE match in either direction, and
+// creates a BenchMatch with status PENDING for the recipient to accept
+// or decline. Returns a structured result so Goose can respond honestly
+// in conversation ("I reached out" vs "no one's free right now").
+const PROPOSE_CONNECTION_TOOL: Anthropic.Tool = {
+  name: "propose_connection",
+  description:
+    "Create a pending 1:1 connection between the current user and another user who has opted in to help on this topic. Call ONLY after the user has explicitly confirmed in conversation that they want you to try to connect them with someone. Returns whether a candidate was found and matched, or that no one is currently available.",
+  input_schema: {
+    type: "object",
+    properties: {
+      roomSlug: {
+        type: "string",
+        description:
+          "Slug of the topic room this connection is about. Must be one of: sobriety, fatherhood, fitness, entrepreneurship, relationships, grief, faith, mental-health.",
+      },
+      context: {
+        type: "string",
+        description:
+          "One or two sentences on why this connection is being offered. Stored on the BenchMatch and visible to both parties when the recipient decides whether to accept. Should be specific enough to give the recipient a real signal ('going through a divorce, first week') without being verbatim quotes from the conversation.",
+      },
+    },
+    required: ["roomSlug", "context"],
+  },
+};
+
 async function handleLogCheckin({
   userId,
   input,
@@ -69,6 +99,95 @@ async function handleLogCheckin({
   });
 
   return { ok: true };
+}
+
+type ProposeConnectionResult =
+  | { ok: false; error: string }
+  | { ok: true; found: false; reason: "no_helpers" | "already_matched" }
+  | { ok: true; found: true; matchId: string; roomSlug: string };
+
+async function handleProposeConnection({
+  userId,
+  input,
+}: {
+  userId: string;
+  input: unknown;
+}): Promise<ProposeConnectionResult> {
+  const parsed = input as { roomSlug?: unknown; context?: unknown };
+  const roomSlug =
+    typeof parsed.roomSlug === "string" ? parsed.roomSlug.trim() : "";
+  const context =
+    typeof parsed.context === "string" ? parsed.context.trim() : "";
+
+  if (!roomSlug) return { ok: false, error: "roomSlug is required" };
+  if (context.length < 5) {
+    return { ok: false, error: "context is required (at least 5 chars)" };
+  }
+  if (context.length > 500) {
+    return { ok: false, error: "context must be at most 500 chars" };
+  }
+
+  const room = await prisma.room.findUnique({
+    where: { slug: roomSlug },
+    select: { id: true, slug: true },
+  });
+  if (!room) return { ok: false, error: `unknown_room: ${roomSlug}` };
+
+  // Candidate lookup: users who have opted in to help on this room,
+  // excluding the current user.
+  const availability = await prisma.roomAvailability.findMany({
+    where: { roomId: room.id, userId: { not: userId } },
+    select: { userId: true },
+  });
+  if (availability.length === 0) {
+    return { ok: true, found: false, reason: "no_helpers" };
+  }
+
+  // Rank by ascending active-match count to spread load across helpers.
+  // At MVP scale (small N) an N+1 is fine; can be swapped for a single
+  // raw-SQL aggregate later.
+  const candidatesWithCounts = await Promise.all(
+    availability.map(async (a) => {
+      const activeCount = await prisma.benchMatch.count({
+        where: {
+          status: "ACTIVE",
+          OR: [{ initiatorId: a.userId }, { recipientId: a.userId }],
+        },
+      });
+      return { userId: a.userId, activeCount };
+    }),
+  );
+  candidatesWithCounts.sort((a, b) => a.activeCount - b.activeCount);
+
+  // Duplicate-match guard: skip any candidate who already has a
+  // PENDING or ACTIVE match with the initiator in either direction.
+  for (const candidate of candidatesWithCounts) {
+    const existing = await prisma.benchMatch.findFirst({
+      where: {
+        status: { in: ["PENDING", "ACTIVE"] },
+        OR: [
+          { initiatorId: userId, recipientId: candidate.userId },
+          { initiatorId: candidate.userId, recipientId: userId },
+        ],
+      },
+      select: { id: true },
+    });
+    if (existing) continue;
+
+    const match = await prisma.benchMatch.create({
+      data: {
+        initiatorId: userId,
+        recipientId: candidate.userId,
+        context,
+        status: "PENDING",
+      },
+      select: { id: true },
+    });
+    return { ok: true, found: true, matchId: match.id, roomSlug: room.slug };
+  }
+
+  // All candidates already have an existing match with this initiator.
+  return { ok: true, found: false, reason: "already_matched" };
 }
 
 const MAX_TOOL_ITERATIONS = 3;
@@ -105,7 +224,7 @@ export async function generateResponse({
       max_tokens: 16000,
       cache_control: { type: "ephemeral" },
       system: GOOSE_SYSTEM_PROMPT,
-      tools: [LOG_CHECKIN_TOOL],
+      tools: [LOG_CHECKIN_TOOL, PROPOSE_CONNECTION_TOOL],
       messages,
     });
 
@@ -129,6 +248,17 @@ export async function generateResponse({
       if (block.type !== "tool_use") continue;
       if (block.name === "log_checkin") {
         const result = await handleLogCheckin({ userId, input: block.input });
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: block.id,
+          content: JSON.stringify(result),
+          is_error: !result.ok,
+        });
+      } else if (block.name === "propose_connection") {
+        const result = await handleProposeConnection({
+          userId,
+          input: block.input,
+        });
         toolResults.push({
           type: "tool_result",
           tool_use_id: block.id,

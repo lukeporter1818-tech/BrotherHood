@@ -62,6 +62,7 @@ model User {
   matchesReceived  BenchMatch[]   @relation("MatchesReceived")
   benchMessages    BenchMessage[]
   briefs           Brief[]
+  roomAvailability RoomAvailability[]
 }
 
 model DailyCheckIn {
@@ -83,7 +84,8 @@ model Room {
   description String?
   sortOrder   Int     @default(0)
 
-  posts Post[]
+  posts          Post[]
+  availableUsers RoomAvailability[]
 }
 
 model Post {
@@ -203,4 +205,16 @@ model Brief {
   model     String
 
   @@index([userId, createdAt(sort: Desc)])
+}
+
+model RoomAvailability {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roomId])
+  @@index([roomId])
 }

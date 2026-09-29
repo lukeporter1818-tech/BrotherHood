@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { AcceptDeclineButtons } from "@/app/bench/AcceptDeclineButtons";
+import { AvailabilityToggles } from "@/app/bench/AvailabilityToggles";
 
 export const metadata = { title: "The Bench — Brotherhood" };
 
@@ -13,7 +14,7 @@ export default async function BenchPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [asInitiator, asRecipient] = await Promise.all([
+  const [asInitiator, asRecipient, rooms, myAvailability] = await Promise.all([
     prisma.benchMatch.findMany({
       where: { initiatorId: user.id },
       include: { recipient: { select: { anonHandle: true } } },
@@ -24,7 +25,17 @@ export default async function BenchPage() {
       include: { initiator: { select: { anonHandle: true } } },
       orderBy: { createdAt: "desc" },
     }),
+    prisma.room.findMany({
+      select: { slug: true, displayName: true },
+      orderBy: { sortOrder: "asc" },
+    }),
+    prisma.roomAvailability.findMany({
+      where: { userId: user.id },
+      select: { room: { select: { slug: true } } },
+    }),
   ]);
+
+  const enabledSlugs = myAvailability.map((a) => a.room.slug);
 
   const pendingForMe = asRecipient.filter((m) => m.status === "PENDING");
   const pendingFromMe = asInitiator.filter((m) => m.status === "PENDING");
@@ -134,6 +145,16 @@ export default async function BenchPage() {
           </ul>
         </section>
       )}
+
+      <section>
+        <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
+          Where you&apos;re open to connecting
+        </h2>
+        <p className="mt-1 mb-3 text-sm text-navy-700 dark:text-parchment-200">
+          Turn on the rooms where you&apos;re willing to support someone who&apos;s going through it. Goose will only suggest you as a connection in rooms you&apos;ve enabled.
+        </p>
+        <AvailabilityToggles rooms={rooms} enabledSlugs={enabledSlugs} />
+      </section>
     </div>
   );
 }
