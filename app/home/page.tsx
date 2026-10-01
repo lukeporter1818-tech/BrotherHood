@@ -33,7 +33,7 @@ export default async function HomePage() {
   );
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const [checkIn, activeBenchCount, recentPostCount, latestBrief] =
+  const [checkIn, activeBenchCount, recentPostCount, latestBrief, dailyBrief] =
     await Promise.all([
       prisma.dailyCheckIn.findFirst({
         where: { userId: user.id, date: { gte: utcToday } },
@@ -55,6 +55,10 @@ export default async function HomePage() {
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
         select: { createdAt: true, content: true },
+      }),
+      prisma.dailyBrief.findUnique({
+        where: { date: utcToday },
+        select: { headline: true, blurb: true, url: true },
       }),
     ]);
 
@@ -93,7 +97,7 @@ export default async function HomePage() {
         />
       </div>
 
-      <BriefPanel latest={parsedLatestBrief} />
+      <BriefPanel latest={parsedLatestBrief} dailyBrief={dailyBrief} />
     </div>
   );
 }

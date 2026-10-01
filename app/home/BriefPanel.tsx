@@ -9,6 +9,11 @@ type Props = {
     createdAt: Date;
     content: BriefPayload;
   } | null;
+  dailyBrief: {
+    headline: string;
+    blurb: string;
+    url: string;
+  } | null;
 };
 
 const PRESETS = [
@@ -22,7 +27,7 @@ const PRESETS = [
   "Science",
 ] as const;
 
-export function BriefPanel({ latest }: Props) {
+export function BriefPanel({ latest, dailyBrief }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [topic, setTopic] = useState("");
@@ -93,7 +98,7 @@ export function BriefPanel({ latest }: Props) {
           </p>
         )}
 
-        {latest && !pending && (
+        {!pending && latest && (
           <div className="mt-5 max-h-[480px] overflow-y-auto pr-1">
             <div className="flex flex-col gap-8">
               {latest.content.sections.map((section) => (
@@ -127,6 +132,27 @@ export function BriefPanel({ latest }: Props) {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {!pending && !latest && dailyBrief && (
+          <div className="mt-5">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-crimson-600">
+              This morning
+            </h3>
+            <a
+              href={dailyBrief.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <p className="text-base font-semibold text-navy-950 hover:text-crimson-600 dark:text-parchment-50 dark:hover:text-crimson-500">
+                {dailyBrief.headline}
+              </p>
+            </a>
+            <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+              {dailyBrief.blurb}
+            </p>
           </div>
         )}
       </div>

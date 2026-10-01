@@ -207,6 +207,25 @@ model Brief {
   @@index([userId, createdAt(sort: Desc)])
 }
 
+model DailyBrief {
+  id        String   @id @default(cuid())
+  // Unique per UTC calendar day — enforces one row per day at the DB
+  // level, so a double-fired cron can't produce two stories for the
+  // same date. @db.Date collapses sub-day timestamp drift to one key.
+  date      DateTime @unique @db.Date
+  headline  String
+  blurb     String
+  // Required, not optional — product rule: the daily story always
+  // links to its source, same as the user-driven brief path.
+  url       String
+  // Which seed topic from the rotation produced this run. For audit;
+  // never shown to users.
+  topicSeed String
+  // Which model produced this run, for audit and future comparison.
+  model     String
+  createdAt DateTime @default(now())
+}
+
 model RoomAvailability {
   id        String   @id @default(cuid())
   userId    String
