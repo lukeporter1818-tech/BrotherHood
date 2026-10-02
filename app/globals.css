@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/* ─── Brotherhood custom color scales ────────────────────────────────────────
-   Defined in @theme (static values) so Tailwind generates all utility
-   classes: bg-navy-*, text-crimson-*, border-parchment-*, etc.
-   ──────────────────────────────────────────────────────────────────────── */
 /* ─── Rope-ladder dropdown animation ─────────────────────────────────────────
    rope-drop: falls from above, overshoots at 55%, settles at 78%, rests.
    rope-retract: tiny dip at 30% (slack going taut), then whisked back up.
@@ -26,50 +22,43 @@
   --animate-rope-retract: rope-retract 160ms ease-in  forwards;
 }
 
+/* ─── Night Channel palette (Concept C) — dark-only ──────────────────────────
+   Surface stack (lightest to darkest step up): bg → surface → elevated → border.
+   `elevated` sits above `surface` and is for raised panels / chat bubbles —
+   anywhere you need separation without drawing a literal border line.
+   `signal` (#4F9C86) is the general-purpose accent.
+   `live`   (#D98B3E) is RESERVED for active/live indicators (e.g. an active
+            Bench match). Do not use it as a generic amber accent anywhere else.
+   `crisis` (#B5544A) is scoped to crisis-signaling surfaces: the CrisisButton
+            FAB + dialog, CrisisResources, app/crisis/page.tsx, the Goose
+            escalation card, and the Wordmark "Get help" entry. Do not use
+            it on routine UI.
+   ──────────────────────────────────────────────────────────────────────── */
 @theme {
-  /* Deep colonial navy — dark mode page/surface/border */
-  --color-navy-950: #0D1B2A;
-  --color-navy-900: #152338;
-  --color-navy-800: #1E3550;
-  --color-navy-700: #2A4A6E;
+  --color-bg:         #15181A;
+  --color-surface:    #1C2023;
+  --color-elevated:   #262B2E;
+  --color-border:     #333A3E;
+  --color-text:       #E8EDEE;
+  --color-text-muted: #8C969B;
+  --color-signal:     #4F9C86;
+  --color-live:       #D98B3E;
+  --color-crisis:     #B5544A;
 
-  /* Aged parchment — light mode page/surface/border */
-  --color-parchment-50:  #F5F0E6;
-  --color-parchment-100: #EDE6D6;
-  --color-parchment-200: #D8CDB8;
-
-  /* Old Glory crimson — interactive accent (buttons, active nav, links) */
-  --color-crimson-700: #8B1A1A;
-  --color-crimson-600: #A82020;
-  --color-crimson-500: #C42828;
+  --font-sans: var(--font-work-sans);
+  --font-mono: var(--font-ibm-plex-mono);
 }
 
-/* ─── Semantic bg/fg vars — light mode default ───────────────────────────── */
 :root {
-  --background: #F5F0E6;
-  --foreground: #0D1B2A;
-}
-
-/* ─── Dynamic aliases — bg-background / text-foreground track the vars ────── */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* ─── Dark mode overrides ──────────────────────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0D1B2A;
-    --foreground: #F0EAD6;
-  }
+  color-scheme: dark;
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 /* ─── iOS Safari auto-zoom fix ────────────────────────────────────────────────

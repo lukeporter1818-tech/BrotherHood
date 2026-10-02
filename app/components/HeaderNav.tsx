@@ -30,8 +30,8 @@ export function HeaderNav({ isAdmin }: { isAdmin: boolean }) {
             aria-current={active ? "page" : undefined}
             className={`text-xs font-semibold uppercase tracking-wide ${
               active
-                ? "text-crimson-600 dark:text-crimson-500"
-                : "text-navy-700 hover:text-crimson-600 dark:text-parchment-200 dark:hover:text-crimson-500"
+                ? "text-signal"
+                : "text-text-muted hover:text-signal"
             }`}
           >
             {link.label}

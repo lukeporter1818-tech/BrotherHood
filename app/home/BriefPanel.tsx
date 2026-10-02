@@ -49,12 +49,12 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
   return (
     <section>
       <div className="mb-3">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-text-muted">
           Your brief
         </h2>
       </div>
 
-      <div className="rounded border border-parchment-200 bg-parchment-50 p-5 dark:border-navy-800 dark:bg-navy-900">
+      <div className="rounded border border-border bg-surface p-5">
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
@@ -66,13 +66,13 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
             placeholder="Conspiracies, Peptides, Golf, UFC…"
             maxLength={40}
             disabled={pending}
-            className="min-w-0 flex-1 rounded border border-parchment-200 bg-white px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-crimson-600 focus:outline-none disabled:opacity-50 dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50 dark:placeholder:text-slate-500"
+            className="min-w-0 flex-1 rounded border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-signal focus:outline-none disabled:opacity-50"
           />
           <button
             type="button"
             onClick={() => runSearch(topic)}
             disabled={pending || !topic.trim()}
-            className="w-full shrink-0 rounded-full bg-crimson-600 px-4 py-2 text-sm font-medium text-white hover:bg-crimson-700 disabled:opacity-50 sm:w-auto"
+            className="w-full shrink-0 rounded-full bg-signal px-4 py-2 text-sm font-medium text-white hover:bg-signal/90 disabled:opacity-50 sm:w-auto"
           >
             {pending ? "Generating… (15–40s)" : "Search"}
           </button>
@@ -85,7 +85,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
               type="button"
               onClick={() => runSearch(preset)}
               disabled={pending}
-              className="rounded-full border border-parchment-200 bg-parchment-50 px-3 py-1.5 text-xs text-navy-800 transition-colors hover:border-navy-700 disabled:opacity-50 dark:border-navy-700 dark:bg-navy-900 dark:text-parchment-200"
+              className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-text-muted transition-colors hover:border-signal disabled:opacity-50"
             >
               {preset}
             </button>
@@ -93,7 +93,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
         </div>
 
         {error && (
-          <p className="mt-3 text-sm text-red-600 dark:text-red-400">
+          <p className="mt-3 text-sm text-red-400">
             {error}
           </p>
         )}
@@ -103,7 +103,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
             <div className="flex flex-col gap-8">
               {latest.content.sections.map((section) => (
                 <div key={section.topic}>
-                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-crimson-600">
+                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-signal">
                     {section.topic}
                   </h3>
                   <ul className="flex flex-col gap-4">
@@ -114,16 +114,16 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
                             href={item.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm font-semibold text-navy-950 hover:text-crimson-600 dark:text-parchment-50 dark:hover:text-crimson-500"
+                            className="text-sm font-semibold text-text hover:text-signal"
                           >
                             {item.headline}
                           </a>
                         ) : (
-                          <p className="text-sm font-semibold text-navy-950 dark:text-parchment-50">
+                          <p className="text-sm font-semibold text-text">
                             {item.headline}
                           </p>
                         )}
-                        <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
+                        <p className="mt-1 text-sm text-text-muted">
                           {item.blurb}
                         </p>
                       </li>
@@ -137,7 +137,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
 
         {!pending && !latest && dailyBrief && (
           <div className="mt-5">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-crimson-600">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-signal">
               This morning
             </h3>
             <a
@@ -146,11 +146,11 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
               rel="noopener noreferrer"
               className="block"
             >
-              <p className="text-base font-semibold text-navy-950 hover:text-crimson-600 dark:text-parchment-50 dark:hover:text-crimson-500">
+              <p className="text-base font-semibold text-text hover:text-signal">
                 {dailyBrief.headline}
               </p>
             </a>
-            <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+            <p className="mt-2 text-sm text-text-muted">
               {dailyBrief.blurb}
             </p>
           </div>

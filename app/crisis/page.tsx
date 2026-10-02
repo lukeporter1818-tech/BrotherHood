@@ -9,20 +9,20 @@ export const metadata = {
 export default function CrisisPage() {
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-6 py-16">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="text-2xl font-semibold text-text">
         You&rsquo;re not alone.
       </h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+      <p className="mt-2 text-text-muted">
         If you&rsquo;re in crisis, one of these can help right now.
       </p>
 
-      <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="mt-8 rounded-lg border border-crisis bg-surface p-6">
         <CrisisResources />
       </div>
 
       <Link
         href="/"
-        className="mt-8 text-sm text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50"
+        className="mt-8 text-sm text-text-muted hover:text-text"
       >
         ← Back
       </Link>

@@ -19,7 +19,7 @@ export function ReportButton({ targetType, targetId }: Props) {
 
   if (state.ok) {
     return (
-      <span className="text-xs text-slate-400 dark:text-slate-500">Reported.</span>
+      <span className="text-xs text-text-muted">Reported.</span>
     );
   }
 
@@ -28,7 +28,7 @@ export function ReportButton({ targetType, targetId }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
+        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-text-muted hover:text-text"
         aria-label="Report this content"
       >
         Report
@@ -44,7 +44,7 @@ export function ReportButton({ targetType, targetId }: Props) {
         name="reason"
         required
         defaultValue=""
-        className="rounded border border-parchment-200 bg-parchment-50 px-2 py-0.5 text-xs text-navy-800 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-parchment-200"
+        className="rounded border border-border bg-surface px-2 py-0.5 text-xs text-text-muted focus:outline-none"
       >
         <option value="" disabled>
           Reason…
@@ -58,19 +58,19 @@ export function ReportButton({ targetType, targetId }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-red-400 hover:text-red-300 disabled:opacity-50"
       >
         {pending ? "Sending…" : "Submit"}
       </button>
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-400"
+        className="inline-flex items-center min-h-[44px] -my-2 px-2 text-xs text-text-muted hover:text-text"
       >
         Cancel
       </button>
       {state.error && (
-        <span className="text-xs text-red-600 dark:text-red-400">
+        <span className="text-xs text-red-400">
           {state.error}
         </span>
       )}

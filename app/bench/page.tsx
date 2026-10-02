@@ -47,21 +47,21 @@ export default async function BenchPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 pt-8 pb-24 sm:pb-8">
       <section>
-        <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
+        <h1 className="text-2xl font-semibold text-text">
           The Bench
         </h1>
-        <p className="mt-2 text-sm text-navy-700 dark:text-parchment-200">
+        <p className="mt-2 text-sm text-text-muted">
           Private 1:1 connections — when Goose thinks you and another guy should talk, it&apos;ll offer to connect you here.
         </p>
       </section>
 
       {!hasAny && (
         <section>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-text-muted">
             No connections yet. Keep talking with{" "}
             <Link
               href="/goose"
-              className="text-navy-700 underline hover:text-navy-950 dark:text-parchment-200 dark:hover:text-parchment-50"
+              className="text-text-muted underline hover:text-text"
             >
               Goose
             </Link>{" "}
@@ -72,16 +72,16 @@ export default async function BenchPage() {
 
       {pendingForMe.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
+          <h2 className="text-lg font-semibold text-text">
             Pending — needs your response
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
             {pendingForMe.map((m) => (
               <li
                 key={m.id}
-                className="flex items-center justify-between rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900"
+                className="flex items-center justify-between rounded border border-border bg-surface p-4"
               >
-                <p className="text-sm font-medium text-navy-950 dark:text-parchment-50">
+                <p className="text-sm font-medium text-text">
                   {m.initiator.anonHandle}
                 </p>
                 <AcceptDeclineButtons matchId={m.id} />
@@ -93,7 +93,7 @@ export default async function BenchPage() {
 
       {(activeAsInitiator.length > 0 || activeAsRecipient.length > 0) && (
         <section>
-          <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
+          <h2 className="text-lg font-semibold text-text">
             Active conversations
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
@@ -101,9 +101,9 @@ export default async function BenchPage() {
               <li key={m.id}>
                 <Link
                   href={`/bench/match/${m.id}`}
-                  className="block rounded border border-parchment-200 bg-parchment-50 p-4 hover:border-navy-700 dark:border-navy-800 dark:bg-navy-900 dark:hover:border-navy-600"
+                  className="block rounded border border-border bg-surface p-4 hover:border-signal"
                 >
-                  <p className="text-sm font-medium text-navy-950 dark:text-parchment-50">
+                  <p className="text-sm font-medium text-text">
                     {m.recipient.anonHandle}
                   </p>
                 </Link>
@@ -113,9 +113,9 @@ export default async function BenchPage() {
               <li key={m.id}>
                 <Link
                   href={`/bench/match/${m.id}`}
-                  className="block rounded border border-parchment-200 bg-parchment-50 p-4 hover:border-navy-700 dark:border-navy-800 dark:bg-navy-900 dark:hover:border-navy-600"
+                  className="block rounded border border-border bg-surface p-4 hover:border-signal"
                 >
-                  <p className="text-sm font-medium text-navy-950 dark:text-parchment-50">
+                  <p className="text-sm font-medium text-text">
                     {m.initiator.anonHandle}
                   </p>
                 </Link>
@@ -127,19 +127,19 @@ export default async function BenchPage() {
 
       {pendingFromMe.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
+          <h2 className="text-lg font-semibold text-text">
             Waiting on a reply
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
             {pendingFromMe.map((m) => (
               <li
                 key={m.id}
-                className="rounded border border-parchment-200 bg-parchment-50 p-4 dark:border-navy-800 dark:bg-navy-900"
+                className="rounded border border-border bg-surface p-4"
               >
-                <p className="text-sm font-medium text-navy-950 dark:text-parchment-50">
+                <p className="text-sm font-medium text-text">
                   {m.recipient.anonHandle}
                 </p>
-                <p className="text-xs text-slate-500">waiting for them to accept</p>
+                <p className="text-xs text-text-muted">waiting for them to accept</p>
               </li>
             ))}
           </ul>
@@ -147,10 +147,10 @@ export default async function BenchPage() {
       )}
 
       <section>
-        <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
+        <h2 className="text-lg font-semibold text-text">
           Where you&apos;re open to connecting
         </h2>
-        <p className="mt-1 mb-3 text-sm text-navy-700 dark:text-parchment-200">
+        <p className="mt-1 mb-3 text-sm text-text-muted">
           Turn on the rooms where you&apos;re willing to support someone who&apos;s going through it. Goose will only suggest you as a connection in rooms you&apos;ve enabled.
         </p>
         <AvailabilityToggles rooms={rooms} enabledSlugs={enabledSlugs} />

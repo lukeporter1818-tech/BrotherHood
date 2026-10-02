@@ -19,7 +19,7 @@ export function AcceptDeclineButtons({ matchId }: { matchId: string }) {
             if (res.error === null) router.push(`/bench/match/${matchId}`);
           })
         }
-        className="rounded-full bg-crimson-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-crimson-700 disabled:opacity-50"
+        className="rounded-full bg-signal px-3 py-1.5 text-xs font-medium text-white hover:bg-signal/90 disabled:opacity-50"
       >
         Accept
       </button>
@@ -32,7 +32,7 @@ export function AcceptDeclineButtons({ matchId }: { matchId: string }) {
             router.refresh();
           })
         }
-        className="rounded-full border border-parchment-200 px-3 py-1.5 text-xs text-navy-800 hover:border-navy-700 disabled:opacity-50 dark:border-navy-700 dark:text-parchment-200 dark:hover:border-parchment-200"
+        className="rounded-full border border-border px-3 py-1.5 text-xs text-text-muted hover:border-text-muted disabled:opacity-50"
       >
         Decline
       </button>

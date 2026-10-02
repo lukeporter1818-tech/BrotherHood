@@ -73,7 +73,7 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
       <button
         type="button"
         onClick={toggle}
-        className="text-sm font-bold uppercase tracking-widest text-navy-950 dark:text-parchment-50"
+        className="text-sm font-bold uppercase tracking-widest text-text"
         aria-haspopup="true"
         aria-expanded={open && !isClosing}
       >
@@ -83,7 +83,7 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
       {open && (
         <div
           style={{ transformOrigin: "top center" }}
-          className={`absolute left-0 top-full z-50 mt-2 w-44 rounded border border-parchment-200 bg-parchment-50 shadow-lg dark:border-navy-700 dark:bg-navy-900 ${
+          className={`absolute left-0 top-full z-50 mt-2 w-44 rounded border border-border bg-surface shadow-lg ${
             isClosing ? "animate-rope-retract" : "animate-rope-drop"
           }`}
         >
@@ -92,7 +92,7 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="h-px w-3/4 bg-parchment-200 dark:bg-navy-700"
+                className="h-px w-3/4 bg-border"
               />
             ))}
           </div>
@@ -109,8 +109,8 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
                 onClick={() => close()}
                 className={`block px-4 py-2 text-sm ${
                   active
-                    ? "font-semibold text-crimson-600 dark:text-crimson-500"
-                    : "text-navy-800 hover:bg-parchment-100 hover:text-navy-950 dark:text-parchment-200 dark:hover:bg-navy-800 dark:hover:text-parchment-50"
+                    ? "font-semibold text-signal"
+                    : "text-text-muted hover:bg-elevated hover:text-text"
                 }`}
               >
                 {link.label}
@@ -121,7 +121,7 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
           <Link
             href="/crisis"
             onClick={() => close()}
-            className="block border-t border-parchment-200 bg-amber-50/50 px-4 py-2 text-sm font-medium text-amber-800 hover:bg-amber-50 dark:border-navy-700 dark:bg-amber-950/20 dark:text-amber-400 dark:hover:bg-amber-950/40"
+            className="block border-t border-border bg-crisis/10 px-4 py-2 text-sm font-medium text-crisis hover:bg-crisis/20"
           >
             Get help
           </Link>

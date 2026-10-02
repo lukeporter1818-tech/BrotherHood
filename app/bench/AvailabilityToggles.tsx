@@ -40,9 +40,9 @@ export function AvailabilityToggles({
         return (
           <li
             key={room.slug}
-            className="flex items-center justify-between rounded border border-parchment-200 bg-parchment-50 px-4 py-3 dark:border-navy-800 dark:bg-navy-900"
+            className="flex items-center justify-between rounded border border-border bg-surface px-4 py-3"
           >
-            <span className="text-sm font-medium text-navy-950 dark:text-parchment-50">
+            <span className="text-sm font-medium text-text">
               {room.displayName}
             </span>
             <button
@@ -50,8 +50,8 @@ export function AvailabilityToggles({
               role="switch"
               aria-checked={on}
               onClick={() => toggle(room.slug)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 ${
-                on ? "bg-green-600 dark:bg-green-500" : "bg-slate-300 dark:bg-navy-700"
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal ${
+                on ? "bg-signal" : "bg-border"
               }`}
             >
               <span

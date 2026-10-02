@@ -79,7 +79,7 @@ export function GooseChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[70vh] flex-1 flex-col rounded border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900">
+    <div className="flex min-h-[70vh] flex-1 flex-col rounded border border-border bg-surface">
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-6"
@@ -99,10 +99,10 @@ export function GooseChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="border-t border-parchment-200 p-4 dark:border-navy-800"
+        className="border-t border-border p-4"
       >
         {error && (
-          <p className="mb-2 text-xs text-red-600 dark:text-red-400">{error}</p>
+          <p className="mb-2 text-xs text-red-400">{error}</p>
         )}
         <div className="flex items-end gap-2">
           <textarea
@@ -111,13 +111,13 @@ export function GooseChat({
             maxLength={BODY_MAX}
             placeholder="Say what's on your mind."
             onKeyDown={handleKeyDown}
-            className="flex-1 resize-none rounded border border-parchment-200 bg-parchment-50 px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
+            className="flex-1 resize-none rounded border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-signal focus:outline-none"
             required
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-crimson-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
+            className="rounded-full bg-signal px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-signal/90 disabled:opacity-50"
           >
             {pending ? "…" : "Send"}
           </button>
@@ -142,15 +142,15 @@ function MessageBubble({ message }: { message: ClientMessage }) {
 
     return (
       <div className="flex flex-col gap-3">
-        <div className="rounded-lg border-2 border-amber-500 bg-amber-50 p-4 dark:border-amber-600 dark:bg-amber-950/30">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-amber-900 dark:text-amber-100">
+        <div className="rounded-lg border-2 border-crisis bg-crisis/10 p-4">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-crisis">
             Get help now
           </p>
           <CrisisResources />
         </div>
         {prose && (
           <div className="flex justify-start">
-            <div className="max-w-[85%] rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50">
+            <div className="max-w-[85%] rounded-2xl bg-elevated px-4 py-2 text-sm text-text">
               <p className="whitespace-pre-wrap break-words">{prose}</p>
             </div>
           </div>
@@ -164,8 +164,8 @@ function MessageBubble({ message }: { message: ClientMessage }) {
       <div
         className={
           isUser
-            ? "max-w-[85%] rounded-2xl bg-crimson-700 px-4 py-2 text-sm text-white"
-            : "max-w-[85%] rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50"
+            ? "max-w-[85%] rounded-2xl bg-signal px-4 py-2 text-sm text-white"
+            : "max-w-[85%] rounded-2xl bg-elevated px-4 py-2 text-sm text-text"
         }
       >
         <p className="whitespace-pre-wrap break-words">{message.content}</p>
@@ -177,7 +177,7 @@ function MessageBubble({ message }: { message: ClientMessage }) {
 function ThinkingIndicator() {
   return (
     <div className="flex justify-start">
-      <div className="rounded-2xl bg-parchment-100 px-4 py-2 text-sm italic text-slate-500 dark:bg-navy-800 dark:text-parchment-200">
+      <div className="rounded-2xl bg-elevated px-4 py-2 text-sm italic text-text-muted">
         Goose is thinking…
       </div>
     </div>
@@ -187,10 +187,10 @@ function ThinkingIndicator() {
 function EmptyState() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-navy-950 dark:text-parchment-50">
+      <h2 className="text-lg font-semibold text-text">
         Goose
       </h2>
-      <p className="max-w-md text-sm text-navy-700 dark:text-parchment-200">
+      <p className="max-w-md text-sm text-text-muted">
         Private 1-on-1 chat. Not a therapist — a first-responder who can help
         you name what you're feeling and know where to turn. Say what's on your
         mind.

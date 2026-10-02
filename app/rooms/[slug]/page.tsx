@@ -43,16 +43,16 @@ export default async function RoomPage({
     <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
       <Link
         href="/rooms"
-        className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
+        className="text-sm text-text-muted hover:text-text"
       >
         ← All rooms
       </Link>
 
-      <h1 className="mt-2 text-2xl font-semibold text-navy-950 dark:text-parchment-50">
+      <h1 className="mt-2 text-2xl font-semibold text-text">
         {room.displayName}
       </h1>
       {room.description && (
-        <p className="mt-1 text-navy-700 dark:text-parchment-200">{room.description}</p>
+        <p className="mt-1 text-text-muted">{room.description}</p>
       )}
 
       <div className="mt-6">
@@ -61,7 +61,7 @@ export default async function RoomPage({
 
       <div className="mt-8 flex flex-col gap-3">
         {posts.length === 0 && (
-          <div className="rounded-lg border border-dashed border-parchment-200 p-8 text-center text-slate-500 dark:border-navy-700">
+          <div className="rounded-lg border border-dashed border-border p-8 text-center text-text-muted">
             No posts yet. Be first.
           </div>
         )}
@@ -70,14 +70,14 @@ export default async function RoomPage({
           return (
             <div
               key={post.id}
-              className="rounded-lg border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900"
+              className="rounded-lg border border-border bg-surface"
             >
               <Link
                 href={`/rooms/${room.slug}/${post.id}`}
-                className="block p-4 transition-colors hover:bg-parchment-100 dark:hover:bg-navy-800"
+                className="block p-4 transition-colors hover:bg-elevated"
               >
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="font-medium text-navy-800 dark:text-parchment-200">
+                <div className="flex items-center justify-between text-xs text-text-muted">
+                  <span className="font-medium text-text-muted">
                     {author}
                   </span>
                   <span className="flex items-center gap-1">
@@ -85,18 +85,18 @@ export default async function RoomPage({
                     {post.editedAt !== null &&
                       post.editedAt.getTime() - post.createdAt.getTime() >
                         EDITED_THRESHOLD_MS && (
-                        <span className="text-slate-400 dark:text-slate-600">
+                        <span className="text-text-muted/60">
                           · edited
                         </span>
                       )}
                   </span>
                 </div>
-                <p className="mt-2 whitespace-pre-wrap break-words text-sm text-navy-950 dark:text-parchment-50">
+                <p className="mt-2 whitespace-pre-wrap break-words text-sm text-text">
                   {post.body}
                 </p>
               </Link>
-              <div className="flex items-center justify-between border-t border-parchment-100 px-4 py-2 dark:border-navy-800">
-                <span className="text-xs text-slate-500">
+              <div className="flex items-center justify-between border-t border-border px-4 py-2">
+                <span className="text-xs text-text-muted">
                   {post._count.replies}{" "}
                   {post._count.replies === 1 ? "reply" : "replies"}
                 </span>

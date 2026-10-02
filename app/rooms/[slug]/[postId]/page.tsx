@@ -73,29 +73,29 @@ export default async function PostDetailPage({
     <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
       <Link
         href={`/rooms/${slug}`}
-        className="text-sm text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
+        className="text-sm text-text-muted hover:text-text"
       >
         ← {post.room.displayName}
       </Link>
 
-      <article className="mt-4 rounded-lg border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900">
+      <article className="mt-4 rounded-lg border border-border bg-surface">
         <div className="p-5">
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span className="font-medium text-navy-800 dark:text-parchment-200">
+          <div className="flex items-center justify-between text-xs text-text-muted">
+            <span className="font-medium text-text-muted">
               {postDeleted ? "[removed]" : postAuthor}
             </span>
             <span className="flex items-center gap-1">
               {formatWhen(post.createdAt)}
               {postEdited && (
-                <span className="text-slate-400 dark:text-slate-600">· edited</span>
+                <span className="text-text-muted/60">· edited</span>
               )}
             </span>
           </div>
           <p
             className={`mt-3 whitespace-pre-wrap break-words ${
               postDeleted
-                ? "italic text-slate-400 dark:text-slate-600"
-                : "text-navy-950 dark:text-parchment-50"
+                ? "italic text-text-muted/60"
+                : "text-text"
             }`}
           >
             {postDeleted ? "[This post was removed.]" : post.body}
@@ -105,7 +105,7 @@ export default async function PostDetailPage({
           )}
         </div>
         {!postDeleted && (
-          <div className="flex items-center justify-end border-t border-parchment-100 px-5 py-2 dark:border-navy-800">
+          <div className="flex items-center justify-end border-t border-border px-5 py-2">
             {user?.id !== post.userId && (
               <ReportButton targetType="POST" targetId={post.id} />
             )}
@@ -114,7 +114,7 @@ export default async function PostDetailPage({
       </article>
 
       <div className="mt-8">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-text-muted">
           {post.replies.length}{" "}
           {post.replies.length === 1 ? "reply" : "replies"}
         </h2>
@@ -127,25 +127,25 @@ export default async function PostDetailPage({
             return (
               <div
                 key={reply.id}
-                className="rounded-lg border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900"
+                className="rounded-lg border border-border bg-surface"
               >
                 <div className="p-4">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span className="font-medium text-navy-800 dark:text-parchment-200">
+                  <div className="flex items-center justify-between text-xs text-text-muted">
+                    <span className="font-medium text-text-muted">
                       {replyDeleted ? "[removed]" : author}
                     </span>
                     <span className="flex items-center gap-1">
                       {formatWhen(reply.createdAt)}
                       {replyEdited && (
-                        <span className="text-slate-400 dark:text-slate-600">· edited</span>
+                        <span className="text-text-muted/60">· edited</span>
                       )}
                     </span>
                   </div>
                   <p
                     className={`mt-2 whitespace-pre-wrap break-words text-sm ${
                       replyDeleted
-                        ? "italic text-slate-400 dark:text-slate-600"
-                        : "text-navy-950 dark:text-parchment-50"
+                        ? "italic text-text-muted/60"
+                        : "text-text"
                     }`}
                   >
                     {replyDeleted ? "[This reply was removed.]" : reply.body}
@@ -159,7 +159,7 @@ export default async function PostDetailPage({
                   )}
                 </div>
                 {!replyDeleted && user?.id !== reply.userId && (
-                  <div className="flex justify-end border-t border-parchment-100 px-4 py-2 dark:border-navy-800">
+                  <div className="flex justify-end border-t border-border px-4 py-2">
                     <ReportButton targetType="REPLY" targetId={reply.id} />
                   </div>
                 )}

@@ -6,10 +6,10 @@ export default async function RoomsPage() {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
-      <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
+      <h1 className="text-2xl font-semibold text-text">
         Locker Room
       </h1>
-      <p className="mt-1 text-navy-700 dark:text-parchment-200">
+      <p className="mt-1 text-text-muted">
         Pick a room. Post real or anon — it&apos;s your call.
       </p>
 
@@ -18,13 +18,13 @@ export default async function RoomsPage() {
           <Link
             key={room.id}
             href={`/rooms/${room.slug}`}
-            className="rounded border border-parchment-200 bg-parchment-50 p-5 transition-colors hover:border-navy-700 dark:border-navy-800 dark:bg-navy-900 dark:hover:border-navy-600"
+            className="rounded border border-border bg-surface p-5 transition-colors hover:border-signal"
           >
-            <h2 className="font-semibold text-navy-950 dark:text-parchment-50">
+            <h2 className="font-semibold text-text">
               {room.displayName}
             </h2>
             {room.description && (
-              <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
+              <p className="mt-1 text-sm text-text-muted">
                 {room.description}
               </p>
             )}

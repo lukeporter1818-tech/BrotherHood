@@ -73,23 +73,23 @@ export function EditDeleteControls({ type, id, body }: Props) {
           onChange={(e) => setEditBody(e.target.value)}
           maxLength={BODY_MAX}
           rows={3}
-          className="w-full resize-y rounded border border-parchment-200 bg-parchment-50 px-3 py-2 text-sm text-navy-950 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
+          className="w-full resize-y rounded border border-border bg-surface px-3 py-2 text-sm text-text focus:border-signal focus:outline-none"
         />
         {error && (
-          <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-xs text-red-400">{error}</p>
         )}
         <div className="flex gap-2">
           <button
             onClick={handleSave}
             disabled={pending}
-            className="rounded px-3 py-3 text-xs font-medium bg-crimson-600 text-white hover:bg-crimson-700 disabled:opacity-50"
+            className="rounded px-3 py-3 text-xs font-medium bg-signal text-white hover:bg-signal/90 disabled:opacity-50"
           >
             {pending ? "Saving…" : "Save"}
           </button>
           <button
             onClick={handleCancelEdit}
             disabled={pending}
-            className="rounded px-3 py-3 text-xs text-navy-700 hover:text-navy-950 dark:text-parchment-200 dark:hover:text-parchment-50"
+            className="rounded px-3 py-3 text-xs text-text-muted hover:text-text"
           >
             Cancel
           </button>
@@ -101,25 +101,25 @@ export function EditDeleteControls({ type, id, body }: Props) {
   if (mode === "confirming") {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs text-navy-700 dark:text-parchment-200">
+        <span className="text-xs text-text-muted">
           Delete this?
         </span>
         <button
           onClick={handleConfirmDelete}
           disabled={pending}
-          className="inline-flex items-center min-h-[44px] px-2 text-xs text-red-600 hover:text-red-800 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+          className="inline-flex items-center min-h-[44px] px-2 text-xs text-red-400 hover:text-red-300 disabled:opacity-50"
         >
           {pending ? "Deleting…" : "Yes, delete"}
         </button>
         <button
           onClick={handleCancelDelete}
           disabled={pending}
-          className="inline-flex items-center min-h-[44px] px-2 text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
+          className="inline-flex items-center min-h-[44px] px-2 text-xs text-text-muted hover:text-text"
         >
           Cancel
         </button>
         {error && (
-          <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-xs text-red-400">{error}</p>
         )}
       </div>
     );
@@ -129,13 +129,13 @@ export function EditDeleteControls({ type, id, body }: Props) {
     <div className="flex gap-3">
       <button
         onClick={handleEdit}
-        className="inline-flex items-center min-h-[44px] px-2 text-xs text-slate-500 hover:text-navy-950 dark:hover:text-parchment-50"
+        className="inline-flex items-center min-h-[44px] px-2 text-xs text-text-muted hover:text-text"
       >
         Edit
       </button>
       <button
         onClick={handleDelete}
-        className="inline-flex items-center min-h-[44px] px-2 text-xs text-slate-500 hover:text-red-600 dark:hover:text-red-400"
+        className="inline-flex items-center min-h-[44px] px-2 text-xs text-text-muted hover:text-red-400"
       >
         Delete
       </button>

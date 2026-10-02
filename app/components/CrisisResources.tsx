@@ -7,13 +7,13 @@ export function CrisisResources() {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h3 className="text-base font-semibold text-zinc-950 dark:text-zinc-50">
+        <h3 className="text-base font-semibold text-text">
           988 Suicide &amp; Crisis Lifeline
         </h3>
-        <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+        <p className="mt-1 text-sm text-text-muted">
           <a
             href="tel:988"
-            className="font-medium text-zinc-950 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
+            className="font-medium text-crisis underline underline-offset-2 hover:text-crisis/80"
           >
             Call or text 988
           </a>
@@ -22,13 +22,13 @@ export function CrisisResources() {
       </div>
 
       <div>
-        <h3 className="text-base font-semibold text-zinc-950 dark:text-zinc-50">
+        <h3 className="text-base font-semibold text-text">
           Crisis Text Line
         </h3>
-        <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+        <p className="mt-1 text-sm text-text-muted">
           <a
             href="sms:741741?&body=HOME"
-            className="font-medium text-zinc-950 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
+            className="font-medium text-crisis underline underline-offset-2 hover:text-crisis/80"
           >
             Text HOME to 741741
           </a>

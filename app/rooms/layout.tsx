@@ -25,7 +25,7 @@ export default async function RoomsLayout({
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <Header isAdmin={dbUser.isAdmin} />
-      <main className="flex flex-1 flex-col bg-parchment-50 dark:bg-navy-950">
+      <main className="flex flex-1 flex-col bg-bg">
         {children}
       </main>
     </div>

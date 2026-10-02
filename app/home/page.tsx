@@ -81,10 +81,10 @@ export default async function HomePage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-6 sm:py-10">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-navy-950 dark:text-parchment-50">
+        <h1 className="text-2xl font-semibold text-text">
           {greeting()}, {displayName}.
         </h1>
-        <p className="mt-1 text-sm text-navy-700 dark:text-parchment-200">
+        <p className="mt-1 text-sm text-text-muted">
           Here&apos;s where things stand.
         </p>
       </div>

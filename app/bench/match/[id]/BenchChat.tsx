@@ -85,14 +85,14 @@ export function BenchChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[60vh] flex-1 flex-col rounded border border-parchment-200 bg-parchment-50 dark:border-navy-800 dark:bg-navy-900">
+    <div className="flex min-h-[60vh] flex-1 flex-col rounded border border-border bg-surface">
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-6"
         style={{ maxHeight: "calc(100vh - 20rem)" }}
       >
         {isEmpty ? (
-          <div className="flex flex-1 items-center justify-center py-16 text-center text-sm text-slate-500">
+          <div className="flex flex-1 items-center justify-center py-16 text-center text-sm text-text-muted">
             No messages yet. Say hello when you&apos;re ready.
           </div>
         ) : (
@@ -110,10 +110,10 @@ export function BenchChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="border-t border-parchment-200 p-4 dark:border-navy-800"
+        className="border-t border-border p-4"
       >
         {error && (
-          <p className="mb-2 text-xs text-red-600 dark:text-red-400">{error}</p>
+          <p className="mb-2 text-xs text-red-400">{error}</p>
         )}
         <div className="flex items-end gap-2">
           <textarea
@@ -122,13 +122,13 @@ export function BenchChat({
             maxLength={BODY_MAX}
             placeholder="Enter to send, Shift+Enter for a new line."
             onKeyDown={handleKeyDown}
-            className="flex-1 resize-none rounded border border-parchment-200 bg-parchment-50 px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-crimson-600 focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-parchment-50"
+            className="flex-1 resize-none rounded border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-signal focus:outline-none"
             required
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-crimson-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-crimson-700 disabled:opacity-50"
+            className="rounded-full bg-signal px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-signal/90 disabled:opacity-50"
           >
             {pending ? "…" : "Send"}
           </button>
@@ -151,15 +151,15 @@ function MessageBubble({
     <div className={isSelf ? "flex justify-end" : "flex justify-start"}>
       <div className="flex max-w-[85%] flex-col gap-1">
         <p
-          className={`text-xs text-slate-500 ${isSelf ? "text-right" : "text-left"}`}
+          className={`text-xs text-text-muted ${isSelf ? "text-right" : "text-left"}`}
         >
           {displayName}
         </p>
         <div
           className={
             isSelf
-              ? "rounded-2xl bg-navy-900 px-4 py-2 text-sm text-parchment-50 dark:bg-navy-800"
-              : "rounded-2xl bg-parchment-100 px-4 py-2 text-sm text-navy-950 dark:bg-navy-800 dark:text-parchment-50"
+              ? "rounded-2xl bg-signal/10 px-4 py-2 text-sm text-text"
+              : "rounded-2xl bg-elevated px-4 py-2 text-sm text-text"
           }
         >
           <p className="whitespace-pre-wrap break-words">{message.content}</p>
