@@ -7,7 +7,7 @@ type BenchState =
 type Tone = "positive" | "action" | "idle";
 
 const dotClass: Record<Tone, string> = {
-  positive: "bg-signal",
+  positive: "bg-signal glow-signal-sm",
   action: "bg-text",
   idle: "bg-text-muted",
 };

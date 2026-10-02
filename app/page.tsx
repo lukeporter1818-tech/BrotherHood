@@ -13,7 +13,7 @@ export default function Home() {
       <div className="mt-8 flex gap-3">
         <Link
           href="/signup"
-          className="rounded-full bg-signal px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-signal/90"
+          className="rounded-full bg-surface border-2 border-signal px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-signal/10"
         >
           Sign up
         </Link>

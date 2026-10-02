@@ -34,7 +34,7 @@ export function ReplyComposer({ postId }: { postId: string }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-signal px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-signal/90 disabled:opacity-50"
+          className="rounded-full bg-surface border-2 border-signal px-4 py-3 text-sm font-medium text-text transition-colors hover:bg-signal/10 disabled:opacity-50 glow-signal-md"
         >
           {pending ? "Sending…" : "Reply"}
         </button>

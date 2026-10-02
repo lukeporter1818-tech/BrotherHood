@@ -26,7 +26,7 @@
    Surface stack (lightest to darkest step up): bg → surface → elevated → border.
    `elevated` sits above `surface` and is for raised panels / chat bubbles —
    anywhere you need separation without drawing a literal border line.
-   `signal` (#4F9C86) is the general-purpose accent.
+   `signal` (#98DF9B) is the general-purpose accent.
    `live`   (#D98B3E) is RESERVED for active/live indicators (e.g. an active
             Bench match). Do not use it as a generic amber accent anywhere else.
    `crisis` (#B5544A) is scoped to crisis-signaling surfaces: the CrisisButton
@@ -41,7 +41,8 @@
   --color-border:     #333A3E;
   --color-text:       #E8EDEE;
   --color-text-muted: #8C969B;
-  --color-signal:     #4F9C86;
+  --color-signal:     #98DF9B;
+  --color-signal-ink: #15181A;
   --color-live:       #D98B3E;
   --color-crisis:     #B5544A;
 
@@ -56,7 +57,11 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--color-bg);
+  background-image: url('/app-bg-texture.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
@@ -79,5 +84,21 @@ body {
     select {
       font-size: 1rem !important;
     }
+  }
+}
+
+/* ─── Glow utilities ──────────────────────────────────────────────────────────
+   signal-sm:      status dots / indicators
+   signal-md:      primary action buttons (Search, Post, Reply, Send)
+   signal-text:    text label glow
+   crisis-strong:  Get Help FAB only — do not apply to other surfaces
+   ──────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .glow-signal-sm   { box-shadow: 0 0 8px 2px rgba(152,223,155,0.7); }
+  .glow-signal-md   { box-shadow: 0 0 18px 2px rgba(152,223,155,0.45); }
+  .glow-signal-text { text-shadow: 0 0 10px rgba(152,223,155,0.5); }
+  .glow-crisis-strong {
+    box-shadow: 0 0 24px 4px rgba(181,84,74,0.55),
+                0 0 50px 10px rgba(181,84,74,0.25);
   }
 }

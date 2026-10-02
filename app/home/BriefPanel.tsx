@@ -72,7 +72,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
             type="button"
             onClick={() => runSearch(topic)}
             disabled={pending || !topic.trim()}
-            className="w-full shrink-0 rounded-full bg-signal px-4 py-2 text-sm font-medium text-white hover:bg-signal/90 disabled:opacity-50 sm:w-auto"
+            className="w-full shrink-0 rounded-full bg-surface border-2 border-signal px-4 py-2 text-sm font-medium text-text hover:bg-signal/10 sm:w-auto glow-signal-md"
           >
             {pending ? "Generating… (15–40s)" : "Search"}
           </button>

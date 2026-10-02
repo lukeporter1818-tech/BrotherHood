@@ -82,7 +82,7 @@ export function EditDeleteControls({ type, id, body }: Props) {
           <button
             onClick={handleSave}
             disabled={pending}
-            className="rounded px-3 py-3 text-xs font-medium bg-signal text-white hover:bg-signal/90 disabled:opacity-50"
+            className="rounded px-3 py-3 text-xs font-medium bg-surface border-2 border-signal text-text hover:bg-signal/10 disabled:opacity-50"
           >
             {pending ? "Saving…" : "Save"}
           </button>

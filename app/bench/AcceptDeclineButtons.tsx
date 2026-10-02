@@ -19,7 +19,7 @@ export function AcceptDeclineButtons({ matchId }: { matchId: string }) {
             if (res.error === null) router.push(`/bench/match/${matchId}`);
           })
         }
-        className="rounded-full bg-signal px-3 py-1.5 text-xs font-medium text-white hover:bg-signal/90 disabled:opacity-50"
+        className="rounded-full bg-surface border-2 border-signal px-3 py-1.5 text-xs font-medium text-text hover:bg-signal/10 disabled:opacity-50"
       >
         Accept
       </button>
