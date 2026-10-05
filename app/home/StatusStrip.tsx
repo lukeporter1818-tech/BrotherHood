@@ -21,10 +21,15 @@ function Pill({
   label: string;
   tone: Tone;
 }) {
+  const active = tone === "positive";
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-text-muted transition-colors hover:border-signal"
+      className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 font-mono text-xs transition-colors duration-200 ${
+        active
+          ? "border-signal bg-signal/10 text-text hover:border-mint-bright"
+          : "border-border bg-surface text-text-muted hover:border-signal"
+      }`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${dotClass[tone]}`} />
       {label}

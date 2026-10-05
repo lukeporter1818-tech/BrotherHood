@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
@@ -73,11 +74,19 @@ export function WordmarkDropdown({ isAdmin }: { isAdmin: boolean }) {
       <button
         type="button"
         onClick={toggle}
-        className="text-sm font-bold uppercase tracking-widest text-text"
+        className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-text"
         aria-haspopup="true"
         aria-expanded={open && !isClosing}
       >
-        Brotherhood ★
+        <Image
+          src="/icons/icon-192.png"
+          alt=""
+          width={22}
+          height={22}
+          priority
+          className="shrink-0"
+        />
+        Brotherhood
       </button>
 
       {open && (
