@@ -57,12 +57,20 @@
 
 body {
   background-color: var(--color-bg);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image: url('/app-bg-texture.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 /* ─── iOS Safari auto-zoom fix ────────────────────────────────────────────────
