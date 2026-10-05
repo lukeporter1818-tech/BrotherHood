@@ -5,15 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ReplyComposer } from "@/app/components/ReplyComposer";
 import { ReportButton } from "@/app/components/ReportButton";
 import { EditDeleteControls } from "@/app/components/EditDeleteControls";
-
-function formatWhen(d: Date) {
-  return d.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
+import { Thread, ThreadEntry } from "@/app/components/ThreadEntry";
 
 const EDITED_THRESHOLD_MS = 5_000;
 
@@ -35,6 +27,15 @@ export default async function PostDetailPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  let currentUserAnonHandle: string | null = null;
+  if (user) {
+    const profile = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { anonHandle: true },
+    });
+    currentUserAnonHandle = profile?.anonHandle ?? "?";
+  }
 
   const post = await prisma.post.findUnique({
     where: { id: postId },
@@ -64,8 +65,6 @@ export default async function PostDetailPage({
 
   if (!post || !post.room || post.room.slug !== slug) notFound();
 
-  const postAuthor = post.user.anonHandle;
-
   const postDeleted = post.deletedAt !== null;
   const postEdited = wasEdited(post.createdAt, post.editedAt);
 
@@ -78,102 +77,80 @@ export default async function PostDetailPage({
         ← {post.room.displayName}
       </Link>
 
-      <article className="mt-4 rounded-lg border border-border bg-surface">
-        <div className="p-5">
-          <div className="flex items-center justify-between text-xs text-text-muted">
-            <span className="font-medium text-text-muted">
-              {postDeleted ? "[removed]" : postAuthor}
-            </span>
-            <span className="flex items-center gap-1">
-              {formatWhen(post.createdAt)}
-              {postEdited && (
-                <span className="text-text-muted/60">· edited</span>
-              )}
-            </span>
-          </div>
-          <p
-            className={`mt-3 whitespace-pre-wrap break-words ${
-              postDeleted
-                ? "italic text-text-muted/60"
-                : "text-text"
-            }`}
-          >
-            {postDeleted ? "[This post was removed.]" : post.body}
-          </p>
-          {!postDeleted && user?.id === post.userId && (
-            <EditDeleteControls type="post" id={post.id} body={post.body} />
-          )}
-        </div>
-        {!postDeleted && (
-          <div className="flex items-center justify-end border-t border-border px-5 py-2">
-            {user?.id !== post.userId && (
-              <ReportButton targetType="POST" targetId={post.id} />
-            )}
-          </div>
-        )}
-      </article>
-
-      <div className="mt-8">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-text-muted">
+      {post.replies.length > 0 && (
+        <h2 className="mt-6 mb-2 text-sm font-medium uppercase tracking-wide text-text-muted">
           {post.replies.length}{" "}
           {post.replies.length === 1 ? "reply" : "replies"}
         </h2>
+      )}
 
-        <div className="flex flex-col gap-3">
+      <div className="mt-4 rounded-lg border border-border bg-surface p-6">
+        <Thread>
+          <ThreadEntry
+            key={post.id}
+            author={
+              user?.id === post.userId
+                ? { kind: "self", anonHandle: currentUserAnonHandle ?? "?" }
+                : {
+                    kind: "other",
+                    userId: post.userId,
+                    label: post.user.anonHandle,
+                  }
+            }
+            timestamp={post.createdAt}
+            body={postDeleted ? "[This post was removed.]" : post.body}
+            edited={postEdited}
+            tone={postDeleted ? "removed" : "normal"}
+          >
+            {!postDeleted &&
+              (user?.id === post.userId ? (
+                <EditDeleteControls type="post" id={post.id} body={post.body} />
+              ) : (
+                <ReportButton targetType="POST" targetId={post.id} />
+              ))}
+          </ThreadEntry>
+
           {post.replies.map((reply) => {
             const replyDeleted = reply.deletedAt !== null;
             const replyEdited = wasEdited(reply.createdAt, reply.editedAt);
-            const author = reply.user.anonHandle;
             return (
-              <div
+              <ThreadEntry
                 key={reply.id}
-                className="rounded-lg border border-border bg-surface"
+                author={
+                  user?.id === reply.userId
+                    ? { kind: "self", anonHandle: currentUserAnonHandle ?? "?" }
+                    : {
+                        kind: "other",
+                        userId: reply.userId,
+                        label: reply.user.anonHandle,
+                      }
+                }
+                timestamp={reply.createdAt}
+                body={replyDeleted ? "[This reply was removed.]" : reply.body}
+                edited={replyEdited}
+                tone={replyDeleted ? "removed" : "normal"}
               >
-                <div className="p-4">
-                  <div className="flex items-center justify-between text-xs text-text-muted">
-                    <span className="font-medium text-text-muted">
-                      {replyDeleted ? "[removed]" : author}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      {formatWhen(reply.createdAt)}
-                      {replyEdited && (
-                        <span className="text-text-muted/60">· edited</span>
-                      )}
-                    </span>
-                  </div>
-                  <p
-                    className={`mt-2 whitespace-pre-wrap break-words text-sm ${
-                      replyDeleted
-                        ? "italic text-text-muted/60"
-                        : "text-text"
-                    }`}
-                  >
-                    {replyDeleted ? "[This reply was removed.]" : reply.body}
-                  </p>
-                  {!replyDeleted && user?.id === reply.userId && (
+                {!replyDeleted &&
+                  (user?.id === reply.userId ? (
                     <EditDeleteControls
                       type="reply"
                       id={reply.id}
                       body={reply.body}
                     />
-                  )}
-                </div>
-                {!replyDeleted && user?.id !== reply.userId && (
-                  <div className="flex justify-end border-t border-border px-4 py-2">
+                  ) : (
                     <ReportButton targetType="REPLY" targetId={reply.id} />
-                  </div>
-                )}
-              </div>
+                  ))}
+              </ThreadEntry>
             );
           })}
-        </div>
-
-        {!postDeleted && (
-          <div className="mt-4">
-            <ReplyComposer postId={post.id} />
-          </div>
-        )}
+        </Thread>
       </div>
+
+      {!postDeleted && (
+        <div className="mt-4">
+          <ReplyComposer postId={post.id} />
+        </div>
+      )}
     </div>
   );
 }

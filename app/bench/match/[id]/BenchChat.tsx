@@ -12,6 +12,7 @@ import {
   sendBenchMessage,
   type ClientBenchMessage,
 } from "@/app/bench/match/[id]/actions";
+import { Thread, ThreadEntry } from "@/app/components/ThreadEntry";
 
 const BODY_MAX = 4096;
 
@@ -96,15 +97,20 @@ export function BenchChat({
             No messages yet. Say hello when you&apos;re ready.
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <Thread>
             {optimisticMessages.map((msg) => (
-              <MessageBubble
+              <ThreadEntry
                 key={msg.id}
-                message={msg}
-                isSelf={msg.senderId === currentUserId}
+                author={
+                  msg.senderId === currentUserId
+                    ? { kind: "self", anonHandle: currentUserAnonHandle }
+                    : { kind: "other", userId: msg.senderId, label: msg.senderAnonHandle }
+                }
+                timestamp={msg.createdAt}
+                body={msg.content}
               />
             ))}
-          </div>
+          </Thread>
         )}
       </div>
       <form
@@ -134,37 +140,6 @@ export function BenchChat({
           </button>
         </div>
       </form>
-    </div>
-  );
-}
-
-function MessageBubble({
-  message,
-  isSelf,
-}: {
-  message: ClientBenchMessage;
-  isSelf: boolean;
-}) {
-  const displayName = message.senderAnonHandle;
-
-  return (
-    <div className={isSelf ? "flex justify-end" : "flex justify-start"}>
-      <div className="flex max-w-[85%] flex-col gap-1">
-        <p
-          className={`text-xs text-text-muted ${isSelf ? "text-right" : "text-left"}`}
-        >
-          {displayName}
-        </p>
-        <div
-          className={
-            isSelf
-              ? "rounded-2xl bg-signal/10 px-4 py-2 text-sm text-text"
-              : "rounded-2xl bg-elevated px-4 py-2 text-sm text-text"
-          }
-        >
-          <p className="whitespace-pre-wrap break-words">{message.content}</p>
-        </div>
-      </div>
     </div>
   );
 }

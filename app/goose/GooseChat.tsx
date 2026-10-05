@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Fragment,
   useEffect,
   useOptimistic,
   useRef,
@@ -10,14 +11,21 @@ import {
 } from "react";
 import { CrisisResources } from "@/app/components/CrisisResources";
 import { CRISIS_RAIL_TEXT } from "@/lib/crisis-rail";
+import {
+  Thread,
+  ThreadAvatar,
+  ThreadEntry,
+} from "@/app/components/ThreadEntry";
 import { sendGooseMessage, type ClientMessage } from "@/app/goose/actions";
 
 const BODY_MAX = 4096;
 
 export function GooseChat({
   initialMessages,
+  currentUserAnonHandle,
 }: {
   initialMessages: ClientMessage[];
+  currentUserAnonHandle: string;
 }) {
   const [messages, setMessages] = useState<ClientMessage[]>(initialMessages);
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
@@ -88,12 +96,12 @@ export function GooseChat({
         {isEmpty ? (
           <EmptyState />
         ) : (
-          <div className="flex flex-col gap-4">
-            {optimisticMessages.map((msg) => (
-              <MessageBubble key={msg.id} message={msg} />
-            ))}
+          <Thread>
+            {optimisticMessages.map((msg) =>
+              renderMessage(msg, currentUserAnonHandle),
+            )}
             {pending && <ThinkingIndicator />}
-          </div>
+          </Thread>
         )}
       </div>
       <form
@@ -127,60 +135,69 @@ export function GooseChat({
   );
 }
 
-function MessageBubble({ message }: { message: ClientMessage }) {
-  const isUser = message.role === "USER";
+function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
+  const isUser = msg.role === "USER";
 
-  if (!isUser && message.escalated) {
-    const idx = message.content.indexOf(CRISIS_RAIL_TEXT);
+  if (isUser) {
+    return (
+      <ThreadEntry
+        key={msg.id}
+        author={{ kind: "self", anonHandle: currentUserAnonHandle }}
+        timestamp={msg.createdAt}
+        body={msg.content}
+      />
+    );
+  }
+
+  if (msg.escalated) {
+    const idx = msg.content.indexOf(CRISIS_RAIL_TEXT);
     const prose =
       idx === -1
-        ? message.content
+        ? msg.content
         : (
-            message.content.slice(0, idx) +
-            message.content.slice(idx + CRISIS_RAIL_TEXT.length)
+            msg.content.slice(0, idx) +
+            msg.content.slice(idx + CRISIS_RAIL_TEXT.length)
           ).trim();
 
     return (
-      <div className="flex flex-col gap-3">
-        <div className="rounded-lg border-2 border-crisis bg-crisis/10 p-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-crisis">
-            Get help now
-          </p>
-          <CrisisResources />
-        </div>
-        {prose && (
-          <div className="flex justify-start">
-            <div className="max-w-[85%] rounded-2xl bg-elevated px-4 py-2 text-sm text-text">
-              <p className="whitespace-pre-wrap break-words">{prose}</p>
-            </div>
+      <Fragment key={msg.id}>
+        <li className="relative z-10 overflow-hidden rounded-lg border-2 border-crisis bg-surface">
+          <div className="bg-crisis/10 p-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-crisis">
+              Get help now
+            </p>
+            <CrisisResources />
           </div>
+        </li>
+        {prose && (
+          <ThreadEntry
+            author={{ kind: "goose" }}
+            timestamp={msg.createdAt}
+            body={prose}
+          />
         )}
-      </div>
+      </Fragment>
     );
   }
 
   return (
-    <div className={isUser ? "flex justify-end" : "flex justify-start"}>
-      <div
-        className={
-          isUser
-            ? "max-w-[85%] rounded-2xl bg-signal px-4 py-2 text-sm text-signal-ink"
-            : "max-w-[85%] rounded-2xl bg-elevated px-4 py-2 text-sm text-text"
-        }
-      >
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
-      </div>
-    </div>
+    <ThreadEntry
+      key={msg.id}
+      author={{ kind: "goose" }}
+      timestamp={msg.createdAt}
+      body={msg.content}
+    />
   );
 }
 
 function ThinkingIndicator() {
   return (
-    <div className="flex justify-start">
-      <div className="rounded-2xl bg-elevated px-4 py-2 text-sm italic text-text-muted">
-        Goose is thinking…
+    <li className="relative pl-10">
+      <div className="absolute left-0 top-0">
+        <ThreadAvatar author={{ kind: "goose" }} />
       </div>
-    </div>
+      <p className="pt-1 text-sm italic text-text-muted">Goose is thinking…</p>
+    </li>
   );
 }
 

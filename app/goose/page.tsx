@@ -15,6 +15,12 @@ export default async function GoosePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const profile = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { anonHandle: true },
+  });
+  const currentUserAnonHandle = profile?.anonHandle ?? "?";
+
   const session = await prisma.wingmanSession.findFirst({
     where: { userId: user.id },
     orderBy: { updatedAt: "desc" },
@@ -47,7 +53,10 @@ export default async function GoosePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 py-6">
-      <GooseChat initialMessages={initialMessages} />
+      <GooseChat
+        initialMessages={initialMessages}
+        currentUserAnonHandle={currentUserAnonHandle}
+      />
     </div>
   );
 }
