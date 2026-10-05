@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Work_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { CrisisButton } from "@/app/components/CrisisButton";
@@ -17,6 +17,10 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Brotherhood",
   description: "A men's wellness community. Show up, post honestly, check in daily.",
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

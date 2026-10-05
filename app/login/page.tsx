@@ -22,7 +22,7 @@ export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center bg-bg px-6">
+    <div className="flex flex-1 flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-semibold text-text">
           Log in

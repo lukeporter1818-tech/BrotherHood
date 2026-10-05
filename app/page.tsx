@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center bg-bg px-6 text-center">
+    <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
       <h1 className="text-4xl font-semibold tracking-tight text-text">
         Brotherhood
       </h1>

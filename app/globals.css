@@ -22,11 +22,18 @@
   --animate-rope-retract: rope-retract 160ms ease-in  forwards;
 }
 
-/* ─── Night Channel palette (Concept C) — dark-only ──────────────────────────
+/* ─── Night Channel palette — dark-only ──────────────────────────────────────
    Surface stack (lightest to darkest step up): bg → surface → elevated → border.
    `elevated` sits above `surface` and is for raised panels / chat bubbles —
    anywhere you need separation without drawing a literal border line.
+   `border` is a mint-tinted translucent hairline; `border-strong` is the
+   slightly-brighter idle-hover variant; `border-active` is the visible mint
+   outline reserved for active container surfaces (sidebar active row, etc).
    `signal` (#98DF9B) is the general-purpose accent.
+   `mint-bright` (#A7FFB5) is for glints and hover accents only — never a
+   fill surface. `mint-deep` (#244D32) is a deep-shadow mint for subtle
+   backgrounds and tints.
+   `text-dim` (#626B68) is decoration only — never for text people must read.
    `live`   (#D98B3E) is RESERVED for active/live indicators (e.g. an active
             Bench match). Do not use it as a generic amber accent anywhere else.
    `crisis` (#B5544A) is scoped to crisis-signaling surfaces: the CrisisButton
@@ -35,15 +42,20 @@
             it on routine UI.
    ──────────────────────────────────────────────────────────────────────── */
 @theme {
-  --color-bg:         #15181A;
-  --color-surface:    #1C2023;
-  --color-elevated:   #262B2E;
-  --color-border:     #333A3E;
-  --color-text:       #E8EDEE;
-  --color-text-muted: #8C969B;
-  --color-signal:     #98DF9B;
-  --color-live:       #D98B3E;
-  --color-crisis:     #B5544A;
+  --color-bg:            #040B09;
+  --color-surface:       #0A1612;
+  --color-elevated:      #121E1A;
+  --color-border:        rgba(152, 223, 155, 0.14);
+  --color-border-strong: rgba(152, 223, 155, 0.28);
+  --color-border-active: rgba(152, 223, 155, 0.55);
+  --color-text:          #EEF3EE;
+  --color-text-muted:    #8A958F;
+  --color-text-dim:      #626B68;
+  --color-signal:        #98DF9B;
+  --color-mint-bright:   #A7FFB5;
+  --color-mint-deep:     #244D32;
+  --color-live:          #D98B3E;
+  --color-crisis:        #B5544A;
 
   --font-sans: var(--font-work-sans);
   --font-mono: var(--font-ibm-plex-mono);
@@ -67,10 +79,7 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: url('/app-bg-texture.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  /* background plate arrives separately */
 }
 
 /* ─── iOS Safari auto-zoom fix ────────────────────────────────────────────────
@@ -101,9 +110,10 @@ body::before {
    crisis-strong:  Get Help FAB only — do not apply to other surfaces
    ──────────────────────────────────────────────────────────────────────── */
 @layer utilities {
-  .glow-signal-sm   { box-shadow: 0 0 8px 2px rgba(152,223,155,0.7); }
-  .glow-signal-md   { box-shadow: 0 0 18px 2px rgba(152,223,155,0.45); }
-  .glow-signal-text { text-shadow: 0 0 10px rgba(152,223,155,0.5); }
+  .glow-signal-sm      { box-shadow: 0 0 8px 2px rgba(152,223,155,0.7); }
+  .glow-signal-md      { box-shadow: 0 0 18px 2px rgba(152,223,155,0.45); }
+  .glow-signal-outline { box-shadow: 0 0 24px rgba(152,223,155,0.35); }
+  .glow-signal-text    { text-shadow: 0 0 10px rgba(152,223,155,0.5); }
   .glow-crisis-strong {
     box-shadow: 0 0 24px 4px rgba(181,84,74,0.55),
                 0 0 50px 10px rgba(181,84,74,0.25);
