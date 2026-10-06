@@ -43,7 +43,7 @@ export default async function RoomPage({
     <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
       <Link
         href="/rooms"
-        className="text-sm text-text-muted hover:text-text"
+        className="hidden text-sm text-text-muted hover:text-text md:inline-block"
       >
         ← All rooms
       </Link>
