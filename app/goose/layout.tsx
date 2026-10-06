@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { AppShell } from "@/app/components/AppShell";
+import { BackHeader } from "@/app/components/BackHeader";
 
 export default async function GooseLayout({
   children,
@@ -33,6 +34,13 @@ export default async function GooseLayout({
       isAdmin={dbUser.isAdmin}
       anonHandle={dbUser.anonHandle}
       pendingMatchCount={pendingMatchCount}
+      mobileHeader={
+        <BackHeader
+          backHref="/home"
+          title="Goose"
+          isAdmin={dbUser.isAdmin}
+        />
+      }
     >
       {children}
     </AppShell>
