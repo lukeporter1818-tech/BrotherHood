@@ -6,13 +6,13 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 const rooms = [
-  { slug: "sobriety",         displayName: "Sobriety",                    description: "Recovery, staying sober, and the work it takes.",      sortOrder: 1 },
-  { slug: "fatherhood",       displayName: "Fatherhood",                  description: "Being a dad — the real parts.",                        sortOrder: 2 },
-  { slug: "fitness",          displayName: "Fitness",                     description: "Training, health, and showing up for your body.",      sortOrder: 3 },
-  { slug: "entrepreneurship", displayName: "Entrepreneurship & Career",   description: "Building, grinding, and figuring out your work life.", sortOrder: 4 },
-  { slug: "relationships",    displayName: "Relationships & Marriage",    description: "Partnerships, divorce, and everything between.",       sortOrder: 5 },
-  { slug: "grief",            displayName: "Grief & Loss",                description: "Loss in all its forms.",                               sortOrder: 6 },
-  { slug: "faith",            displayName: "Faith",                       description: "Belief, doubt, and the spiritual life.",               sortOrder: 7 },
+  { slug: "sobriety",         displayName: "Sobriety",                    description: "Support and experiences with addiction and recovery.", sortOrder: 1 },
+  { slug: "fatherhood",       displayName: "Fatherhood",                  description: "Being a better man, dad, and role model.",             sortOrder: 2 },
+  { slug: "fitness",          displayName: "Fitness",                     description: "Training, nutrition, and physical health.",            sortOrder: 3 },
+  { slug: "entrepreneurship", displayName: "Entrepreneurship & Career",   description: "Work, purpose, and building a better future.",         sortOrder: 4 },
+  { slug: "relationships",    displayName: "Relationships & Marriage",    description: "Navigating relationships and communication.",          sortOrder: 5 },
+  { slug: "grief",            displayName: "Grief & Loss",                description: "Processing loss and supporting each other.",           sortOrder: 6 },
+  { slug: "faith",            displayName: "Faith",                       description: "Spirituality, beliefs, and life's bigger questions.",  sortOrder: 7 },
   { slug: "mental-health",    displayName: "Mental Health / Just Talking", description: "No agenda. Just men talking.",                        sortOrder: 8 },
 ];
 

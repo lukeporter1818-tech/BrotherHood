@@ -87,10 +87,10 @@ export function GooseChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[70vh] flex-1 flex-col rounded border border-border bg-surface">
+    <div className="flex min-h-[70vh] flex-1 flex-col">
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-6"
+        className="flex-1 overflow-y-auto py-6"
         style={{ maxHeight: "calc(100vh - 16rem)" }}
       >
         {isEmpty ? (
@@ -107,27 +107,28 @@ export function GooseChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="border-t border-border p-4"
+        className="p-[14px]"
       >
         {error && (
           <p className="mb-2 text-xs text-red-400">{error}</p>
         )}
-        <div className="flex items-end gap-2">
+        <div className="flex h-[45px] items-center overflow-hidden rounded-full border border-signal/50 bg-surface pl-5 focus-within:border-signal">
           <textarea
             name="body"
-            rows={2}
+            rows={1}
             maxLength={BODY_MAX}
-            placeholder="Say what's on your mind."
+            placeholder="Say what's on your mind…"
             onKeyDown={handleKeyDown}
-            className="flex-1 resize-none rounded border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-signal focus:outline-none"
+            className="h-[37px] flex-1 resize-none border-0 bg-transparent py-[6px] text-[16px] leading-6 text-text placeholder:text-text-muted focus:outline-none"
             required
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-surface border-2 border-signal px-4 py-3 text-sm font-medium text-text transition-colors hover:bg-signal/10 disabled:opacity-50 glow-signal-md"
+            aria-label="Send"
+            className="flex h-full w-14 shrink-0 items-center justify-center bg-[#89F6BD] text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
           >
-            {pending ? "…" : "Send"}
+            {pending ? "…" : <SendIcon className="h-5 w-5" />}
           </button>
         </div>
       </form>
@@ -145,6 +146,9 @@ function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
         author={{ kind: "self", anonHandle: currentUserAnonHandle }}
         timestamp={msg.createdAt}
         body={msg.content}
+        size={44}
+        variant="solid"
+        density="chat"
       />
     );
   }
@@ -174,6 +178,9 @@ function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
             author={{ kind: "goose" }}
             timestamp={msg.createdAt}
             body={prose}
+            size={44}
+            variant="solid"
+            density="chat"
           />
         )}
       </Fragment>
@@ -186,17 +193,20 @@ function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
       author={{ kind: "goose" }}
       timestamp={msg.createdAt}
       body={msg.content}
+      size={44}
+      variant="solid"
+      density="chat"
     />
   );
 }
 
 function ThinkingIndicator() {
   return (
-    <li className="relative pl-10">
+    <li className="relative" style={{ paddingLeft: 65 }}>
       <div className="absolute left-0 top-0">
-        <ThreadAvatar author={{ kind: "goose" }} />
+        <ThreadAvatar author={{ kind: "goose" }} size={44} variant="solid" />
       </div>
-      <p className="pt-1 text-sm italic text-text-muted">Goose is thinking…</p>
+      <p className="pt-1 text-[16px] italic text-text-muted">Goose is thinking…</p>
     </li>
   );
 }
@@ -213,5 +223,18 @@ function EmptyState() {
         mind.
       </p>
     </div>
+  );
+}
+
+function SendIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+    >
+      <path d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2 .4 6.4z" />
+    </svg>
   );
 }

@@ -7,6 +7,7 @@ type Props = {
   isAdmin: boolean;
   subtitle?: string;
   rightSlot?: React.ReactNode;
+  centered?: boolean;
 };
 
 export function BackHeader({
@@ -15,7 +16,26 @@ export function BackHeader({
   isAdmin,
   subtitle,
   rightSlot,
+  centered = false,
 }: Props) {
+  if (centered) {
+    return (
+      <header className="relative flex items-center justify-between gap-4 border-b border-border bg-bg px-4 py-3">
+        <Link
+          href={backHref}
+          aria-label="Back"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-signal transition-colors hover:text-mint-bright"
+        >
+          <BackIcon className="h-5 w-5" />
+        </Link>
+        <h1 className="pointer-events-none absolute left-1/2 -translate-x-1/2 truncate text-[20px] font-semibold text-text">
+          {title}
+        </h1>
+        {rightSlot ?? <HeaderMenu isAdmin={isAdmin} />}
+      </header>
+    );
+  }
+
   return (
     <header className="flex items-center justify-between gap-4 border-b border-border bg-surface px-4 py-3">
       <div className="flex min-w-0 items-center gap-3">

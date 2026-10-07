@@ -39,6 +39,7 @@ export default async function GooseLayout({
           backHref="/home"
           title="Goose"
           isAdmin={dbUser.isAdmin}
+          centered
         />
       }
     >
