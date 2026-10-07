@@ -6,17 +6,17 @@ type Props = { isAdmin: boolean };
 
 export function MobileTopBar({ isAdmin }: Props) {
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-border bg-surface px-4 py-3">
-      <Link href="/home" className="flex items-center gap-2">
+    <header className="flex items-center justify-between gap-4 bg-bg px-4 py-3">
+      <Link href="/home" className="flex items-center gap-[14px]">
         <Image
-          src="/icons/icon-192.png"
+          src="/icons/bh-glyph.png"
           alt=""
-          width={22}
-          height={22}
+          width={36}
+          height={43}
           priority
-          className="shrink-0"
+          className="h-[43px] w-[36px] shrink-0"
         />
-        <span className="text-sm font-bold uppercase tracking-widest text-text">
+        <span className="text-[14px] font-medium uppercase tracking-[0.3em] text-signal">
           Brotherhood
         </span>
       </Link>

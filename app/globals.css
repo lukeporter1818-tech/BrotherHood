@@ -29,7 +29,7 @@
    `border` is a mint-tinted translucent hairline; `border-strong` is the
    slightly-brighter idle-hover variant; `border-active` is the visible mint
    outline reserved for active container surfaces (sidebar active row, etc).
-   `signal` (#98DF9B) is the general-purpose accent.
+   `signal` (#7DF7B9) is the general-purpose accent.
    `mint-bright` (#A7FFB5) is for glints and hover accents only — never a
    fill surface. `mint-deep` (#244D32) is a deep-shadow mint for subtle
    backgrounds and tints.
@@ -45,15 +45,15 @@
   --color-bg:            #040B09;
   --color-surface:       #0A1612;
   --color-elevated:      #121E1A;
-  --color-border:        rgba(152, 223, 155, 0.25);
-  --color-border-strong: rgba(152, 223, 155, 0.42);
-  --color-border-active: rgba(152, 223, 155, 0.55);
+  --color-border:        rgba(125, 247, 185, 0.25);
+  --color-border-strong: rgba(125, 247, 185, 0.42);
+  --color-border-active: rgba(125, 247, 185, 0.55);
   --color-text:          #EEF3EE;
   --color-text-muted:    #8A958F;
   --color-text-dim:      #626B68;
-  --color-signal:        #98DF9B;
-  --color-mint-bright:   #A7FFB5;
-  --color-mint-deep:     #244D32;
+  --color-signal:        #7DF7B9;
+  --color-mint-bright:   #A0FACC;
+  --color-mint-deep:     #0D3828;
   --color-live:          #D98B3E;
   --color-crisis:        #B5544A;
 
@@ -110,10 +110,10 @@ body::before {
    crisis-strong:  Get Help FAB only — do not apply to other surfaces
    ──────────────────────────────────────────────────────────────────────── */
 @layer utilities {
-  .glow-signal-sm      { box-shadow: 0 0 8px 2px rgba(152,223,155,0.7); }
-  .glow-signal-md      { box-shadow: 0 0 18px 2px rgba(152,223,155,0.45); }
-  .glow-signal-outline { box-shadow: 0 0 24px rgba(152,223,155,0.35); }
-  .glow-signal-text    { text-shadow: 0 0 10px rgba(152,223,155,0.5); }
+  .glow-signal-sm      { box-shadow: 0 0 8px 2px rgba(125,247,185,0.7); }
+  .glow-signal-md      { box-shadow: 0 0 18px 2px rgba(125,247,185,0.45); }
+  .glow-signal-outline { box-shadow: 0 0 24px rgba(125,247,185,0.35); }
+  .glow-signal-text    { text-shadow: 0 0 10px rgba(125,247,185,0.5); }
   .glow-crisis-strong {
     box-shadow: 0 0 24px 4px rgba(181,84,74,0.55),
                 0 0 50px 10px rgba(181,84,74,0.25);

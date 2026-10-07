@@ -79,17 +79,17 @@ export default async function HomePage() {
   const displayName = dbUser.anonHandle;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-10">
+    <div className="mx-auto w-full max-w-5xl px-[18px] pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-10">
       <div className="mb-6">
-        <h1 className="text-[26px] font-bold tracking-tight text-text sm:text-4xl">
+        <h1 className="text-[28px] font-bold text-text sm:text-4xl">
           {greeting()}, {displayName}.
         </h1>
-        <p className="mt-1 text-sm text-text-muted">
+        <p className="mt-2 text-[18px] text-text-muted">
           Here&apos;s where things stand.
         </p>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-10">
         <StatusStrip
           dailyDone={!!checkIn}
           bench={benchState}
