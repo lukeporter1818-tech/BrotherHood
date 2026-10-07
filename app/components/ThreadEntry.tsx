@@ -68,6 +68,19 @@ function formatChatTimestamp(ts: Date | string): string {
   return formatTimestamp(d);
 }
 
+function formatRelativeTimestamp(ts: Date | string): string {
+  const d = typeof ts === "string" ? new Date(ts) : ts;
+  const diff = Date.now() - d.getTime();
+  const minutes = Math.floor(diff / 60_000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days <= 30) return `${days}d ago`;
+  return formatTimestamp(d);
+}
+
 // Solid-variant fills — scoped here so ring/bar colors elsewhere stay
 // driven by identity.ts and --color-signal.
 const SOLID_FILL_SELF = "#8BF6BF";
@@ -194,20 +207,74 @@ export function ThreadEntry({
   tone?: "normal" | "removed";
   size?: number;
   variant?: "ring" | "solid";
-  density?: "default" | "chat";
+  density?: "default" | "chat" | "feed";
 }) {
   const { color, label } = resolveAuthor(author);
   const removed = tone === "removed";
   const chat = density === "chat";
+  const feed = density === "feed";
 
   const avatarAuthor: Author =
     chat && author.kind === "self"
       ? { kind: "self", anonHandle: "You" }
       : author;
   const displayLabel = chat && author.kind === "self" ? "You" : label;
-  const timeString = chat
-    ? formatChatTimestamp(timestamp)
-    : formatTimestamp(timestamp);
+  const timeString = feed
+    ? formatRelativeTimestamp(timestamp)
+    : chat
+      ? formatChatTimestamp(timestamp)
+      : formatTimestamp(timestamp);
+
+  if (feed) {
+    return (
+      <li className="relative py-[14px]" style={{ paddingLeft: size + 11 }}>
+        <div className="absolute left-0 top-[14px]">
+          <ThreadAvatar
+            author={avatarAuthor}
+            tone={tone}
+            size={size}
+            variant={variant}
+          />
+        </div>
+        <div className="flex items-baseline gap-2">
+          <span
+            className={
+              removed
+                ? "text-sm italic text-text-muted"
+                : "text-[14px] font-medium text-text"
+            }
+          >
+            {removed ? "[removed]" : displayLabel}
+          </span>
+          <span className="text-[14px] text-text-muted">
+            {timeString}
+            {edited && !removed && (
+              <span className="text-text-muted/60"> · edited</span>
+            )}
+          </span>
+        </div>
+        <div
+          className={
+            removed
+              ? "mt-1 border-l-2 border-border pl-3"
+              : "mt-1 border-l-2"
+          }
+          style={removed ? undefined : { borderColor: color, paddingLeft: 14 }}
+        >
+          <div
+            className={
+              removed
+                ? "whitespace-pre-wrap break-words text-sm italic text-text-muted/60"
+                : "whitespace-pre-wrap break-words text-sm leading-5 text-text"
+            }
+          >
+            {body}
+          </div>
+          {children && !removed && <div className="mt-2">{children}</div>}
+        </div>
+      </li>
+    );
+  }
 
   return (
     <li

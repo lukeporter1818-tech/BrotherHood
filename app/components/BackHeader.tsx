@@ -8,6 +8,7 @@ type Props = {
   subtitle?: string;
   rightSlot?: React.ReactNode;
   centered?: boolean;
+  tone?: "default" | "mint";
 };
 
 export function BackHeader({
@@ -17,7 +18,24 @@ export function BackHeader({
   subtitle,
   rightSlot,
   centered = false,
+  tone = "default",
 }: Props) {
+  if (tone === "mint") {
+    return (
+      <header className="flex items-center justify-between gap-4 bg-bg px-4 py-3">
+        <Link
+          href={backHref}
+          aria-label="Back"
+          className="flex items-center gap-2 text-signal transition-colors hover:text-mint-bright"
+        >
+          <BackIcon className="h-[22px] w-[22px]" />
+          <span className="text-[16px] font-medium">{title}</span>
+        </Link>
+        {rightSlot ?? <HeaderMenu isAdmin={isAdmin} />}
+      </header>
+    );
+  }
+
   if (centered) {
     return (
       <header className="relative flex items-center justify-between gap-4 border-b border-border bg-bg px-4 py-3">

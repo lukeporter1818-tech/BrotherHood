@@ -21,7 +21,7 @@ export function PostComposer(props: Props) {
     <form
       ref={formRef}
       action={formAction}
-      className="rounded border border-border bg-surface p-4"
+      className="relative overflow-hidden rounded border border-border bg-surface p-4 pb-12"
     >
       {props.roomSlug ? (
         <input type="hidden" name="roomSlug" value={props.roomSlug} />
@@ -36,15 +36,13 @@ export function PostComposer(props: Props) {
         className="w-full resize-none bg-transparent text-sm text-text placeholder:text-text-muted focus:outline-none"
         required
       />
-      <div className="mt-2 flex justify-end">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-full bg-surface border-2 border-signal px-4 py-3 text-sm font-medium text-text transition-colors hover:bg-signal/10 disabled:opacity-50 glow-signal-md"
-        >
-          {pending ? "Posting…" : "Post"}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={pending}
+        className="absolute bottom-0 right-0 flex h-10 w-[88px] items-center justify-center rounded-tl-[12px] bg-signal text-[14px] font-semibold text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
+      >
+        {pending ? "Posting…" : "Post"}
+      </button>
       {state.error && (
         <p className="mt-2 text-xs text-red-400">
           {state.error}

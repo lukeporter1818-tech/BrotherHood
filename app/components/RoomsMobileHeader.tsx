@@ -11,15 +11,30 @@ type Props = {
 
 export function RoomsMobileHeader({ isAdmin, rooms }: Props) {
   const pathname = usePathname() ?? "";
-  const match = /^\/rooms\/([^/]+)/.exec(pathname);
-  if (match) {
-    const room = rooms.find((r) => r.slug === match[1]);
+  const postMatch = /^\/rooms\/([^/]+)\/([^/]+)/.exec(pathname);
+  if (postMatch) {
+    const room = rooms.find((r) => r.slug === postMatch[1]);
+    if (room) {
+      return (
+        <BackHeader
+          backHref={`/rooms/${room.slug}`}
+          title={room.displayName}
+          isAdmin={isAdmin}
+          tone="mint"
+        />
+      );
+    }
+  }
+  const roomMatch = /^\/rooms\/([^/]+)/.exec(pathname);
+  if (roomMatch) {
+    const room = rooms.find((r) => r.slug === roomMatch[1]);
     if (room) {
       return (
         <BackHeader
           backHref="/rooms"
-          title={room.displayName}
+          title="All rooms"
           isAdmin={isAdmin}
+          tone="mint"
         />
       );
     }
