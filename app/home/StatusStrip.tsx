@@ -25,13 +25,13 @@ function Pill({
   return (
     <Link
       href={href}
-      className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 font-mono text-xs transition-colors duration-200 ${
+      className={`relative inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
         active
-          ? "border-signal bg-signal/10 text-text hover:border-mint-bright"
+          ? "border-transparent bg-signal text-bg glow-signal-md"
           : "border-border bg-surface text-text-muted hover:border-signal"
       }`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${dotClass[tone]}`} />
+      <span className={`h-1.5 w-1.5 rounded-full ${active ? "bg-bg" : dotClass[tone]}`} />
       {label}
     </Link>
   );

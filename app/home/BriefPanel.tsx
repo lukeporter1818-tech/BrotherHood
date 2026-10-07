@@ -47,23 +47,6 @@ function formatBriefDate(date: Date): string {
     .toUpperCase();
 }
 
-function ChevronIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-    >
-      <polyline points="9 6 15 12 9 18" />
-    </svg>
-  );
-}
-
 function BriefCard({
   headline,
   blurb,
@@ -83,7 +66,7 @@ function BriefCard({
     <article className="flex gap-4 rounded-xl border border-border bg-elevated p-4 transition-colors group-hover:border-border-strong">
       <div
         aria-hidden="true"
-        className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-border bg-bg font-mono text-base text-text-dim"
+        className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border border-border bg-bg font-mono text-base text-text-dim"
       >
         {initial}
       </div>
@@ -99,12 +82,6 @@ function BriefCard({
         )}
         <p className="mt-2 text-sm text-text-muted">{blurb}</p>
       </div>
-
-      {url && (
-        <div className="shrink-0 self-center text-text-muted group-hover:text-signal">
-          <ChevronIcon />
-        </div>
-      )}
     </article>
   );
 
@@ -153,7 +130,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
       </div>
 
       <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col gap-2">
           <div className="relative flex-1">
             <svg
               aria-hidden="true"
@@ -164,7 +141,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-signal"
             >
               <circle cx="11" cy="11" r="7" />
               <line x1="16.5" y1="16.5" x2="21" y2="21" />
@@ -186,7 +163,7 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
             type="button"
             onClick={() => runSearch(topic)}
             disabled={pending || !topic.trim()}
-            className="min-h-11 w-full shrink-0 rounded-full border-2 border-signal bg-bg px-5 text-sm font-medium text-signal transition-shadow duration-200 glow-signal-md hover:shadow-[0_0_28px_4px_rgba(152,223,155,0.65)] sm:w-auto"
+            className="min-h-11 w-full shrink-0 rounded-full border-2 border-signal bg-bg px-5 text-sm font-medium text-signal transition-shadow duration-200 glow-signal-md hover:shadow-[0_0_28px_4px_rgba(152,223,155,0.65)]"
           >
             {pending ? "Generating… (15–40s)" : "Search"}
           </button>

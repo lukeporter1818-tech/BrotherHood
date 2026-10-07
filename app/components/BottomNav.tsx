@@ -54,7 +54,7 @@ export function BottomNav({ pendingMatchCount = 0 }: Props) {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] md:inset-x-auto md:left-1/2 md:right-auto md:bottom-6 md:-translate-x-1/2 md:rounded-full md:border md:shadow-xl md:pb-0"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border-strong bg-surface pb-[env(safe-area-inset-bottom)] md:inset-x-auto md:left-1/2 md:right-auto md:bottom-6 md:-translate-x-1/2 md:rounded-full md:border md:border-border md:shadow-xl md:pb-0"
     >
       <div className="mx-auto flex items-stretch justify-around px-2 md:gap-2 md:px-4">
         <NavSlot
@@ -105,12 +105,18 @@ function NavSlot({
     <Link
       href={href}
       aria-label={label}
-      className={`relative flex min-w-14 flex-col items-center justify-center gap-1 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors duration-150 ${
-        active ? "text-signal" : "text-text-muted hover:text-text"
+      className={`relative flex min-w-14 items-center justify-center py-2 text-[11px] font-medium transition-colors duration-150 ${
+        active ? "text-signal glow-signal-text" : "text-text-muted hover:text-text"
       }`}
     >
-      <span className={active ? "text-signal" : ""}>{icon}</span>
-      <span>{label}</span>
+      <span
+        className={`flex flex-col items-center gap-1 rounded-xl border px-3 py-1 ${
+          active ? "border-signal/30 bg-signal/10" : "border-transparent"
+        }`}
+      >
+        <span className={active ? "text-signal drop-shadow-[0_0_6px_rgba(152,223,155,0.6)]" : ""}>{icon}</span>
+        <span>{label}</span>
+      </span>
       {badge !== undefined && badge > 0 && (
         <span
           aria-label={`${badge} pending`}
@@ -128,13 +134,13 @@ function CenterSlot() {
     <Link
       href="/home"
       aria-label="Brotherhood home"
-      className="relative -mt-6 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-signal bg-elevated glow-signal-md md:-mt-5 md:h-12 md:w-12"
+      className="relative -mt-3 flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border-2 border-signal bg-elevated shadow-[0_0_28px_4px_rgba(152,223,155,0.6)] md:-mt-3 md:h-[52px] md:w-[52px]"
     >
       <Image
         src="/icons/icon-192.png"
         alt=""
-        width={28}
-        height={28}
+        width={34}
+        height={34}
         priority
         className="shrink-0"
       />

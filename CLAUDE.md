@@ -63,5 +63,4 @@ Next.js 14 App Router, TypeScript, Tailwind, Prisma 7 + Supabase Postgres, Supab
   pre-filter on submission
 - **Sprint 4:** Onboarding flow, mobile pass, invite-only soft launch prep
 
-Do not build Phase 2+ features (Squads, The Bench, Wingman AI, Care Fund, events) until
-explicitly told the MVP has validated.
+Do not build Phase 2+ features (Squads, Wingman AI, Care Fund, events) until explicitly told the MVP has validated. The Bench is already built and in active development.

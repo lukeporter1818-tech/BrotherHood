@@ -3,15 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PostComposer } from "@/app/components/PostComposer";
 import { ReportButton } from "@/app/components/ReportButton";
-
-function formatWhen(d: Date) {
-  return d.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
+import { Thread, ThreadEntry } from "@/app/components/ThreadEntry";
 
 const EDITED_THRESHOLD_MS = 5_000;
 
@@ -31,6 +23,7 @@ export default async function RoomPage({
     take: 50,
     select: {
       id: true,
+      userId: true,
       body: true,
       createdAt: true,
       editedAt: true,
@@ -59,53 +52,54 @@ export default async function RoomPage({
         <PostComposer roomSlug={room.slug} />
       </div>
 
-      <div className="mt-8 flex flex-col gap-3">
-        {posts.length === 0 && (
-          <div className="rounded-lg border border-dashed border-border p-8 text-center text-text-muted">
-            No posts yet. Be first.
-          </div>
-        )}
-        {posts.map((post) => {
-          const author = post.user.anonHandle;
-          return (
-            <div
-              key={post.id}
-              className="rounded-lg border border-border bg-surface"
-            >
-              <Link
-                href={`/rooms/${room.slug}/${post.id}`}
-                className="block p-4 transition-colors hover:bg-elevated"
-              >
-                <div className="flex items-center justify-between text-xs text-text-muted">
-                  <span className="font-medium text-text-muted">
-                    {author}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    {formatWhen(post.createdAt)}
-                    {post.editedAt !== null &&
-                      post.editedAt.getTime() - post.createdAt.getTime() >
-                        EDITED_THRESHOLD_MS && (
-                        <span className="text-text-muted/60">
-                          · edited
-                        </span>
-                      )}
-                  </span>
-                </div>
-                <p className="mt-2 whitespace-pre-wrap break-words text-sm text-text">
-                  {post.body}
-                </p>
-              </Link>
-              <div className="flex items-center justify-between border-t border-border px-4 py-2">
-                <span className="text-xs text-text-muted">
-                  {post._count.replies}{" "}
-                  {post._count.replies === 1 ? "reply" : "replies"}
-                </span>
-                <ReportButton targetType="POST" targetId={post.id} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {posts.length === 0 ? (
+        <div className="mt-8 rounded-lg border border-dashed border-border p-8 text-center text-text-muted">
+          No posts yet. Be first.
+        </div>
+      ) : (
+        <div className="mt-8">
+          <Thread>
+            {posts.map((post) => {
+              const edited =
+                post.editedAt !== null &&
+                post.editedAt.getTime() - post.createdAt.getTime() >
+                  EDITED_THRESHOLD_MS;
+              return (
+                <ThreadEntry
+                  key={post.id}
+                  author={{
+                    kind: "other",
+                    userId: post.userId,
+                    label: post.user.anonHandle,
+                  }}
+                  timestamp={post.createdAt}
+                  edited={edited}
+                  body={
+                    <Link
+                      href={`/rooms/${room.slug}/${post.id}`}
+                      className="block before:absolute before:inset-0 before:z-0 before:rounded-lg before:content-[''] before:transition-colors hover:before:bg-elevated/40"
+                    >
+                      <span className="relative z-10 whitespace-pre-wrap break-words">
+                        {post.body}
+                      </span>
+                    </Link>
+                  }
+                >
+                  <div className="relative z-10 flex items-center justify-between pt-2">
+                    <span className="text-xs text-text-muted">
+                      {post._count.replies}{" "}
+                      {post._count.replies === 1 ? "reply" : "replies"}
+                    </span>
+                    <span className="relative z-20">
+                      <ReportButton targetType="POST" targetId={post.id} />
+                    </span>
+                  </div>
+                </ThreadEntry>
+              );
+            })}
+          </Thread>
+        </div>
+      )}
     </div>
   );
 }

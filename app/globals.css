@@ -45,8 +45,8 @@
   --color-bg:            #040B09;
   --color-surface:       #0A1612;
   --color-elevated:      #121E1A;
-  --color-border:        rgba(152, 223, 155, 0.14);
-  --color-border-strong: rgba(152, 223, 155, 0.28);
+  --color-border:        rgba(152, 223, 155, 0.25);
+  --color-border-strong: rgba(152, 223, 155, 0.42);
   --color-border-active: rgba(152, 223, 155, 0.55);
   --color-text:          #EEF3EE;
   --color-text-muted:    #8A958F;
