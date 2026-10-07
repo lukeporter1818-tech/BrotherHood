@@ -29,7 +29,7 @@ export default async function BenchMatchPage({
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-6 py-8">
         <Link
           href="/bench"
-          className="text-xs text-text-muted hover:text-text"
+          className="hidden text-xs text-text-muted hover:text-text md:inline-block"
         >
           ← Back to Bench
         </Link>
@@ -45,7 +45,7 @@ export default async function BenchMatchPage({
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-6 py-8">
         <Link
           href="/bench"
-          className="text-xs text-text-muted hover:text-text"
+          className="hidden text-xs text-text-muted hover:text-text md:inline-block"
         >
           ← Back to Bench
         </Link>
@@ -83,11 +83,11 @@ export default async function BenchMatchPage({
       <div>
         <Link
           href="/bench"
-          className="text-xs text-text-muted hover:text-text"
+          className="hidden text-xs text-text-muted hover:text-text md:inline-block"
         >
           ← Back to Bench
         </Link>
-        <h1 className="mt-2 text-lg font-semibold text-text">
+        <h1 className="mt-2 hidden text-lg font-semibold text-text md:block">
           {otherUser.anonHandle}
         </h1>
       </div>
