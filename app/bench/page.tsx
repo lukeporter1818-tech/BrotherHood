@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { AcceptDeclineButtons } from "@/app/bench/AcceptDeclineButtons";
 
 export const metadata = { title: "Chat — Brotherhood" };
 
 export default async function BenchPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
   const [asInitiator, asRecipient] = await Promise.all([

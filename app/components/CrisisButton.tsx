@@ -45,7 +45,7 @@ export function CrisisButton() {
       <a
         href="/crisis"
         onClick={openDialog}
-        className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-[45] rounded-full border-2 border-crisis bg-surface px-4 py-1.5 text-sm font-semibold text-text glow-crisis-strong transition-colors hover:bg-crisis/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-crisis md:bottom-4"
+        className="fixed right-4 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[45] rounded-full border-2 border-crisis bg-surface px-4 py-1.5 text-sm font-semibold text-text glow-crisis-strong transition-colors hover:bg-crisis/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-crisis md:bottom-4"
       >
         Get help
       </a>

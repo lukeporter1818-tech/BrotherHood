@@ -1,15 +1,12 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { AvailabilityToggles } from "@/app/bench/AvailabilityToggles";
 
 export const metadata = { title: "The Bench — Brotherhood" };
 
 export default async function AvailabilityPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
   const [rooms, myAvailability] = await Promise.all([

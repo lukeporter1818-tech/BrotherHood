@@ -29,27 +29,27 @@ export function BottomNav({ pendingMatchCount = 0 }: Props) {
         <NavSlot
           href="/goose"
           label="Goose"
-          icon={<GooseIcon className="h-[26px] w-[26px]" />}
+          icon={<GooseIcon className="h-[24px] w-[24px]" />}
           active={isActive("/goose")}
         />
         <NavSlot
           href="/rooms"
           label="Rooms"
-          icon={<RoomsIcon className="h-[26px] w-[26px]" />}
+          icon={<RoomsIcon className="h-[24px] w-[24px]" />}
           active={isActive("/rooms")}
         />
         <CenterSlot />
         <NavSlot
           href="/bench"
           label="Chat"
-          icon={<BenchIcon className="h-[26px] w-[26px]" />}
+          icon={<BenchIcon className="h-[24px] w-[24px]" />}
           active={benchActive}
           badge={pendingMatchCount}
         />
         <NavSlot
           href="/bench/availability"
           label="Bench"
-          icon={<AvailabilityIcon className="h-[26px] w-[26px]" />}
+          icon={<AvailabilityIcon className="h-[24px] w-[24px]" />}
           active={isActive("/bench/availability")}
         />
       </div>
@@ -74,12 +74,12 @@ function NavSlot({
     <Link
       href={href}
       aria-label={label}
-      className={`relative flex min-w-14 items-center justify-center py-2 text-[11px] font-medium transition-colors duration-150 ${
+      className={`relative flex min-w-14 items-center justify-center py-1 text-[11px] font-medium transition-colors duration-150 ${
         active ? "text-signal glow-signal-text" : "text-text-muted hover:text-text"
       }`}
     >
       <span
-        className="flex flex-col items-center gap-1.5 rounded-xl border border-transparent px-3 py-1"
+        className="flex flex-col items-center gap-1 rounded-xl border border-transparent px-3 py-0.5"
       >
         <span className="relative">
           {active && (

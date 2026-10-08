@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { getAuthorizedMatch } from "@/lib/bench/matching";
 import { BenchChat } from "@/app/bench/match/[id]/BenchChat";
@@ -15,10 +15,7 @@ export default async function BenchMatchPage({
 }) {
   const { id } = await params;
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
   const match = await getAuthorizedMatch({ matchId: id, userId: user.id });

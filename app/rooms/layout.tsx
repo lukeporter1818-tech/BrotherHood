@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { AppShell } from "@/app/components/AppShell";
 import { RoomsMobileHeader } from "@/app/components/RoomsMobileHeader";
@@ -9,10 +9,7 @@ export default async function RoomsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
   const [dbUser, pendingMatchCount, rooms] = await Promise.all([

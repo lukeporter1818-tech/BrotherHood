@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { GooseChat } from "@/app/goose/GooseChat";
 import type { ClientMessage } from "@/app/goose/actions";
@@ -9,10 +9,7 @@ export const metadata = {
 };
 
 export default async function GoosePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
   const profile = await prisma.user.findUnique({
