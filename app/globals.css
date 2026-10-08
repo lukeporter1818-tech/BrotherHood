@@ -136,3 +136,22 @@ body {
     padding-bottom: 0;
   }
 }
+
+/* Phone keyboard, part 2: with the keyboard up (html.kb-open, set by
+   useKeyboardInset), pin the message bar directly on top of the keyboard and
+   size the message list to the visible area above it. */
+@media (max-width: 767px) {
+  html.kb-open form[data-chat-composer] {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--kb);
+    z-index: 40;
+    padding: 10px 18px 10px;
+    background: linear-gradient(to top, #040b09 70%, rgba(4, 11, 9, 0));
+  }
+  html.kb-open [data-chat-scroll] {
+    max-height: calc(var(--vvh) - 9.5rem) !important;
+    padding-bottom: 5rem;
+  }
+}
