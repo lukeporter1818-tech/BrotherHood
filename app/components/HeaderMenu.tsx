@@ -42,9 +42,9 @@ export function HeaderMenu({ isAdmin }: Props) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Open menu"
-        className="flex h-10 w-10 items-center justify-center rounded-lg text-text-muted transition-colors hover:text-text"
+        className="flex h-10 w-10 items-center justify-center rounded-lg text-signal-bright transition-colors hover:text-signal"
       >
-        <MenuIcon className="h-5 w-5" />
+        <MenuIcon className="h-6 w-6" />
       </button>
 
       {open && (
@@ -90,14 +90,17 @@ function MenuIcon({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
+      <line x1="3" y1="6" x2="4.5" y2="6" />
+      <line x1="8" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="4.5" y2="12" />
+      <line x1="8" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="4.5" y2="18" />
+      <line x1="8" y1="18" x2="21" y2="18" />
     </svg>
   );
 }

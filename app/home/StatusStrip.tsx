@@ -8,7 +8,7 @@ type Tone = "positive" | "action" | "idle";
 
 const dotClass: Record<Tone, string> = {
   positive: "bg-signal glow-signal-sm",
-  action: "bg-text",
+  action: "bg-text-muted",
   idle: "bg-text-muted",
 };
 
@@ -25,13 +25,13 @@ function Pill({
   return (
     <Link
       href={href}
-      className={`relative inline-flex items-center gap-2 rounded-full px-3.5 py-2.5 text-[13px] transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
+      className={`relative inline-flex items-center gap-2 rounded-full px-[17px] py-2.5 text-[13px] transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
         active
-          ? "border-[1.5px] border-signal bg-bg text-text glow-signal-md"
-          : "border border-border bg-surface text-text/80 hover:border-signal"
+          ? "border-[1.5px] border-signal bg-mint-deep text-text glow-signal-md"
+          : "border border-text/20 bg-[#0C1315] text-text/80 hover:border-signal"
       }`}
     >
-      <span className={`h-2 w-2 rounded-full ${active ? "bg-signal" : dotClass[tone]}`} />
+      <span className={`h-2.5 w-2.5 rounded-full ${active ? "bg-signal" : dotClass[tone]}`} />
       {label}
     </Link>
   );
@@ -65,7 +65,7 @@ export function StatusStrip({
       : { label: `Rooms ${recentPostCount}`, tone: "positive" as const };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-[10px]">
       <Pill href="/goose" label={daily.label} tone={daily.tone} />
       <Pill
         href={benchPill.href}

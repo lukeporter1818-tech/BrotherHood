@@ -119,7 +119,7 @@ export function GooseChat({
             maxLength={BODY_MAX}
             placeholder="Say what's on your mind…"
             onKeyDown={handleKeyDown}
-            className="h-[37px] flex-1 resize-none border-0 bg-transparent py-[6px] text-[16px] leading-6 text-text placeholder:text-text-muted focus:outline-none"
+            className="h-[37px] flex-1 resize-none border-0 bg-transparent py-[6px] text-[16px] leading-6 text-text placeholder:text-[14px] placeholder:text-text-muted focus:outline-none"
             required
           />
           <button

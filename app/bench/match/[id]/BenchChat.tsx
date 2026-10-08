@@ -86,10 +86,10 @@ export function BenchChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[60vh] flex-1 flex-col rounded border border-border bg-surface">
+    <div className="flex min-h-[60vh] flex-1 flex-col">
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-6"
+        className="flex-1 overflow-y-auto py-6"
         style={{ maxHeight: "calc(100vh - 20rem)" }}
       >
         {isEmpty ? (
@@ -108,6 +108,9 @@ export function BenchChat({
                 }
                 timestamp={msg.createdAt}
                 body={msg.content}
+                size={44}
+                variant="solid"
+                density="chat"
               />
             ))}
           </Thread>
@@ -116,30 +119,44 @@ export function BenchChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="border-t border-border p-4"
+        className="p-[14px]"
       >
         {error && (
           <p className="mb-2 text-xs text-red-400">{error}</p>
         )}
-        <div className="flex items-end gap-2">
+        <div className="flex h-[45px] items-center overflow-hidden rounded-full border border-signal/50 bg-surface pl-5 focus-within:border-signal">
           <textarea
             name="body"
-            rows={2}
+            rows={1}
             maxLength={BODY_MAX}
-            placeholder="Enter to send, Shift+Enter for a new line."
+            placeholder="Write a message…"
             onKeyDown={handleKeyDown}
-            className="flex-1 resize-none rounded border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-signal focus:outline-none"
+            className="h-[37px] flex-1 resize-none border-0 bg-transparent py-[6px] text-[16px] leading-6 text-text placeholder:text-[14px] placeholder:text-text-muted focus:outline-none"
             required
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-surface border-2 border-signal px-4 py-3 text-sm font-medium text-text transition-colors hover:bg-signal/10 disabled:opacity-50 glow-signal-md"
+            aria-label="Send"
+            className="flex h-full w-14 shrink-0 items-center justify-center bg-[#89F6BD] text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
           >
-            {pending ? "…" : "Send"}
+            {pending ? "…" : <SendIcon className="h-5 w-5" />}
           </button>
         </div>
       </form>
     </div>
+  );
+}
+
+function SendIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+    >
+      <path d="M3.4 20.4 21 12 3.4 3.6 3 10l12 2-12 2 .4 6.4z" />
+    </svg>
   );
 }

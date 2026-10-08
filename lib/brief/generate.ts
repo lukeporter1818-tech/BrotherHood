@@ -5,8 +5,8 @@ import { BRIEF_SYSTEM_PROMPT, SAVE_BRIEF_TOOL } from "@/lib/brief/prompt";
 import { BriefPayloadSchema, type BriefPayload } from "@/lib/brief/schema";
 import { BLOCKED_DOMAINS } from "@/lib/brief/sources";
 
-const MAX_WEB_SEARCHES = 12;
-const MAX_TOKENS = 16_000;
+const MAX_WEB_SEARCHES = 2;
+const MAX_TOKENS = 2_500;
 
 export type BriefGenerationResult = {
   payload: BriefPayload;

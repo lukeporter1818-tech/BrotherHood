@@ -3,46 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-type IconProps = { className?: string };
-
-function HomeIcon({ className }: IconProps) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M3 10.5 12 3l9 7.5V21H3z" />
-      <path d="M9 21v-6h6v6" />
-    </svg>
-  );
-}
-
-function RoomsIcon({ className }: IconProps) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="3" y="5" width="8" height="6" rx="1" />
-      <rect x="13" y="5" width="8" height="6" rx="1" />
-      <rect x="3" y="13" width="18" height="6" rx="1" />
-    </svg>
-  );
-}
-
-function GooseIcon({ className }: IconProps) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M6 20c0-4 3-5 3-9 0-3-2.5-5.5-5.5-5.5" />
-      <path d="M3.5 10c1.5 0 3-1 3-2.5" />
-      <circle cx="5" cy="7" r="0.6" fill="currentColor" />
-      <path d="M18 20l-2-4-3-1" />
-    </svg>
-  );
-}
-
-function BenchIcon({ className }: IconProps) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M3 10h18M4 10v8M20 10v8M3 14h18" />
-    </svg>
-  );
-}
+import {
+  HomeIcon,
+  RoomsIcon,
+  GooseIcon,
+  BenchIcon,
+} from "@/app/components/NavIcons";
 
 type Props = { pendingMatchCount?: number };
 
@@ -60,26 +26,26 @@ export function BottomNav({ pendingMatchCount = 0 }: Props) {
         <NavSlot
           href="/home"
           label="Home"
-          icon={<HomeIcon className="h-6 w-6" />}
+          icon={<HomeIcon className="h-[26px] w-[26px]" />}
           active={isActive("/home")}
         />
         <NavSlot
           href="/rooms"
           label="Rooms"
-          icon={<RoomsIcon className="h-6 w-6" />}
+          icon={<RoomsIcon className="h-[26px] w-[26px]" />}
           active={isActive("/rooms")}
         />
         <CenterSlot />
         <NavSlot
           href="/goose"
           label="Goose"
-          icon={<GooseIcon className="h-6 w-6" />}
+          icon={<GooseIcon className="h-[26px] w-[26px]" />}
           active={isActive("/goose")}
         />
         <NavSlot
           href="/bench"
           label="Bench"
-          icon={<BenchIcon className="h-6 w-6" />}
+          icon={<BenchIcon className="h-[26px] w-[26px]" />}
           active={isActive("/bench")}
           badge={pendingMatchCount}
         />
@@ -105,14 +71,34 @@ function NavSlot({
     <Link
       href={href}
       aria-label={label}
-      className={`relative flex min-w-14 items-center justify-center py-2 text-[12px] font-medium transition-colors duration-150 ${
+      className={`relative flex min-w-14 items-center justify-center py-2 text-[11px] font-medium transition-colors duration-150 ${
         active ? "text-signal glow-signal-text" : "text-text-muted hover:text-text"
       }`}
     >
       <span
         className="flex flex-col items-center gap-1.5 rounded-xl border border-transparent px-3 py-1"
       >
-        <span className={active ? "text-signal drop-shadow-[0_0_6px_rgba(125,247,185,0.6)]" : ""}>{icon}</span>
+        <span className="relative">
+          {active && (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(125,247,185,0.28) 0%, transparent 70%)",
+              }}
+            />
+          )}
+          <span
+            className={
+              active
+                ? "relative text-signal [filter:drop-shadow(0_0_6px_rgba(125,247,185,0.7))]"
+                : ""
+            }
+          >
+            {icon}
+          </span>
+        </span>
         <span className="relative">
           {label}
           {active && (

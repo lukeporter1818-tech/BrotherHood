@@ -40,7 +40,7 @@ export function AvailabilityToggles({
         return (
           <li
             key={room.slug}
-            className="flex items-center justify-between rounded border border-border bg-surface px-4 py-3"
+            className="flex items-center justify-between rounded-[14px] border border-border bg-surface px-4 py-3"
           >
             <span className="text-sm font-medium text-text">
               {room.displayName}

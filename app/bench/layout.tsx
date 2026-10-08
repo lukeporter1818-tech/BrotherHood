@@ -65,6 +65,7 @@ export default async function BenchLayout({
         backHref="/bench"
         title={otherHandle}
         isAdmin={dbUser.isAdmin}
+        tone="mint"
       />
     );
   }

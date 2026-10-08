@@ -34,7 +34,7 @@ export default async function RoomPage({
   });
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-[18px] pt-6 pb-24 sm:px-6 sm:pb-10">
+    <div className="mx-auto w-full max-w-3xl px-[18px] pt-0 pb-24 sm:px-6 sm:pb-10">
       <Link
         href="/rooms"
         className="hidden text-sm text-text-muted hover:text-text md:inline-block"
@@ -50,11 +50,11 @@ export default async function RoomPage({
           <RoomIcon name={room.displayName} className="h-10 w-10" />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="text-[26px] font-bold text-text">
+          <h1 className="text-[23px] font-semibold text-text">
             {room.displayName}
           </h1>
           {room.description && (
-            <p className="mt-1 line-clamp-2 max-w-[240px] text-[15px] leading-[19px] text-text-muted">
+            <p className="mt-1 line-clamp-2 max-w-[205px] text-[13.5px] leading-[19px] text-subhead">
               {room.description}
             </p>
           )}
@@ -77,7 +77,7 @@ export default async function RoomPage({
           No posts yet. Be first.
         </div>
       ) : (
-        <ol className="divide-y divide-border border-b border-border">
+        <ol>
           {posts.map((post) => {
             const edited =
               post.editedAt !== null &&

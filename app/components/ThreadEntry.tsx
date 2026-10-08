@@ -289,13 +289,19 @@ export function ThreadEntry({
           variant={variant}
         />
       </div>
-      <div className="flex items-baseline justify-between gap-2">
+      <div
+        className={
+          chat
+            ? "flex items-baseline justify-start gap-3"
+            : "flex items-baseline justify-between gap-2"
+        }
+      >
         <span
           className={
             removed
               ? "text-sm italic text-text-muted"
               : chat
-                ? "text-[17px] font-semibold text-text"
+                ? "text-[14px] font-semibold text-text"
                 : "text-sm font-medium text-text"
           }
         >
@@ -304,7 +310,7 @@ export function ThreadEntry({
         <span
           className={
             chat
-              ? "font-mono text-[14px] text-text-muted"
+              ? "font-mono text-[13px] text-text-muted"
               : "font-mono text-xs text-text-muted"
           }
         >
@@ -335,7 +341,7 @@ export function ThreadEntry({
             removed
               ? "whitespace-pre-wrap break-words text-sm italic text-text-muted/60"
               : chat
-                ? "whitespace-pre-wrap break-words text-[16px] leading-6 text-text/80"
+                ? "max-w-[230px] whitespace-pre-wrap break-words text-[16px] leading-6 text-text/90"
                 : "whitespace-pre-wrap break-words text-sm text-text"
           }
         >

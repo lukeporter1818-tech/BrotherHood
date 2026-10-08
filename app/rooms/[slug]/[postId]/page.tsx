@@ -69,22 +69,21 @@ export default async function PostDetailPage({
   const postEdited = wasEdited(post.createdAt, post.editedAt);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-24 sm:pb-10">
+    <div className="mx-auto w-full max-w-3xl px-[18px] pt-0 pb-24 sm:px-6 sm:pt-10 sm:pb-10">
       <Link
         href={`/rooms/${slug}`}
-        className="text-sm text-text-muted hover:text-text"
+        className="hidden text-sm text-text-muted hover:text-text md:inline-block"
       >
         ← {post.room.displayName}
       </Link>
 
       {post.replies.length > 0 && (
-        <h2 className="mt-6 mb-2 text-sm font-medium uppercase tracking-wide text-text-muted">
-          {post.replies.length}{" "}
-          {post.replies.length === 1 ? "reply" : "replies"}
+        <h2 className="mt-5 mb-1 text-[16px] font-semibold text-text">
+          Replies ({post.replies.length})
         </h2>
       )}
 
-      <div className="mt-4 rounded-lg border border-border bg-surface p-6">
+      <div className="mt-2">
         <Thread>
           <ThreadEntry
             key={post.id}
@@ -101,6 +100,9 @@ export default async function PostDetailPage({
             body={postDeleted ? "[This post was removed.]" : post.body}
             edited={postEdited}
             tone={postDeleted ? "removed" : "normal"}
+            size={37}
+            variant="solid"
+            density="feed"
           >
             {!postDeleted &&
               (user?.id === post.userId ? (
@@ -129,6 +131,9 @@ export default async function PostDetailPage({
                 body={replyDeleted ? "[This reply was removed.]" : reply.body}
                 edited={replyEdited}
                 tone={replyDeleted ? "removed" : "normal"}
+                size={37}
+                variant="solid"
+                density="feed"
               >
                 {!replyDeleted &&
                   (user?.id === reply.userId ? (

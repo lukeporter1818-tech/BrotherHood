@@ -3,33 +3,35 @@ import { prisma } from "@/lib/prisma";
 import { RoomIcon } from "@/app/components/RoomIcons";
 
 export default async function RoomsPage() {
-  const rooms = await prisma.room.findMany({ orderBy: { displayName: "asc" } });
+  const rooms = await prisma.room.findMany({
+    orderBy: [{ sortOrder: "asc" }, { displayName: "asc" }],
+  });
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-[18px] pt-10 pb-24 sm:px-6 sm:pb-10">
-      <h1 className="text-[30px] font-bold text-text">
+    <div className="mx-auto w-full max-w-3xl px-[18px] pt-0 pb-24 sm:px-6 sm:pb-10">
+      <h1 className="text-[28px] font-semibold text-text">
         Rooms
       </h1>
-      <p className="mt-2 text-[18px] text-text-muted">
+      <p className="-mt-0.5 text-[17px] text-subhead">
         Conversations on what matters.
       </p>
 
-      <div className="mt-[20px] grid gap-1 sm:grid-cols-2">
+      <div className="mt-[8px] grid gap-[5px] sm:grid-cols-2">
         {rooms.map((room) => (
           <Link
             key={room.id}
             href={`/rooms/${room.slug}`}
-            className="flex min-h-[74px] items-center rounded border border-border bg-surface pl-2 pr-5 transition-colors hover:border-signal"
+            className="flex min-h-[74px] items-center rounded-[14px] border border-border bg-surface pl-2 pr-5 transition-colors hover:border-signal"
           >
             <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-[14px] bg-signal/10 text-signal">
-              <RoomIcon name={room.displayName} className="h-7 w-7" />
+              <RoomIcon name={room.displayName} className="h-[30px] w-[30px] stroke-2" />
             </div>
             <div className="ml-[26px] min-w-0 flex-1">
-              <h2 className="text-[16px] font-semibold text-text">
+              <h2 className="text-[15px] font-medium text-text">
                 {room.displayName}
               </h2>
               {room.description && (
-                <p className="mt-0.5 line-clamp-2 text-[13px] leading-[19px] text-text-muted">
+                <p className="mt-0.5 line-clamp-2 max-w-[192px] text-[13.5px] leading-[19px] text-subhead">
                   {room.description}
                 </p>
               )}

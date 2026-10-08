@@ -54,6 +54,8 @@
   --color-signal:        #7DF7B9;
   --color-mint-bright:   #A0FACC;
   --color-mint-deep:     #0D3828;
+  --color-signal-bright: #BDFDDC;
+  --color-subhead:       #B8C4DA;
   --color-live:          #D98B3E;
   --color-crisis:        #B5544A;
 
@@ -73,14 +75,6 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  /* background plate arrives separately */
-}
 
 /* ─── iOS Safari auto-zoom fix ────────────────────────────────────────────────
    Safari zooms on focus if font-size < 16px. !important is required to

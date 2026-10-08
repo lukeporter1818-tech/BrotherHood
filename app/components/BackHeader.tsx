@@ -22,13 +22,13 @@ export function BackHeader({
 }: Props) {
   if (tone === "mint") {
     return (
-      <header className="flex items-center justify-between gap-4 bg-bg px-4 py-3">
+      <header className="flex items-center justify-between gap-4 px-4 py-3">
         <Link
           href={backHref}
           aria-label="Back"
           className="flex items-center gap-2 text-signal transition-colors hover:text-mint-bright"
         >
-          <BackIcon className="h-[22px] w-[22px]" />
+          <ArrowLeftIcon className="h-[24px] w-[24px]" />
           <span className="text-[16px] font-medium">{title}</span>
         </Link>
         {rightSlot ?? <HeaderMenu isAdmin={isAdmin} />}
@@ -38,13 +38,13 @@ export function BackHeader({
 
   if (centered) {
     return (
-      <header className="relative flex items-center justify-between gap-4 border-b border-border bg-bg px-4 py-3">
+      <header className="relative flex items-center justify-between gap-4 px-4 py-3">
         <Link
           href={backHref}
           aria-label="Back"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-signal transition-colors hover:text-mint-bright"
         >
-          <BackIcon className="h-5 w-5" />
+          <ArrowLeftIcon className="h-6 w-6" />
         </Link>
         <h1 className="pointer-events-none absolute left-1/2 -translate-x-1/2 truncate text-[20px] font-semibold text-text">
           {title}
@@ -92,6 +92,24 @@ function BackIcon({ className }: { className?: string }) {
       className={className}
     >
       <path d="M15 6l-6 6 6 6" />
+    </svg>
+  );
+}
+
+function ArrowLeftIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M20 12H5" />
+      <path d="M11 6l-6 6 6 6" />
     </svg>
   );
 }

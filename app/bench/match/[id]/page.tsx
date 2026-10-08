@@ -79,7 +79,7 @@ export default async function BenchMatchPage({
   const otherUser = isInitiator ? match.recipient : match.initiator;
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-6 pt-6 pb-24 sm:pb-6">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-[18px] pt-0 pb-24 sm:px-6 sm:pt-6 sm:pb-6">
       <div>
         <Link
           href="/bench"

@@ -16,27 +16,40 @@ export function ReplyComposer({ postId }: { postId: string }) {
   }, [pending, state]);
 
   return (
-    <form
-      ref={formRef}
-      action={formAction}
-      className="rounded border border-border bg-surface p-4"
-    >
+    <form ref={formRef} action={formAction}>
       <input type="hidden" name="postId" value={postId} />
-      <textarea
-        name="body"
-        rows={2}
-        maxLength={2000}
-        placeholder="Reply…"
-        className="w-full resize-none bg-transparent text-sm text-text placeholder:text-text-muted focus:outline-none"
-        required
-      />
-      <div className="mt-2 flex justify-end">
+      <div className="flex items-center gap-2 rounded-[10px] border border-signal/30 bg-surface p-[6px] pl-4 focus-within:border-signal">
+        <textarea
+          name="body"
+          rows={1}
+          maxLength={2000}
+          placeholder="Write a reply…"
+          className="h-[34px] flex-1 resize-none border-0 bg-transparent py-[5px] text-[16px] leading-6 text-text placeholder:text-[14px] placeholder:text-text-muted focus:outline-none"
+          required
+        />
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-surface border-2 border-signal px-4 py-3 text-sm font-medium text-text transition-colors hover:bg-signal/10 disabled:opacity-50 glow-signal-md"
+          aria-label={pending ? "Sending" : "Send reply"}
+          className="flex h-[36px] w-[48px] shrink-0 items-center justify-center rounded-[8px] bg-[#89F6BD] text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {pending ? "Sending…" : "Reply"}
+          {pending ? (
+            "…"
+          ) : (
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-5 w-5"
+            >
+              <path d="M12 19V5" />
+              <path d="M5 12l7-7 7 7" />
+            </svg>
+          )}
         </button>
       </div>
       {state.error && (
