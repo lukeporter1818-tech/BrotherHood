@@ -63,5 +63,13 @@ Next.js 14 App Router, TypeScript, Tailwind, Prisma 7 + Supabase Postgres, Supab
   pre-filter on submission
 - **Sprint 4:** Onboarding flow, mobile pass, invite-only soft launch prep
 
-Do not build Phase 2+ features (Squads, The Bench, Wingman AI, Care Fund, events) until
-explicitly told the MVP has validated.
+Do not build Phase 2+ features (Squads, Wingman AI, Care Fund, events) until explicitly told the MVP has validated. The Bench is already built and in active development.
+
+## Tools (user scope, installed 2026-10-07)
+- My prompt's steps and approval flow come first. Do not start a skill's own workflow (brainstorming, writing-plans, executing-plans, subagent-driven-development) unless my prompt names it. One edit at a time, diff before applying, no commit or push.
+- context7: before writing code that depends on Next.js 16, Tailwind 4, Prisma or Supabase SSR APIs, check them with context7. Next.js 16 uses proxy.ts for middleware; never create a second middleware file.
+- superpowers:systematic-debugging: when something is broken or has regressed, find the cause with it before proposing a fix.
+- superpowers:test-driven-development: only for logic changes (server actions, data, matching), never for look-only styling, and only when my prompt asks.
+- webapp-testing: to check a screen, screenshot localhost:5001 at 393x852 and compare it with the concept montage (design/reference/Brotherhood_App_UI_Concept_Montage.png). Public pages only unless I provide a test account. Never ask for or store my real credentials. Do not install Playwright or Chromium without asking me.
+- /security-review: I run it myself before any commit that touches auth, proxy.ts, lib/supabase or server actions. Remind me then.
+- design/reference/screens/: full-size per-screen PNGs (01-landing ... 11-crisis-checkin), 941x1672 each; the source of truth for pixel comparison. Measure from them at 1.873 image px per CSS px and mark values read from the image vs estimated; prefer them over the single-sheet montage.

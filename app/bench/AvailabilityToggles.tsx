@@ -18,7 +18,8 @@ export function AvailabilityToggles({
     const next = !enabled.has(slug);
     setEnabled((prev) => {
       const s = new Set(prev);
-      next ? s.add(slug) : s.delete(slug);
+      if (next) s.add(slug);
+      else s.delete(slug);
       return s;
     });
     startTransition(async () => {
@@ -26,7 +27,8 @@ export function AvailabilityToggles({
       if (error) {
         setEnabled((prev) => {
           const s = new Set(prev);
-          next ? s.delete(slug) : s.add(slug);
+          if (next) s.delete(slug);
+          else s.add(slug);
           return s;
         });
       }
@@ -40,7 +42,7 @@ export function AvailabilityToggles({
         return (
           <li
             key={room.slug}
-            className="flex items-center justify-between rounded border border-border bg-surface px-4 py-3"
+            className="flex items-center justify-between rounded-[14px] border border-border bg-surface px-4 py-3"
           >
             <span className="text-sm font-medium text-text">
               {room.displayName}

@@ -11,4 +11,4 @@ if (!process.env.ANTHROPIC_API_KEY) {
 // feature lands, extract lib/anthropic/ and consolidate.
 export const anthropic = new Anthropic();
 
-export const BRIEF_MODEL = "claude-sonnet-4-6";
+export const BRIEF_MODEL = "claude-haiku-4-5";

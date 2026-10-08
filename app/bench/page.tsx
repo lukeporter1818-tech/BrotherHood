@@ -3,9 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { AcceptDeclineButtons } from "@/app/bench/AcceptDeclineButtons";
-import { AvailabilityToggles } from "@/app/bench/AvailabilityToggles";
 
-export const metadata = { title: "The Bench — Brotherhood" };
+export const metadata = { title: "Chat — Brotherhood" };
 
 export default async function BenchPage() {
   const supabase = await createClient();
@@ -14,7 +13,7 @@ export default async function BenchPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [asInitiator, asRecipient, rooms, myAvailability] = await Promise.all([
+  const [asInitiator, asRecipient] = await Promise.all([
     prisma.benchMatch.findMany({
       where: { initiatorId: user.id },
       include: { recipient: { select: { anonHandle: true } } },
@@ -25,17 +24,7 @@ export default async function BenchPage() {
       include: { initiator: { select: { anonHandle: true } } },
       orderBy: { createdAt: "desc" },
     }),
-    prisma.room.findMany({
-      select: { slug: true, displayName: true },
-      orderBy: { sortOrder: "asc" },
-    }),
-    prisma.roomAvailability.findMany({
-      where: { userId: user.id },
-      select: { room: { select: { slug: true } } },
-    }),
   ]);
-
-  const enabledSlugs = myAvailability.map((a) => a.room.slug);
 
   const pendingForMe = asRecipient.filter((m) => m.status === "PENDING");
   const pendingFromMe = asInitiator.filter((m) => m.status === "PENDING");
@@ -45,12 +34,10 @@ export default async function BenchPage() {
     pendingForMe.length + pendingFromMe.length + activeAsInitiator.length + activeAsRecipient.length > 0;
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 pt-8 pb-24 sm:pb-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-7 px-[18px] pt-0 pb-24 sm:px-6 sm:pt-8 sm:pb-8">
       <section>
-        <h1 className="text-2xl font-semibold text-text">
-          The Bench
-        </h1>
-        <p className="mt-2 text-sm text-text-muted">
+        <h1 className="text-[28px] font-semibold text-text">Chat</h1>
+        <p className="mt-[2px] text-[16px] leading-[22px] text-subhead">
           Private 1:1 connections — when Goose thinks you and another guy should talk, it&apos;ll offer to connect you here.
         </p>
       </section>
@@ -72,14 +59,14 @@ export default async function BenchPage() {
 
       {pendingForMe.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-text">
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.18em] text-signal">
             Pending — needs your response
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
             {pendingForMe.map((m) => (
               <li
                 key={m.id}
-                className="flex items-center justify-between rounded border border-border bg-surface p-4"
+                className="flex items-center justify-between rounded-[14px] border border-border bg-surface p-4"
               >
                 <p className="text-sm font-medium text-text">
                   {m.initiator.anonHandle}
@@ -93,7 +80,7 @@ export default async function BenchPage() {
 
       {(activeAsInitiator.length > 0 || activeAsRecipient.length > 0) && (
         <section>
-          <h2 className="text-lg font-semibold text-text">
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.18em] text-signal">
             Active conversations
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
@@ -101,7 +88,7 @@ export default async function BenchPage() {
               <li key={m.id}>
                 <Link
                   href={`/bench/match/${m.id}`}
-                  className="block rounded border border-border bg-surface p-4 hover:border-signal"
+                  className="block rounded-[14px] border border-border bg-surface p-4 hover:border-signal"
                 >
                   <p className="text-sm font-medium text-text">
                     {m.recipient.anonHandle}
@@ -113,7 +100,7 @@ export default async function BenchPage() {
               <li key={m.id}>
                 <Link
                   href={`/bench/match/${m.id}`}
-                  className="block rounded border border-border bg-surface p-4 hover:border-signal"
+                  className="block rounded-[14px] border border-border bg-surface p-4 hover:border-signal"
                 >
                   <p className="text-sm font-medium text-text">
                     {m.initiator.anonHandle}
@@ -127,14 +114,14 @@ export default async function BenchPage() {
 
       {pendingFromMe.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-text">
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.18em] text-signal">
             Waiting on a reply
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
             {pendingFromMe.map((m) => (
               <li
                 key={m.id}
-                className="rounded border border-border bg-surface p-4"
+                className="rounded-[14px] border border-border bg-surface p-4"
               >
                 <p className="text-sm font-medium text-text">
                   {m.recipient.anonHandle}
@@ -145,16 +132,6 @@ export default async function BenchPage() {
           </ul>
         </section>
       )}
-
-      <section>
-        <h2 className="text-lg font-semibold text-text">
-          Where you&apos;re open to connecting
-        </h2>
-        <p className="mt-1 mb-3 text-sm text-text-muted">
-          Turn on the rooms where you&apos;re willing to support someone who&apos;s going through it. Goose will only suggest you as a connection in rooms you&apos;ve enabled.
-        </p>
-        <AvailabilityToggles rooms={rooms} enabledSlugs={enabledSlugs} />
-      </section>
     </div>
   );
 }

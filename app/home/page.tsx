@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { BriefPanel } from "@/app/home/BriefPanel";
-import { StatusStrip } from "@/app/home/StatusStrip";
 import { BriefPayloadSchema } from "@/lib/brief";
 
 export const metadata = { title: "Home — Brotherhood" };
@@ -31,26 +30,8 @@ export default async function HomePage() {
   const utcToday = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
   );
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-  const [checkIn, activeBenchCount, recentPostCount, latestBrief, dailyBrief] =
+  const [latestBrief, dailyBrief] =
     await Promise.all([
-      prisma.dailyCheckIn.findFirst({
-        where: { userId: user.id, date: { gte: utcToday } },
-        select: { id: true },
-      }),
-      prisma.benchMatch.count({
-        where: {
-          OR: [{ initiatorId: user.id }, { recipientId: user.id }],
-          status: "ACTIVE",
-        },
-      }),
-      prisma.post.count({
-        where: {
-          deletedAt: null,
-          createdAt: { gte: twentyFourHoursAgo },
-        },
-      }),
       prisma.brief.findFirst({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
@@ -71,30 +52,17 @@ export default async function HomePage() {
       })()
     : null;
 
-  const benchState =
-    activeBenchCount > 0
-      ? ({ kind: "active", count: activeBenchCount } as const)
-      : ({ kind: "idle" } as const);
-
   const displayName = dbUser.anonHandle;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-6 sm:py-10">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-text">
+    <div className="mx-auto w-full max-w-5xl px-[18px] pt-1 pb-6 sm:px-6 sm:pt-10 sm:pb-10">
+      <div className="mb-[21px]">
+        <h1 className="text-[28px] font-semibold text-text sm:text-4xl">
           {greeting()}, {displayName}.
         </h1>
-        <p className="mt-1 text-sm text-text-muted">
+        <p className="mt-[2px] text-[18px] text-subhead">
           Here&apos;s where things stand.
         </p>
-      </div>
-
-      <div className="mb-8">
-        <StatusStrip
-          dailyDone={!!checkIn}
-          bench={benchState}
-          recentPostCount={recentPostCount}
-        />
       </div>
 
       <BriefPanel latest={parsedLatestBrief} dailyBrief={dailyBrief} />

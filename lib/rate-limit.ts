@@ -7,7 +7,7 @@ export type RateLimitBucket = "post" | "goose" | "brief";
 const LIMITS: Record<RateLimitBucket, { max: number; windowMs: number }> = {
   post: { max: 10, windowMs: 60_000 },
   goose: { max: 20, windowMs: 60_000 },
-  brief: { max: 1, windowMs: 15 * 60_000 },
+  brief: { max: 5, windowMs: 15 * 60_000 },
 };
 
 export function checkRateLimit(

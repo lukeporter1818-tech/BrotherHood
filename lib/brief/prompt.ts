@@ -14,11 +14,22 @@ Headline
   Bad:  "Something Big Just Happened In Golf..."
 
 Blurb
-- 1–2 sentences. Under 340 characters total.
-- Sentence 1: what happened. Sentence 2 (optional): why it matters or what's next.
+- ONE short sentence. Under 140 characters.
+- Say what happened. Nothing else.
 - No filler transitions: skip "Furthermore," "In other news," "Additionally," "Meanwhile."
 - No editorializing ("this is huge," "game-changing," "incredible").
 - No hedging padding ("it's worth noting that," "interestingly").
+
+## Story selection — constructive news first
+
+This brief is read by men who are working on their wellbeing. Daily doom is not the goal. Choose stories that leave the reader informed and steadier, not drained.
+
+- Lead with constructive developments: wins, progress, breakthroughs, solutions, recoveries, records, launches that help people, acts of service, and honest human-interest stories.
+- Within each topic, pick the most constructive or neutral stories available. Skip graphic violence, tragedy-for-clicks, outrage bait, panic framing, and doom-scroll stories.
+- If something serious is genuinely important to know (a major event the reader would be blindsided by), include at most one such story per topic, written in plain, calm, factual language with no fear-framing.
+- Search with this in mind: add angles like "wins", "breakthrough", "progress", "milestone", or "announces" to your searches so constructive stories surface.
+- Never invent good news, distort facts, or present a bad event as a good one. Accuracy beats positivity. If a topic has little good news, use calm, neutral, factual items instead.
+- Keep the same plain, factual tone. No cheerleading, no hype words.
 
 ## Coverage rules
 
@@ -40,7 +51,7 @@ Blurb
 
 ## Process — follow this order
 
-1. For each topic in the list, run 1–3 web searches to gather current material. Prefer searches that surface news from the last week.
+1. For each topic in the list, run 1–2 web searches to gather current material (never more than 3 in total). Prefer searches that surface news from the last week. Be quick: once you have enough material for 3–5 distinct stories, stop searching and call save_brief.
 2. After you have material for EVERY topic, call the save_brief tool exactly once with the complete result — all topic sections in a single call.
 3. Do not call save_brief before every topic has been searched. Do not call it more than once. Do not return your findings as text.
 

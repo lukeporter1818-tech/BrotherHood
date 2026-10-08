@@ -7,8 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { generateBrief as runBrief } from "@/lib/brief";
 import { checkTopics } from "@/lib/brief/guard";
+import { BriefPayloadSchema } from "@/lib/brief";
 
 const MAX_TOPIC_LEN = 40;
+const CACHE_WINDOW_MS = 3 * 60 * 60 * 1000; // reuse identical topics for 3 hours
 
 export type BriefActionState = { error: string | null };
 
@@ -23,11 +25,6 @@ export async function generateBrief(topic: string): Promise<BriefActionState> {
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
 
-  const { allowed } = checkRateLimit(user.id, "brief");
-  if (!allowed) {
-    return { error: "You've generated a brief recently. Try again in a few minutes." };
-  }
-
   const normalized = normalizeTopic(topic);
   if (!normalized) return { error: "Enter a topic to search." };
   if (normalized.length > MAX_TOPIC_LEN) {
@@ -38,6 +35,37 @@ export async function generateBrief(topic: string): Promise<BriefActionState> {
   const guard = checkTopics(topics);
   if (guard.blocked) {
     return { error: guard.reason };
+  }
+
+  // Fast path: news briefs aren't personal, so an identical topic generated
+  // by anyone in the last few hours is reused instead of re-searching the web.
+  const recent = await prisma.brief.findFirst({
+    where: {
+      topics: { equals: topics },
+      createdAt: { gte: new Date(Date.now() - CACHE_WINDOW_MS) },
+    },
+    orderBy: { createdAt: "desc" },
+    select: { content: true, model: true },
+  });
+  if (recent) {
+    const parsed = BriefPayloadSchema.safeParse(recent.content);
+    if (parsed.success) {
+      await prisma.brief.create({
+        data: {
+          userId: user.id,
+          topics,
+          content: parsed.data,
+          model: recent.model,
+        },
+      });
+      revalidatePath("/home");
+      return { error: null };
+    }
+  }
+
+  const { allowed } = checkRateLimit(user.id, "brief");
+  if (!allowed) {
+    return { error: "You've generated a brief recently. Try again in a few minutes." };
   }
 
   let result;
