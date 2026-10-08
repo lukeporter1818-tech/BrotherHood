@@ -107,7 +107,7 @@ export function GooseChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] p-[14px]"
+        className="sticky bottom-(--chat-bottom) p-[14px]"
       >
         {error && (
           <p className="mb-2 text-xs text-red-400">{error}</p>
