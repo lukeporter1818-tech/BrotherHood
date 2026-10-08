@@ -129,4 +129,10 @@ body {
   body:has(textarea:focus, input:focus) nav[aria-label="Primary"] {
     display: none;
   }
+  /* Drop the extra space under the page so the message bar sits right on top
+     of the keyboard instead of floating above a blank gap. */
+  body:has(textarea:focus, input:focus) main,
+  body:has(textarea:focus, input:focus) main > div {
+    padding-bottom: 0;
+  }
 }
