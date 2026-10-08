@@ -25,7 +25,7 @@ export function AppShell({
       <div className="hidden md:block">
         <TopBar anonHandle={anonHandle} isAdmin={isAdmin} />
       </div>
-      <main className="flex flex-1 flex-col pb-[calc(5rem+env(safe-area-inset-bottom))] [@media(min-height:700px)]:pb-[calc(7.5rem+env(safe-area-inset-bottom))]">
+      <main className="flex flex-1 flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] [@media(min-height:700px)]:pb-[calc(6rem+env(safe-area-inset-bottom))]">
         {children}
       </main>
       <BottomNav pendingMatchCount={pendingMatchCount} />

@@ -190,14 +190,14 @@ export function BriefPanel({ latest, dailyBrief }: Props) {
 
         <div className="mt-3 flex flex-col gap-3">
           {[PRESETS.slice(0, 4), PRESETS.slice(4)].map((row, rowIndex) => (
-            <div key={rowIndex} className="flex gap-2">
+            <div key={rowIndex} className="flex flex-wrap gap-2">
               {row.map((preset) => (
                 <button
                   key={preset}
                   type="button"
                   onClick={() => runSearch(preset)}
                   disabled={pending}
-                  className="inline-flex flex-auto items-center justify-center rounded-full border border-text/20 bg-surface px-[10px] py-[9px] text-[13px] text-text transition-colors duration-150 hover:bg-elevated hover:border-text/40 hover:text-signal focus-visible:bg-elevated focus-visible:border-text/40 focus-visible:text-signal focus-visible:outline-none disabled:opacity-50"
+                  className="inline-flex flex-auto items-center justify-center whitespace-nowrap rounded-full border border-text/20 bg-surface px-[10px] py-[9px] text-[13px] text-text transition-colors duration-150 hover:bg-elevated hover:border-text/40 hover:text-signal focus-visible:bg-elevated focus-visible:border-text/40 focus-visible:text-signal focus-visible:outline-none disabled:opacity-50"
                 >
                   {preset}
                 </button>

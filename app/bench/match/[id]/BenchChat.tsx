@@ -86,11 +86,11 @@ export function BenchChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[60vh] flex-1 flex-col">
+    <div className="flex min-h-[60dvh] flex-1 flex-col">
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto py-6"
-        style={{ maxHeight: "calc(100vh - 20rem)" }}
+        style={{ maxHeight: "calc(100dvh - 20rem)" }}
       >
         {isEmpty ? (
           <div className="flex flex-1 items-center justify-center py-16 text-center text-sm text-text-muted">
@@ -119,7 +119,7 @@ export function BenchChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="p-[14px]"
+        className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] p-[14px]"
       >
         {error && (
           <p className="mb-2 text-xs text-red-400">{error}</p>

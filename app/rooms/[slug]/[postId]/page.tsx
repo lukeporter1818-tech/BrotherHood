@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { ReplyComposer } from "@/app/components/ReplyComposer";
 import { ReportButton } from "@/app/components/ReportButton";
@@ -23,10 +23,7 @@ export default async function PostDetailPage({
 }) {
   const { slug, postId } = await params;
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
 
   let currentUserAnonHandle: string | null = null;
   if (user) {

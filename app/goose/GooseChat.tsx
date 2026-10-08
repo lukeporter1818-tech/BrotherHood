@@ -87,11 +87,11 @@ export function GooseChat({
   const isEmpty = optimisticMessages.length === 0 && !pending;
 
   return (
-    <div className="flex min-h-[70vh] flex-1 flex-col">
+    <div className="flex min-h-[70dvh] flex-1 flex-col">
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto py-6"
-        style={{ maxHeight: "calc(100vh - 16rem)" }}
+        style={{ maxHeight: "calc(100dvh - 16rem)" }}
       >
         {isEmpty ? (
           <EmptyState />
@@ -107,7 +107,7 @@ export function GooseChat({
       <form
         ref={formRef}
         action={handleSubmit}
-        className="p-[14px]"
+        className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] p-[14px]"
       >
         {error && (
           <p className="mb-2 text-xs text-red-400">{error}</p>
