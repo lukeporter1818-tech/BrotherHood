@@ -113,3 +113,20 @@ body {
                 0 0 50px 10px rgba(181,84,74,0.25);
   }
 }
+
+/* Phone keyboard: while someone is typing in a field, hide the bottom bar so
+   the keyboard and the message bar get the room. Get help stays visible; it
+   just moves up so it clears the message bar. */
+:root {
+  --chat-bottom: calc(5rem + env(safe-area-inset-bottom));
+  --crisis-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+}
+@media (max-width: 767px) {
+  body:has(textarea:focus, input:focus) {
+    --chat-bottom: 0.5rem;
+    --crisis-bottom: 5.5rem;
+  }
+  body:has(textarea:focus, input:focus) nav[aria-label="Primary"] {
+    display: none;
+  }
+}
