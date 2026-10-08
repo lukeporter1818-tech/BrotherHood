@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  HomeIcon,
+  AvailabilityIcon,
   RoomsIcon,
   GooseIcon,
   BenchIcon,
@@ -16,6 +16,9 @@ export function BottomNav({ pendingMatchCount = 0 }: Props) {
   const pathname = usePathname();
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
+  // Bench = conversations (/bench and /bench/match/...). The availability
+  // toggles live on their own tab, so they must not light up Bench.
+  const benchActive = pathname === "/bench" || pathname.startsWith("/bench/match");
 
   return (
     <nav
@@ -24,10 +27,10 @@ export function BottomNav({ pendingMatchCount = 0 }: Props) {
     >
       <div className="mx-auto flex items-stretch justify-around px-2 md:gap-2 md:px-4">
         <NavSlot
-          href="/home"
-          label="Home"
-          icon={<HomeIcon className="h-[26px] w-[26px]" />}
-          active={isActive("/home")}
+          href="/goose"
+          label="Goose"
+          icon={<GooseIcon className="h-[26px] w-[26px]" />}
+          active={isActive("/goose")}
         />
         <NavSlot
           href="/rooms"
@@ -37,17 +40,17 @@ export function BottomNav({ pendingMatchCount = 0 }: Props) {
         />
         <CenterSlot />
         <NavSlot
-          href="/goose"
-          label="Goose"
-          icon={<GooseIcon className="h-[26px] w-[26px]" />}
-          active={isActive("/goose")}
+          href="/bench"
+          label="Chat"
+          icon={<BenchIcon className="h-[26px] w-[26px]" />}
+          active={benchActive}
+          badge={pendingMatchCount}
         />
         <NavSlot
-          href="/bench"
+          href="/bench/availability"
           label="Bench"
-          icon={<BenchIcon className="h-[26px] w-[26px]" />}
-          active={isActive("/bench")}
-          badge={pendingMatchCount}
+          icon={<AvailabilityIcon className="h-[26px] w-[26px]" />}
+          active={isActive("/bench/availability")}
         />
       </div>
     </nav>

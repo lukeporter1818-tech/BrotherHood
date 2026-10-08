@@ -71,3 +71,21 @@ export function BenchIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function AvailabilityIcon({ className }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect x="2.5" y="7" width="19" height="10" rx="5" />
+      <circle cx="16.5" cy="12" r="2.5" />
+    </svg>
+  );
+}
