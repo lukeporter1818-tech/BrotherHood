@@ -13,6 +13,7 @@ import {
   type ClientBenchMessage,
 } from "@/app/bench/match/[id]/actions";
 import { Thread, ThreadEntry } from "@/app/components/ThreadEntry";
+import { useKeyboardInset } from "@/app/components/useKeyboardInset";
 
 const BODY_MAX = 4096;
 
@@ -40,6 +41,7 @@ export function BenchChat({
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  useKeyboardInset();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -89,6 +91,7 @@ export function BenchChat({
     <div className="flex min-h-[60dvh] flex-1 flex-col">
       <div
         ref={scrollRef}
+        data-chat-scroll
         className="flex-1 overflow-y-auto py-6"
         style={{ maxHeight: "calc(100dvh - 20rem)" }}
       >
@@ -119,6 +122,7 @@ export function BenchChat({
       <form
         ref={formRef}
         action={handleSubmit}
+        data-chat-composer
         className="sticky bottom-(--chat-bottom) p-[14px]"
       >
         {error && (

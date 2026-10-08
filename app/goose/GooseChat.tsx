@@ -17,6 +17,7 @@ import {
   ThreadEntry,
 } from "@/app/components/ThreadEntry";
 import { sendGooseMessage, type ClientMessage } from "@/app/goose/actions";
+import { useKeyboardInset } from "@/app/components/useKeyboardInset";
 
 const BODY_MAX = 4096;
 
@@ -39,6 +40,7 @@ export function GooseChat({
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  useKeyboardInset();
 
   const hasScrolledOnce = useRef(false);
 
@@ -111,6 +113,7 @@ export function GooseChat({
     <div className="flex min-h-[70dvh] flex-1 flex-col">
       <div
         ref={scrollRef}
+        data-chat-scroll
         className="flex-1 overflow-y-auto py-6"
         style={{ maxHeight: "calc(100dvh - 16rem)" }}
       >
@@ -128,6 +131,7 @@ export function GooseChat({
       <form
         ref={formRef}
         action={handleSubmit}
+        data-chat-composer
         className="sticky bottom-(--chat-bottom) p-[14px]"
       >
         {error && (
