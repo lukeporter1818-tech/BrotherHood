@@ -30,9 +30,13 @@ export function HeaderMenu({ isAdmin }: Props) {
     };
   }, [open, close]);
 
-  useEffect(() => {
-    close();
-  }, [pathname, close]);
+  // Close the menu when the route changes (adjust state during render,
+  // not in an effect).
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
 
   return (
     <div className="relative" ref={ref}>

@@ -219,7 +219,7 @@ function EmptyState() {
       </h2>
       <p className="max-w-md text-sm text-text-muted">
         Private 1-on-1 chat. Not a therapist — a first-responder who can help
-        you name what you're feeling and know where to turn. Say what's on your
+        you name what you&apos;re feeling and know where to turn. Say what&apos;s on your
         mind.
       </p>
     </div>
