@@ -40,11 +40,32 @@ export function GooseChat({
   const formRef = useRef<HTMLFormElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const hasScrolledOnce = useRef(false);
+
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    const el = scrollRef.current;
+    if (!el) return;
+    const last = optimisticMessages[optimisticMessages.length - 1];
+
+    // When Goose's reply arrives, line the top of the reply up with the top
+    // of the view so it can be read from the start. Everything else (opening
+    // the chat, sending a message, "Goose is thinking") goes to the bottom.
+    if (hasScrolledOnce.current && !pending && last?.role === "ASSISTANT") {
+      const items = el.querySelectorAll("li");
+      const lastItem = items[items.length - 1];
+      if (lastItem) {
+        const top =
+          lastItem.getBoundingClientRect().top -
+          el.getBoundingClientRect().top +
+          el.scrollTop -
+          8;
+        el.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        return;
+      }
+    }
+
+    hasScrolledOnce.current = true;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [optimisticMessages, pending]);
 
   function handleSubmit(formData: FormData) {
