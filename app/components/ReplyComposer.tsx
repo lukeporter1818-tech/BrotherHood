@@ -18,20 +18,20 @@ export function ReplyComposer({ postId }: { postId: string }) {
   return (
     <form ref={formRef} action={formAction}>
       <input type="hidden" name="postId" value={postId} />
-      <div className="flex items-center gap-2 rounded-[10px] border border-signal/30 bg-surface p-[6px] pl-4 focus-within:border-signal">
+      <div className="flex h-[45px] items-center overflow-hidden rounded-full border border-signal/50 bg-surface pl-5 focus-within:border-signal">
         <textarea
           name="body"
           rows={1}
           maxLength={2000}
           placeholder="Write a reply…"
-          className="h-[34px] flex-1 resize-none border-0 bg-transparent py-[5px] text-[16px] leading-6 text-text placeholder:text-[14px] placeholder:text-text-muted focus:outline-none"
+          className="h-[37px] flex-1 resize-none border-0 bg-transparent py-[6px] text-[16px] leading-6 text-text placeholder:text-[14px] placeholder:text-text-muted focus:outline-none"
           required
         />
         <button
           type="submit"
           disabled={pending}
           aria-label={pending ? "Sending" : "Send reply"}
-          className="flex h-[36px] w-[48px] shrink-0 items-center justify-center rounded-[8px] bg-[#89F6BD] text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="flex h-full w-14 shrink-0 items-center justify-center bg-[#89F6BD] text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {pending ? (
             "…"
