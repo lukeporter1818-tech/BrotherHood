@@ -161,6 +161,20 @@ export function GooseChat({
   );
 }
 
+// Goose sometimes wraps words in **double asterisks**. Show them as bold
+// instead of printing the asterisks. Only used for Goose's own replies.
+function renderGooseText(text: string) {
+  return text.split(/(\*\*[^*\n]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") && part.length > 4 ? (
+      <strong key={i} className="font-semibold">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      part
+    ),
+  );
+}
+
 function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
   const isUser = msg.role === "USER";
 
@@ -202,7 +216,7 @@ function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
           <ThreadEntry
             author={{ kind: "goose" }}
             timestamp={msg.createdAt}
-            body={prose}
+            body={renderGooseText(prose)}
             size={44}
             variant="solid"
             density="chat"
@@ -217,7 +231,7 @@ function renderMessage(msg: ClientMessage, currentUserAnonHandle: string) {
       key={msg.id}
       author={{ kind: "goose" }}
       timestamp={msg.createdAt}
-      body={msg.content}
+      body={renderGooseText(msg.content)}
       size={44}
       variant="solid"
       density="chat"
