@@ -20,6 +20,14 @@ function ConfirmBanner() {
     );
   }
 
+  if (searchParams.get("deleted") === "1") {
+    return (
+      <p className="mt-6 rounded-xl border border-signal/30 bg-signal/10 px-4 py-3 text-sm text-text-muted">
+        Your account has been deleted.
+      </p>
+    );
+  }
+
   if (searchParams.get("confirm") !== "1") return null;
 
   return (
