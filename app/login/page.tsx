@@ -11,6 +11,15 @@ const initialState: AuthActionState = { error: null };
 
 function ConfirmBanner() {
   const searchParams = useSearchParams();
+
+  if (searchParams.get("error") === "confirm") {
+    return (
+      <p className="mt-6 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+        That confirmation link didn&apos;t work or has expired. Try logging in, or sign up again to get a new link.
+      </p>
+    );
+  }
+
   if (searchParams.get("confirm") !== "1") return null;
 
   return (
@@ -97,7 +106,11 @@ export default function LoginPage() {
           </label>
 
           {state.error && (
-            <p className="text-sm text-red-400">{state.error}</p>
+            <p className="text-sm text-red-400">
+              {state.error === "Invalid login credentials"
+                ? "That email and password don't match. Check them and try again."
+                : state.error}
+            </p>
           )}
 
           <button
