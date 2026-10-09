@@ -65,7 +65,14 @@ export function HeaderMenu({ isAdmin }: Props) {
               Admin
             </Link>
           )}
-          <form action={logout} className={isAdmin ? "border-t border-border" : ""}>
+          <Link
+            href="/settings"
+            role="menuitem"
+            className={`block px-4 py-3 text-sm text-text-muted transition-colors hover:bg-elevated hover:text-text ${isAdmin ? "border-t border-border" : ""}`}
+          >
+            Settings
+          </Link>
+          <form action={logout} className="border-t border-border">
             <button
               type="submit"
               role="menuitem"

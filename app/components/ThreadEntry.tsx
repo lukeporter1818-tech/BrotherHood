@@ -33,11 +33,13 @@ function resolveAuthor(author: Author): {
     };
   }
   const color = identityColorFor(author.userId);
-  const initial = author.label.charAt(0).toUpperCase() || "?";
+  const isDeleted = author.label.startsWith("deleted_");
+  const label = isDeleted ? "[deleted]" : author.label;
+  const initial = isDeleted ? "?" : author.label.charAt(0).toUpperCase() || "?";
   return {
     color,
     tint: `${color}26`,
-    label: author.label,
+    label,
     initial,
   };
 }

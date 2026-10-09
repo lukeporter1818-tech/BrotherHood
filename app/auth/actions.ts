@@ -32,6 +32,13 @@ export async function signup(
 
   if (!anonHandle) return { error: "Anon handle is required." };
 
+  // The tombstone format for deleted accounts is `deleted_<uuid>` and the
+  // thread renderer treats any handle starting with "deleted_" as a removed
+  // user. Block the prefix at signup so a live user can't impersonate a
+  // tombstoned one. Case-insensitive to catch Deleted_, DELETED_, etc.
+  if (anonHandle.toLowerCase().startsWith("deleted_"))
+    return { error: "That handle is not allowed." };
+
   const existing = await prisma.user.findUnique({ where: { anonHandle } });
   if (existing) return { error: "That handle is already taken." };
 
