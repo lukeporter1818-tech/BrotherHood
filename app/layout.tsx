@@ -18,10 +18,16 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Brotherhood",
   description: "A men's wellness community. Show up, post honestly, check in daily.",
+  appleWebApp: {
+    capable: true,
+    title: "Brotherhood",
+    statusBarStyle: "black",
+  },
 };
 
 export const viewport: Viewport = {
   viewportFit: "cover",
+  themeColor: "#070908",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
