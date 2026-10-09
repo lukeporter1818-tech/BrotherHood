@@ -15,7 +15,7 @@ export async function deleteAccount(
 ): Promise<DeleteAccountState> {
   // Server-side confirmation check — the client-disabled button is UX only.
   const confirm = String(formData.get("confirm") ?? "");
-  if (confirm !== "DELETE") {
+  if (confirm.trim() !== "DELETE") {
     return { error: "Please type DELETE to confirm." };
   }
 
@@ -31,6 +31,87 @@ export async function deleteAccount(
   // Every step is idempotent, so retrying after an auth-delete failure is safe.
   try {
     await prisma.$transaction(async (tx) => {
+      // Erase content this user authored before tombstoning the User row.
+      // Posts with surviving replies from other users stay as [deleted] body
+      // placeholders — deletedAt stays null so Room feeds keep them visible
+      // and the children still have a parent to render under.
+      const userPosts = await tx.post.findMany({
+        where: { userId },
+        select: { id: true },
+      });
+      const userPostIds = userPosts.map((p) => p.id);
+
+      const userReplies = await tx.reply.findMany({
+        where: { userId },
+        select: { id: true },
+      });
+      const userReplyIds = userReplies.map((r) => r.id);
+
+      const livingOthersReplies =
+        userPostIds.length === 0
+          ? []
+          : await tx.reply.findMany({
+              where: {
+                postId: { in: userPostIds },
+                userId: { not: userId },
+                deletedAt: null,
+              },
+              select: { postId: true },
+            });
+      const postsToBlank = Array.from(
+        new Set(livingOthersReplies.map((r) => r.postId)),
+      );
+      const blankSet = new Set(postsToBlank);
+      const postsFullyDeletable = userPostIds.filter((id) => !blankSet.has(id));
+
+      const sweptReplies =
+        postsFullyDeletable.length === 0
+          ? []
+          : await tx.reply.findMany({
+              where: {
+                postId: { in: postsFullyDeletable },
+                userId: { not: userId },
+                deletedAt: { not: null },
+              },
+              select: { id: true },
+            });
+      const repliesToHardDelete = [
+        ...userReplyIds,
+        ...sweptReplies.map((r) => r.id),
+      ];
+
+      // One query covers reports on any touched reply (whose postId may be
+      // set to the parent post) and reports on a touched post that aren't
+      // tied to a specific reply. replyId: null guards reports on live
+      // replies by others that sit on a post we're blanking.
+      if (repliesToHardDelete.length > 0 || userPostIds.length > 0) {
+        await tx.report.deleteMany({
+          where: {
+            OR: [
+              { replyId: { in: repliesToHardDelete } },
+              { postId: { in: userPostIds }, replyId: null },
+            ],
+          },
+        });
+      }
+
+      if (repliesToHardDelete.length > 0) {
+        await tx.reply.deleteMany({
+          where: { id: { in: repliesToHardDelete } },
+        });
+      }
+      if (postsFullyDeletable.length > 0) {
+        await tx.post.deleteMany({
+          where: { id: { in: postsFullyDeletable } },
+        });
+      }
+      if (postsToBlank.length > 0) {
+        await tx.post.updateMany({
+          where: { id: { in: postsToBlank } },
+          data: { body: "[deleted]" },
+        });
+      }
+
       await tx.report.deleteMany({ where: { reporterId: userId } });
       await tx.benchMessage.deleteMany({ where: { senderId: userId } });
       await tx.benchMatch.deleteMany({

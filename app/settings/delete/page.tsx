@@ -15,7 +15,7 @@ export default function DeleteAccountPage() {
     initialState,
   );
   const [confirmText, setConfirmText] = useState("");
-  const canSubmit = confirmText === "DELETE" && !pending;
+  const canSubmit = confirmText.trim() === "DELETE" && !pending;
 
   return (
     <div className="mx-auto flex w-full max-w-[520px] flex-col gap-6 px-5 py-8">
@@ -40,15 +40,21 @@ export default function DeleteAccountPage() {
         </h2>
         <ul className="mt-2 list-disc pl-5 text-text/90">
           <li>
-            Your posts and replies <strong>stay in the rooms</strong>, so
-            threads other men are reading don&apos;t break. Your name is
-            removed — they will show as <code>[deleted]</code>.
+            A post you wrote that other men replied to is{" "}
+            <strong>kept as a <code>[deleted]</code> placeholder</strong>, so
+            the replies they left still make sense. The words you wrote are
+            erased.
           </li>
         </ul>
         <h2 className="mt-5 text-[13px] font-semibold uppercase tracking-widest text-text-muted">
           What is permanently deleted
         </h2>
         <ul className="mt-2 list-disc pl-5 text-text/90">
+          <li>
+            <strong>Every post and reply you wrote.</strong> A post others
+            replied to is kept as a <code>[deleted]</code> placeholder (see
+            above), but the body is wiped.
+          </li>
           <li>
             Your <strong>Bench chats</strong> with other men — deleted for{" "}
             <strong>both sides</strong>.

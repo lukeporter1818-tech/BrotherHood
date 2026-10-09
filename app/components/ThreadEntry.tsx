@@ -216,6 +216,14 @@ export function ThreadEntry({
   const chat = density === "chat";
   const feed = density === "feed";
 
+  // Tombstoned authors (handle "deleted_<id>") always render a clean
+  // "[deleted]" body, never the stored string. Covers posts kept as
+  // placeholders where the body was blanked to "[deleted]", and defends
+  // against any legacy row with an unexpected body for a deleted author.
+  const isDeletedAuthor =
+    author.kind === "other" && author.label.startsWith("deleted_");
+  const bodyToRender: ReactNode = isDeletedAuthor ? "[deleted]" : body;
+
   const avatarAuthor: Author =
     chat && author.kind === "self"
       ? { kind: "self", anonHandle: "You" }
@@ -270,7 +278,7 @@ export function ThreadEntry({
                 : "whitespace-pre-wrap break-words text-sm leading-5 text-text"
             }
           >
-            {body}
+            {bodyToRender}
           </div>
           {children && !removed && <div className="mt-2">{children}</div>}
         </div>
@@ -347,7 +355,7 @@ export function ThreadEntry({
                 : "whitespace-pre-wrap break-words text-sm text-text"
           }
         >
-          {body}
+          {bodyToRender}
         </div>
         {children && !removed && <div className="mt-2">{children}</div>}
       </div>
