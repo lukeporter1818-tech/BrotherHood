@@ -39,12 +39,12 @@ export function PostComposer(props: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="absolute bottom-2 right-2 flex h-[30px] w-[74px] items-center justify-center rounded-[8px] bg-signal text-[14px] font-semibold text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="absolute bottom-0 right-0 flex h-[40px] w-[88px] items-center justify-center rounded-tl-[12px] bg-signal text-[14px] font-semibold text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Posting…" : "Post"}
       </button>
       {state.error && (
-        <p className="mt-2 text-xs text-red-400">
+        <p className="mt-2 pr-24 text-xs text-red-400">
           {state.error}
         </p>
       )}

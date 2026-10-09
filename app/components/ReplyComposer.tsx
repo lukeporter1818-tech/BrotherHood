@@ -24,6 +24,13 @@ export function ReplyComposer({ postId }: { postId: string }) {
           rows={1}
           maxLength={2000}
           placeholder="Write a reply…"
+          onKeyDown={(e) => {
+            // Enter sends; Shift+Enter makes a new line. Skip while an
+            // input method (e.g. emoji or Japanese keyboard) is composing.
+            if (e.key !== "Enter" || e.shiftKey || e.nativeEvent.isComposing) return;
+            e.preventDefault();
+            if (!pending && e.currentTarget.value.trim()) formRef.current?.requestSubmit();
+          }}
           className="h-[37px] flex-1 resize-none border-0 bg-transparent py-[6px] text-[16px] leading-6 text-text placeholder:text-[14px] placeholder:text-text-muted focus:outline-none"
           required
         />
