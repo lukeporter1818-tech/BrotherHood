@@ -9,7 +9,8 @@ export const prisma =
   new PrismaClient({
     adapter: new PrismaPg({
       connectionString: process.env.DATABASE_URL,
-      max: 1,
+      // Supabase transaction pooler (port 6543) handles connection multiplexing — a small per-instance pool lets layout + page queries run in parallel.
+      max: 5,
     }),
   });
 
