@@ -73,20 +73,6 @@ export async function generateBrief(topic: string): Promise<BriefActionState> {
     result = await runBrief({ topics });
   } catch (err) {
     console.error("[brief] generation failed", err);
-    // TEMPORARY DIAGNOSTIC (remove after the 401 is fixed): non-secret facts
-    // about the key Vercel is actually providing. Never logs the key itself.
-    {
-      const k = process.env.ANTHROPIC_API_KEY ?? "";
-      console.error("[brief-diag]", {
-        length: k.length,
-        startsWithSkAnt: k.startsWith("sk-ant-"),
-        startsWithQuote: /^["']/.test(k),
-        endsWithQuote: /["']$/.test(k),
-        hasWhitespace: /\s/.test(k),
-        vercelEnv: process.env.VERCEL_ENV,
-        deployment: process.env.VERCEL_URL,
-      });
-    }
     return {
       error:
         "Brief generation failed. This can happen if the search comes up empty — try again in a minute.",
