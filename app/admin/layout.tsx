@@ -9,7 +9,7 @@ export default async function AdminLayout({
 }) {
   const user = await getAuthUser();
 
-  if (!user) redirect("/auth/login");
+  if (!user) redirect("/login");
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
