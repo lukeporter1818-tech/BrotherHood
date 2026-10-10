@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
+import { getDbUser } from "@/lib/queries";
 import { GooseChat } from "@/app/(authed)/goose/GooseChat";
 import type { ClientMessage } from "@/app/(authed)/goose/actions";
 import { DelayedPageSkeleton } from "@/app/components/DelayedPageSkeleton";
@@ -24,17 +25,15 @@ async function GooseContent() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  const profile = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { anonHandle: true },
-  });
+  const [profile, session] = await Promise.all([
+    getDbUser(user.id),
+    prisma.wingmanSession.findFirst({
+      where: { userId: user.id },
+      orderBy: { updatedAt: "desc" },
+      select: { id: true },
+    }),
+  ]);
   const currentUserAnonHandle = profile?.anonHandle ?? "?";
-
-  const session = await prisma.wingmanSession.findFirst({
-    where: { userId: user.id },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true },
-  });
 
   let initialMessages: ClientMessage[] = [];
   if (session) {

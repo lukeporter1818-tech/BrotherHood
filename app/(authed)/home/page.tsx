@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
+import { getDbUser } from "@/lib/queries";
 import { BriefPanel } from "@/app/(authed)/home/BriefPanel";
 import { BriefPayloadSchema } from "@/lib/brief";
 import { DelayedPageSkeleton } from "@/app/components/DelayedPageSkeleton";
@@ -29,10 +30,7 @@ async function HomeContent() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { anonHandle: true },
-  });
+  const dbUser = await getDbUser(user.id);
   if (!dbUser) redirect("/login");
 
   const now = new Date();
