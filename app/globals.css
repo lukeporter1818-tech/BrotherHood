@@ -114,6 +114,19 @@ body {
   }
 }
 
+/* Suspense fallback: start invisible, fade in after 250ms so fast loads never
+   flash the skeleton. */
+@keyframes delayed-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@layer utilities {
+  .delayed-fade-in {
+    opacity: 0;
+    animation: delayed-fade-in 150ms ease-out 250ms forwards;
+  }
+}
+
 /* Phone keyboard: while someone is typing in a field, hide the bottom bar so
    the keyboard and the message bar get the room. Get help stays visible; it
    just moves up so it clears the message bar. */

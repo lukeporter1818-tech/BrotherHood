@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import { createReport, type ReportActionState } from "@/app/rooms/report-actions";
+import { createReport, type ReportActionState } from "@/app/(authed)/rooms/report-actions";
 
 const initial: ReportActionState = { error: null, ok: false };
 

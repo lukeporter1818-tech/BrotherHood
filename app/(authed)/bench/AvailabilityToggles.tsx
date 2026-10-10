@@ -1,6 +1,6 @@
 "use client";
 import { useState, useTransition } from "react";
-import { setRoomAvailability } from "@/app/bench/actions";
+import { setRoomAvailability } from "@/app/(authed)/bench/actions";
 
 type Room = { slug: string; displayName: string };
 

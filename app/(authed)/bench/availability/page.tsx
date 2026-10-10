@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
-import { AvailabilityToggles } from "@/app/bench/AvailabilityToggles";
+import { AvailabilityToggles } from "@/app/(authed)/bench/AvailabilityToggles";
 
 export const metadata = { title: "The Bench — Brotherhood" };
 

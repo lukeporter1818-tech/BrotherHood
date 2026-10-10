@@ -1,12 +1,31 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
-import { AcceptDeclineButtons } from "@/app/bench/AcceptDeclineButtons";
+import { AcceptDeclineButtons } from "@/app/(authed)/bench/AcceptDeclineButtons";
+import { DelayedPageSkeleton } from "@/app/components/DelayedPageSkeleton";
 
 export const metadata = { title: "Chat — Brotherhood" };
 
-export default async function BenchPage() {
+export default function BenchPage() {
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-7 px-[18px] pt-0 pb-24 sm:px-6 sm:pt-8 sm:pb-8">
+      <section>
+        <h1 className="text-[28px] font-semibold text-text">Chat</h1>
+        <p className="mt-[2px] text-[16px] leading-[22px] text-subhead">
+          Private 1:1 connections — when Goose thinks you and another guy should talk, it&apos;ll offer to connect you here.
+        </p>
+      </section>
+
+      <Suspense fallback={<DelayedPageSkeleton rows={3} />}>
+        <BenchContent />
+      </Suspense>
+    </div>
+  );
+}
+
+async function BenchContent() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
@@ -31,14 +50,7 @@ export default async function BenchPage() {
     pendingForMe.length + pendingFromMe.length + activeAsInitiator.length + activeAsRecipient.length > 0;
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-7 px-[18px] pt-0 pb-24 sm:px-6 sm:pt-8 sm:pb-8">
-      <section>
-        <h1 className="text-[28px] font-semibold text-text">Chat</h1>
-        <p className="mt-[2px] text-[16px] leading-[22px] text-subhead">
-          Private 1:1 connections — when Goose thinks you and another guy should talk, it&apos;ll offer to connect you here.
-        </p>
-      </section>
-
+    <>
       {!hasAny && (
         <section>
           <p className="text-sm text-text-muted">
@@ -129,6 +141,6 @@ export default async function BenchPage() {
           </ul>
         </section>
       )}
-    </div>
+    </>
   );
 }

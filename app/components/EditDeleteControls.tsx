@@ -6,7 +6,7 @@ import {
   deletePost,
   editReply,
   deleteReply,
-} from "@/app/rooms/actions";
+} from "@/app/(authed)/rooms/actions";
 
 const BODY_MAX = 2000;
 

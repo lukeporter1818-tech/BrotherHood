@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
-import { BriefPanel } from "@/app/home/BriefPanel";
+import { BriefPanel } from "@/app/(authed)/home/BriefPanel";
 import { BriefPayloadSchema } from "@/lib/brief";
+import { DelayedPageSkeleton } from "@/app/components/DelayedPageSkeleton";
 
 export const metadata = { title: "Home — Brotherhood" };
 
@@ -13,7 +15,17 @@ function greeting() {
   return "Good evening";
 }
 
-export default async function HomePage() {
+export default function HomePage() {
+  return (
+    <div className="mx-auto w-full max-w-5xl px-[18px] pt-1 pb-6 sm:px-6 sm:pt-10 sm:pb-10">
+      <Suspense fallback={<DelayedPageSkeleton rows={4} />}>
+        <HomeContent />
+      </Suspense>
+    </div>
+  );
+}
+
+async function HomeContent() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
@@ -27,18 +39,17 @@ export default async function HomePage() {
   const utcToday = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
   );
-  const [latestBrief, dailyBrief] =
-    await Promise.all([
-      prisma.brief.findFirst({
-        where: { userId: user.id },
-        orderBy: { createdAt: "desc" },
-        select: { createdAt: true, content: true },
-      }),
-      prisma.dailyBrief.findUnique({
-        where: { date: utcToday },
-        select: { headline: true, blurb: true, url: true },
-      }),
-    ]);
+  const [latestBrief, dailyBrief] = await Promise.all([
+    prisma.brief.findFirst({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      select: { createdAt: true, content: true },
+    }),
+    prisma.dailyBrief.findUnique({
+      where: { date: utcToday },
+      select: { headline: true, blurb: true, url: true },
+    }),
+  ]);
 
   const parsedLatestBrief = latestBrief
     ? (() => {
@@ -52,7 +63,7 @@ export default async function HomePage() {
   const displayName = dbUser.anonHandle;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-[18px] pt-1 pb-6 sm:px-6 sm:pt-10 sm:pb-10">
+    <>
       <div className="mb-[21px]">
         <h1 className="text-[28px] font-semibold text-text sm:text-4xl">
           {greeting()}, {displayName}.
@@ -63,6 +74,6 @@ export default async function HomePage() {
       </div>
 
       <BriefPanel latest={parsedLatestBrief} dailyBrief={dailyBrief} />
-    </div>
+    </>
   );
 }

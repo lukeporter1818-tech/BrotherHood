@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { createPost, type PostActionState } from "@/app/rooms/actions";
+import { createPost, type PostActionState } from "@/app/(authed)/rooms/actions";
 
 const initialState: PostActionState = { error: null };
 
