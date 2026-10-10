@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
+import { getDbUser, getRooms } from "@/lib/queries";
 import { AppShell } from "@/app/components/AppShell";
 import { AuthedMobileHeader } from "@/app/components/AuthedMobileHeader";
 
@@ -13,22 +14,18 @@ export default async function AuthedLayout({
   if (!user) redirect("/login");
 
   const [dbUser, pendingMatchCount, rooms] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: user.id },
-      select: { anonHandle: true, isAdmin: true },
-    }),
+    getDbUser(user.id),
     prisma.benchMatch.count({
       where: {
         recipientId: user.id,
         status: "PENDING",
       },
     }),
-    prisma.room.findMany({
-      select: { slug: true, displayName: true },
-      orderBy: [{ sortOrder: "asc" }, { displayName: "asc" }],
-    }),
+    getRooms(),
   ]);
   if (!dbUser) redirect("/login");
+
+  const roomLinks = rooms.map(({ slug, displayName }) => ({ slug, displayName }));
 
   return (
     <AppShell
@@ -36,7 +33,7 @@ export default async function AuthedLayout({
       anonHandle={dbUser.anonHandle}
       pendingMatchCount={pendingMatchCount}
       mobileHeader={
-        <AuthedMobileHeader isAdmin={dbUser.isAdmin} rooms={rooms} />
+        <AuthedMobileHeader isAdmin={dbUser.isAdmin} rooms={roomLinks} />
       }
     >
       {children}

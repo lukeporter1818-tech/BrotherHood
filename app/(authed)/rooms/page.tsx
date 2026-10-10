@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getRooms } from "@/lib/queries";
 import { RoomIcon } from "@/app/components/RoomIcons";
 import { DelayedPageSkeleton } from "@/app/components/DelayedPageSkeleton";
 
@@ -22,9 +22,7 @@ export default function RoomsPage() {
 }
 
 async function RoomsGrid() {
-  const rooms = await prisma.room.findMany({
-    orderBy: [{ sortOrder: "asc" }, { displayName: "asc" }],
-  });
+  const rooms = await getRooms();
 
   return (
     <div className="mt-[8px] grid gap-[5px] sm:grid-cols-2">
