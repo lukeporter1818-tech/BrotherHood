@@ -19,6 +19,13 @@ const ogCache = new Map<string, { image: string | null; at: number }>();
 const OG_TTL_MS = 6 * 60 * 60 * 1000;
 const OG_CACHE_MAX = 500;
 
+function notFound() {
+  return new Response(null, {
+    status: 404,
+    headers: { "cache-control": "private, max-age=3600" },
+  });
+}
+
 function isPrivateIp(ip: string): boolean {
   if (ip.includes(":")) {
     const v = ip.toLowerCase();
@@ -138,11 +145,11 @@ export async function GET(request: Request) {
 
   try {
     const imageUrl = await findImageUrl(target);
-    if (!imageUrl) return new Response(null, { status: 404 });
+    if (!imageUrl) return notFound();
 
     const res = await safeFetch(imageUrl, "image/*");
     const type = (res.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
-    if (!res.ok || !ALLOWED_IMAGE_TYPES.includes(type)) return new Response(null, { status: 404 });
+    if (!res.ok || !ALLOWED_IMAGE_TYPES.includes(type)) return notFound();
 
     const bytes = await readCapped(res, IMAGE_LIMIT);
     return new Response(bytes as BodyInit, {
@@ -154,6 +161,6 @@ export async function GET(request: Request) {
       },
     });
   } catch {
-    return new Response(null, { status: 404 });
+    return notFound();
   }
 }
