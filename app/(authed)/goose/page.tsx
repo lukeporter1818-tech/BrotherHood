@@ -1,14 +1,26 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
-import { GooseChat } from "@/app/goose/GooseChat";
-import type { ClientMessage } from "@/app/goose/actions";
+import { GooseChat } from "@/app/(authed)/goose/GooseChat";
+import type { ClientMessage } from "@/app/(authed)/goose/actions";
+import { DelayedPageSkeleton } from "@/app/components/DelayedPageSkeleton";
 
 export const metadata = {
   title: "Goose — Brotherhood",
 };
 
-export default async function GoosePage() {
+export default function GoosePage() {
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-[18px] py-6 sm:px-6">
+      <Suspense fallback={<DelayedPageSkeleton rows={5} />}>
+        <GooseContent />
+      </Suspense>
+    </div>
+  );
+}
+
+async function GooseContent() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
@@ -49,11 +61,9 @@ export default async function GoosePage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-[18px] py-6 sm:px-6">
-      <GooseChat
-        initialMessages={initialMessages}
-        currentUserAnonHandle={currentUserAnonHandle}
-      />
-    </div>
+    <GooseChat
+      initialMessages={initialMessages}
+      currentUserAnonHandle={currentUserAnonHandle}
+    />
   );
 }

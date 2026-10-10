@@ -2,9 +2,9 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/supabase/get-user";
 import { prisma } from "@/lib/prisma";
 import { AppShell } from "@/app/components/AppShell";
-import { RoomsMobileHeader } from "@/app/components/RoomsMobileHeader";
+import { AuthedMobileHeader } from "@/app/components/AuthedMobileHeader";
 
-export default async function RoomsLayout({
+export default async function AuthedLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -36,7 +36,7 @@ export default async function RoomsLayout({
       anonHandle={dbUser.anonHandle}
       pendingMatchCount={pendingMatchCount}
       mobileHeader={
-        <RoomsMobileHeader isAdmin={dbUser.isAdmin} rooms={rooms} />
+        <AuthedMobileHeader isAdmin={dbUser.isAdmin} rooms={rooms} />
       }
     >
       {children}

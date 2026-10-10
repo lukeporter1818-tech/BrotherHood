@@ -35,6 +35,7 @@ export async function acceptMatch(matchId: string): Promise<ActionResult> {
   }
 
   revalidatePath("/bench");
+  revalidatePath("/", "layout");
   revalidatePath(`/bench/match/${matchId}`);
   return { error: null };
 }
@@ -63,6 +64,7 @@ export async function declineMatch(matchId: string): Promise<ActionResult> {
   }
 
   revalidatePath("/bench");
+  revalidatePath("/", "layout");
   return { error: null };
 }
 

@@ -11,7 +11,7 @@ import {
 import {
   sendBenchMessage,
   type ClientBenchMessage,
-} from "@/app/bench/match/[id]/actions";
+} from "@/app/(authed)/bench/match/[id]/actions";
 import { Thread, ThreadEntry } from "@/app/components/ThreadEntry";
 import { useKeyboardInset } from "@/app/components/useKeyboardInset";
 

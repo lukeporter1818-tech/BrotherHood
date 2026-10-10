@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { acceptMatch, declineMatch } from "@/app/bench/match/[id]/actions";
+import { acceptMatch, declineMatch } from "@/app/(authed)/bench/match/[id]/actions";
 
 export function AcceptDeclineButtons({ matchId }: { matchId: string }) {
   const [pending, startTransition] = useTransition();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useTransition } from "react";
-import { generateBrief } from "@/app/home/actions";
+import { generateBrief } from "@/app/(authed)/home/actions";
 import type { BriefPayload } from "@/lib/brief";
 
 type Props = {

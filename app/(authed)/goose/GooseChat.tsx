@@ -16,7 +16,7 @@ import {
   ThreadAvatar,
   ThreadEntry,
 } from "@/app/components/ThreadEntry";
-import { sendGooseMessage, type ClientMessage } from "@/app/goose/actions";
+import { sendGooseMessage, type ClientMessage } from "@/app/(authed)/goose/actions";
 import { useKeyboardInset } from "@/app/components/useKeyboardInset";
 
 const BODY_MAX = 4096;
